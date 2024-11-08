@@ -193,3 +193,22 @@
     opacity: 1;
   }
 }
+
+
+@media (prefers-color-scheme: dark) {
+  /* Change general text to black for visibility */
+  .homepage-header a, .homepage-intro h1 {
+      color: black;
+  }
+
+  /* Keep "XPLORA" in the original yellow */
+  .homepage-intro h1 span {
+      color: #d59108; /* Replace #FFD700 with the exact hex code if different */
+  }
+
+  /* Keep button text white */
+  .homepage-header button, .homepage-intro button, #register-btn a {
+      color: white;
+  }
+}
+
