@@ -83,6 +83,7 @@
     padding: 40px;
     gap: 20px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .trip-list-header, .search-container, .add-trip-btn{
@@ -225,4 +226,12 @@
     font-size: 3rem;
     color: gray;
     margin-top: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+    /* Change general text to black for visibility */
+    .trip-list-container {
+        color: black;
+    }
+
 }
