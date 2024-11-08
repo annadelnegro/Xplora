@@ -118,4 +118,7 @@
     .login-form h2, .signup-link {
         color: black;
     }
+    .signup-link {
+        color: #002a5c;
+    }
 }
