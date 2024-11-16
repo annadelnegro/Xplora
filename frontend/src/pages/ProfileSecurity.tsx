@@ -1,5 +1,5 @@
 import React from 'react';
-import './HowItWorks.css'; // Create this CSS file for styling
+import './HowItWorks.css';
 import './ProfileSecurity.css';
 import logo from '../images/logo.png';
 
@@ -51,7 +51,7 @@ const ProfileSecurityPage: React.FC = () => {
             
             <div id="profile-sidebar" className="profile-sidebar">
                 <a href="/profile">Home</a>
-                <a href="#security">Security</a>                
+                <a href="/security">Security</a>                
             </div>
             
             <div className="profile-main">

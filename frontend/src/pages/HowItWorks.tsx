@@ -13,8 +13,8 @@ const HowItWorksPage: React.FC = () => {
           </Link>
         </div>
         <div className="user-section">
-          <button id="login-btn"><Link to="/login">Login</Link></button>
-          <button id="register-btn"><Link to="/sign-up">Register</Link></button>
+          <button id="login-btn"><Link to="/login">Sign In</Link></button>
+          <button id="register-btn"><Link to="/sign-up">Sign Up</Link></button>
         </div>
       </header>
 

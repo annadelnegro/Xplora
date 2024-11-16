@@ -40,23 +40,21 @@ const AddTrip: React.FC = () => {
 
     return (
         <div className="addtrip-page">
-            <header className="addtrip-header">
-                <Link to="/">
-                    <img src={logo} alt="Xplora Logo" className="addtrip-logo" />
-                </Link>
-                <nav className="addtrip-nav">
-                    <ul>
-                        <li><Link to="/dashboard">Home</Link></li>
-                    </ul>
-                </nav>
+            <header className="homepage-header">
+                <div className="logo-section">
+                    <Link to="/">
+                        <img src={logo} alt="Xplora Logo" id="homepage-logo" />
+                    </Link>
+                </div>
+                <div className='actions-section'>
+                    <button id="profile-btn"><Link to="/dashboard">Home</Link></button>
+                </div>
             </header>
 
-            {/* Back Arrow Positioned Below the Logo */}
-            <div className="back-arrow-container">
-                <FontAwesomeIcon icon={faArrowLeft} className="back-arrow" onClick={handleBack} />
-            </div>
-
             <main className="addtrip-main">
+                <div className="back-arrow-container">
+                    <FontAwesomeIcon icon={faArrowLeft} className="back-arrow" onClick={handleBack} />
+                </div>
                 <h1 className="add-trip-header">Add a Trip</h1>
                 <p className="p1">Let's make the best out of your trip together!</p>
 
@@ -102,10 +100,11 @@ const AddTrip: React.FC = () => {
                                         <label htmlFor="startDate">Start Date</label>
                                         <div className="date-picker-container">
                                             <DatePicker
+                                                id="startDate"
                                                 selected={values.startDate}
                                                 onChange={(date) => setFieldValue('startDate', date)}
                                                 onBlur={() => setFieldTouched('startDate', true)}
-                                                dateFormat="MM/dd/yyyy"
+                                                dateFormat="yyyy-MM-dd"
                                                 className={`input-field ${errors.startDate && touched.startDate ? 'invalid' : ''}`}
                                                 placeholderText="Select start date"
                                             />
@@ -123,10 +122,11 @@ const AddTrip: React.FC = () => {
                                         <label htmlFor="endDate">End Date</label>
                                         <div className="date-picker-container">
                                             <DatePicker
+                                                id="endDate"
                                                 selected={values.endDate}
                                                 onChange={(date) => setFieldValue('endDate', date)}
                                                 onBlur={() => setFieldTouched('endDate', true)}
-                                                dateFormat="MM/dd/yyyy"
+                                                dateFormat="yyyy-MM-dd"
                                                 className={`input-field ${errors.endDate && touched.endDate ? 'invalid' : ''}`}
                                                 placeholderText="Select end date"
                                             />

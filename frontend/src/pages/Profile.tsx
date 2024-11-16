@@ -25,43 +25,40 @@ const ProfilePage: React.FC = () => {
         if (storedFirstName && storedLastName && storedEmail) {
             setFirstName(storedFirstName);
             setLastName(storedLastName);
-            setEmail(storedEmail)
+            setEmail(storedEmail);
         } else {
             // Redirect to login if data is missing
             navigate('/login');
         }
     }, [navigate]);
 
-    // useEffect(() => {
-
-    // }, [userId]);
-
     return (
         <div className="profile-page">
         {/* Header Section */}
-        <header className="homepage-header">
-            
+        <header className="profile-header">
+            <Link to="/">
             <img src={logo} alt="Xplora Logo" className="homepage-logo" />
-       
-        <nav className="homepage-nav">
+            </Link>
+        <nav className="profile-nav">
             <ul>
                 <li><Link to="/profile">Profile</Link></li>
                 <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
             </ul>
         </nav>
         </header>
-            
+        
+        <div className="profile-body">
             <div id="profile-sidebar" className="profile-sidebar">
-                <a href="#home">Home</a>
+                <a href="/profile">Home</a>
                 <a href="/profile-security">Security</a>                
             </div>
             
             <div className="profile-main">
-                <div className="outer-container">
-                    <div id="home" className="main-container">
+                <div className="profile-outer-container">
+                    <div id="home" className="profile-main-container">
                         <img src={image1} alt="Profile Picture" className="profile-picture" />
                         
-                        <div className="main-column">
+                        <div className="profile-main-column">
                             <div>
                                 Name:
                                 <div id="name">{firstName} {lastName}</div>
@@ -76,7 +73,7 @@ const ProfilePage: React.FC = () => {
                             </div> */}
                         </div>
 
-                        <div className="main-column">
+                        <div className="profile-main-column">
                             <div>
                                 Places {firstName} {lastName} has XPLORED:
                             <div id="blue-box">.</div>
@@ -85,18 +82,51 @@ const ProfilePage: React.FC = () => {
                             <div id="place">Filler</div>
                             <div id="place">Filler</div>
                             <div id="place">Filler</div>
+                            {/* try 
+                            {
+                                // calls the Trips API to 
+                                const response = await fetch(buildPath('api/login'), {
+                                    // get information from database
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(values),
+                                });
+                        
+                                const data = await response.json();
+                        
+                                if (response.ok) {
+                                    console.log('Login successful:', data);
+
+                                    // Store user data in localStorage
+                                    localStorage.setItem('userId', data.id);
+                                    localStorage.setItem('firstName', data.firstName);
+                                    localStorage.setItem('lastName', data.lastName);
+                                    localStorage.setItem('email', data.email);
+
+                                    navigate('/dashboard'); 
+                                    // Handle successful login here
+                                } else {
+                                    setErrors({ email: data.error });
+                                }
+                            } 
+                            catch (error) 
+                            {
+                              console.error('Error:', error);
+                              setErrors({ email: 'An error occurred. Please try again.' });
+                            } 
+                            finally 
+                            {
+                                setSubmitting(false);
+                            } */}
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                
-
             </div>
-
+            </div>
         </div>
-
-        
     );
 };
 

@@ -3,16 +3,9 @@
 .addtrip-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
     font-family: 'Poppins', sans-serif;
     color: #333;
     height: 100vh;
-}
-
-.addtrip-logo {
-    min-height: 40px;
-    height: 2.5vw;
-    width: auto;
 }
 
 /* Main content styling */
@@ -213,7 +206,7 @@ input:-webkit-autofill:active {
 .back-arrow-container {
     display: flex;
     justify-content: flex-start;
-    width: 80%;
+    width: 70%;
     padding-left: 20px;
     margin-top: 20px;
 }
@@ -231,21 +224,4 @@ input:-webkit-autofill:active {
 .add-trip-header {
     font-size: 2em;
     color: #6a1b9a;
-}
-
-.addtrip-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    color: #fff;
-    background-color: #ffff;
-    box-sizing: border-box;
-}
-
-.addtrip-nav ul li a {
-    color: #0f1dd6;
-    text-decoration: none;
-    font-weight: 500;
 }
