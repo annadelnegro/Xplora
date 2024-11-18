@@ -1,0 +1,248 @@
+
+/* Header styling */
+.edit-trip-header-text {
+    background-color: #e9d8fd;
+    font-family: Poppins, sans-serif;
+    color: #5c3b94;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-weight: bold;
+}
+
+/* Content styling */
+.edit-trip-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    font-size: 1rem;
+}
+
+.edit-trip-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Card styling */
+.edit-trip-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f3f4ff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 10px;
+    position: relative;
+    width: 90%;
+    border: 2px solid #d8baf3;
+}
+
+.edit-trip-details {
+    text-align: left;
+    margin-left: 50px;
+}
+
+.edit-trip-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 4px;
+    font-family: Poppins, sans-serif;
+}
+
+.edit-trip-name a:hover {
+    color: #5c3b94;
+    cursor: pointer;
+}
+
+.edit-trip-location,
+.edit-trip-dates {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Edit button styling */
+.edit-trip-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid #bfc2e7;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    background-color: #5c3b94;
+    transition: background-color 0.3s ease;
+}
+
+.edit-trip-button:hover {
+    background-color: #787dc4;
+}
+
+.edit-trip-edit-icon {
+    margin-right: 5px;
+}
+
+/* Image container styling */
+.edit-trip-image-container {
+    position: relative;
+    width: 30%;
+    height: 80%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.edit-trip-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+/* Tabs and dropdown styling */
+.edit-trip-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.edit-trip-tab {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.edit-trip-tab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 97.3%;
+    background-color: #e9d8fd;
+    border: 1px solid #d8baf3;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.edit-trip-dropdown-button {
+    background: none;
+    border: none;
+    color: #5c3b94;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1rem;
+}
+
+.edit-trip-dropdown-button:hover {
+    color: #787dc4;
+}
+
+.edit-trip-tab-button {
+    background: none;
+    border: none;
+    color: #5c3b94;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.edit-trip-tab-button:hover {
+    color: #787dc4;
+}
+
+.edit-trip-dropdown-content {
+    position: relative;
+    background-color: #f3f4ff;
+    border: 1px solid #d8baf3;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 5px;
+    width: 97.3%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-trip-dropdown-content p {
+    margin: 5px 0;
+    cursor: pointer;
+    color: #333;
+
+}
+
+.edit-trip-dropdown-content p:hover {
+    background-color: #e9e9e9;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+/* Modal overlay styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+/* Modal content styling */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close button styling */
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+
+
+
+button:focus {
+    outline: none;
+
+}
+
+.add-item-input {
+    margin-top: 8px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 70%;
+}
+
+.add-button {
+    background-color: #5c3b94;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.add-button:hover {
+    background-color: #787dc4;
+}

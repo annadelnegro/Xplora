@@ -1,41 +1,149 @@
+
 .dashboard {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    width: 100vw; 
-    height: 100vh; 
-    font-family: 'Poppins', sans-serif;
-    color: #333;
-    overflow: hidden; 
 }
 
-.dashboard-logo {
-    height: 50px;
-}
-
-.dashboard-nav ul {
-    list-style: none;
+.dashboard-header{
     display: flex;
-    gap: 1.5rem;
-}
-
-.homepage-nav ul {
-    display: flex;
+    flex-direction: row;
     align-items: center;
+    text-align: center;
+    color: #000000CC;
+    padding: 20px 30px;
+}
+
+.profile-menu-container{
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 320px;
+    max-height: 0px;
+    overflow: hidden;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: max-height 1.5s ease, opacity 1.5s ease, transform 1.5s ease; 
+    z-index: 10;
+}
+
+.profile-menu-container.open-menu{
+    max-height: 400px;
+    overflow: visible;
+    visibility: visible;
+    background: #f5eeff;
+    border: 1px solid #6A0DAD;
+    padding: 10px;
+    border-radius: 20px;
+    opacity: 1; 
+    transform: translateY(0); 
+}
+
+.profile-menu{
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+}
+
+#profile-icon{
+    min-width: 80px;
+    border-radius: 50%;
+    width: 3.5vw;
+    height: auto;
+}
+
+#cancel-btn img, #edit-btn img, #save-btn img{
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    align-items: center;
+}
+
+.profile-info{
+    border-radius: 20px;
+    padding: 4px;
+    margin: 15px;
+    font-weight: 300;
+    font-size: 20px;
+    display: flex;
+}
+
+.profile-info input{
+    border: 1px solid #cbbaf3;;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 15px;
+    font-weight: 300;
+    font-size: 20px;
+    width: 100%;
+}
+
+.profile-info h2{
+    font-weight: 200;
+}
+
+.profile-info.edit-info input{
+    border: 1px solid #6A0DAD;
+    background-color: white;
+    border-radius: 20px;
+    padding: 4px;
+    margin: 15px;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.profile-actions-section{
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    text-decoration: none;
+    align-items: center;
 }
 
-.logout-button {
-    color: #5c67f2;
-    text-decoration: none;
-    background: none;
-    border: none;
-    cursor: pointer;
+.logo-welcome-section{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: start;
+    font-size: 0;
+    align-items: center;
+    gap: 3%;
 }
 
-.dashboard-nav ul li a:hover,
-.logout-button:hover {
-    text-decoration: underline;
+#dashboard-logo{
+    max-width: 100px;
+    width: 2.5vw;
+    height: auto;
+}
+
+#welcome-text{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.search-section{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: end;
+    align-items: center;
+}
+
+.actions-section{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: end;
+    align-items: center;
+    gap: 2%;
+}
+
+.actions-section button, .actions-section a{
+    background-color: transparent;
+    color: #000000CC;
+    font-size: 1rem;
+    display: block;
 }
 
 .dashboard-main {
@@ -43,146 +151,190 @@
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
+    overflow-y: auto;
     width: 100%;
-    padding: 2rem 0;
     box-sizing: border-box;
-    text-align: center;
-}
-.dashboard-intro {
-    margin-bottom: 50px;
-}
-
-.dashboard-intro h1 {
-    color: #002a5c;
-}
-
-
-
-/* Container styles */
-.dashboard-i-container {
-    border: 1px solid #d8baf3;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    text-align: center;
-    width: 70%;
-    margin: 0 auto;
+    padding: 20px 0 30px 0;
     position: relative;
-    /* Removed fixed height to allow dynamic resizing */
 }
 
-/* Header styling */
-.dashboard-i-header {
-    background-color: #e9d8fd;
-    color: #5c3b94;
-    font-size: 1rem;
-    padding: 8px 16px;
-    border-radius: 20px;
-    position: absolute;
-    top: -14px;
-    left: 20px;
-    font-weight: bold;
-}
-
-/* Content styling */
-.dashboard-i-content {
+.trip-list-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #333;
-    font-size: 1rem;
-}
-
-/* Button styling */
-.add-trip-button {
-    display: flex;
-    align-items: center;
-    background-color: #e9d8fd;
-    color: #5c3b94;
-    font-weight: bold;
-    border: none;
+    border: 1px solid #6A0DAD;
     border-radius: 20px;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin-top: 20px;
+    width: 60%;
+    margin-inline: auto;
+    padding: 40px;
+    gap: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.trip-list-header, .search-container, .add-trip-btn{
+    color: #6A0DAD;
     font-size: 1rem;
+    border: 1px solid #6A0DAD;
+    border-radius: 20px;
+    position: absolute;
+    top: 0%;
+    z-index: 1;
 }
 
-.add-trip-button .plus-icon {
-    font-size: 1.2rem;
-    margin-right: 8px;
-}
-
-.add-trip-button:hover {
-    background-color: #d8baf3;
-}
-
-.trip-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f3f4ff;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 10px;
-    position: relative;
-    width: 90%; 
-    margin: 30px;
-    height: auto;
-    border: 2px solid  #d8baf3 ;
-}
-
-.trip-details {
-    text-align: left;
-    margin-left: 50px;
-}
-
-.trip-name {
+.trip-list-header{
+    left: 20%;
+    padding: 8px 16px;
     font-weight: bold;
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.trip-location,
-.trip-dates {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.edit-trip-button {
-    display: flex;
-    align-items: center;
-    background: none;
-    border: 1px solid #bfc2e7 ;
+    background-color: #6A0DAD;
     color: white;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    background-color: #5c3b94;
-    transition: background-color 0.3s ease;
 }
 
-.edit-trip-button:hover{
-    background-color: #787dc4;
+.search-container{
+    right: 25%;
+    transition: all 1s;
+    height: 42px;
+    width: 42px;
+    background: white;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.edit-icon {
-    margin-right: 5px;
-}
-
-.trip-image-container {
-    position: relative;
-    width: 30%;
-    height: 80%;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.trip-image {
+#search-input{
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 20px;
-
+    outline: 0;
+    border: 0;
+    background-color: transparent;
+    display: none;
+    font-size: 1rem;
+    padding-inline: 15px;
+    opacity: 0;
 }
 
+#search-icon{
+    box-sizing: border-box;
+    padding: 10px;
+    width: fit-content;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    color: #6A0DAD;
+    text-align: center;
+    font-size: 1.2em;
+    transition: all 1s;
+}
+
+.search-container:hover{
+    width: 20%;
+}
+
+.search-container:hover #search-input{
+    display: block;
+    animation: fadeInOpacity 1s ease forwards; 
+}
+
+@keyframes fadeInOpacity {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.add-trip-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background-color: #6A0DAD;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    right: 20%;
+}
+
+.trip-list-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 90px;
+    border: 1px solid #6A0DAD;
+    border-radius: 25px;
+}
+
+.trip-image{
+    height: 100%;
+    border-radius: 23px;
+    margin-right: 25px;
+}
+
+.trip-details{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 10px;
+}
+
+.trip-details #trip-title{
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.trip-details #trip-dates-container{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    gap: 20px;
+    font-size: 0.8rem;
+}
+
+#trip-item-trash-icon{
+    color: red;
+    font-size: 25px;
+    margin-right: 10px;
+}
+#trip-item-trash-icon:hover{
+    color: rgb(245, 177, 177);
+    transition: color 0.3s ease-in-out;
+    transform: translateY(-1px);
+}
+
+#trip-item-edit-icon{
+    color: #02b3d4CC;
+    font-size: 25px;
+    margin-right: 15px;
+}
+
+#trip-item-edit-icon:hover{
+    color: #83d2e0cc;
+    transform: translateY(-1px);
+    transition: color 0.3s ease-in-out;
+   
+}
+
+.no-trips-message {
+    text-align: center;
+    font-size: 1rem;
+    color: gray;
+    margin-top: 20px;
+}
+
+.trip-link {
+    font-family: Poppins, sans-serif;
+    text-decoration: none;
+    color: #551A8B;
+    font-weight: bold;
+}

@@ -1,68 +1,47 @@
 /* General Page Styling */
-.signup-page {
+.signup-page{
+    display: flex;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+}
+
+.sign-up-main{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+/* Login Container */
+.signup-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
-    color: #333;
-    width: 100%;
-    height: 100vh;
-    background-color: #fff;
-}
-
-.another-container {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-    gap: 80px;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Header Styling */
-.homepage-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    color: #fff;
-}
-
-.homepage-logo {
-    height: 50px;
-}
-
-.homepage-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-}
-
-.logo-container h1{
-    white-space: nowrap;
-}
-
-.homepage-nav ul li a {
-    color: #0f1dd6;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.homepage-nav ul li a:hover {
-    text-decoration: none;
-}
-
-/* Signup Container */
-.signup-container {
-    width: 100%;
+    width: 350px;
     max-width: 400px;
-    margin-top: 2rem;
-    padding: 2rem;
+    padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     border: 0.1px solid #cbbaf3;
     text-align: center;
+}
+
+#sign-up-logo{
+    width: 300px;
+}
+
+.login-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #002a5c;
+    font-weight: 600;
+}
+
+.sign-up-form-wrapper{
+    width: 100%;
 }
 
 /* Form Styling */
@@ -72,34 +51,33 @@
 }
 
 .signup-form-field {
-    margin-top: 1rem;
     display: flex;
+    margin-top: 1rem;
 }
 
-.signup-error {
-    margin-top: 5px;
-}
-
-.signup-input-field {
+.signup-form .signup-input-field {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #cbbaf3;
-    border-radius: 8px;
+    border-radius: 30px;
     font-size: 1rem;
     background-color: #fff;
     color: #000000;
     font-family: 'Poppins', sans-serif;
 }
 
-.error-message {
-    visibility: hidden;
-    color: red;
-    font-size: 0.8rem;
+
+
+
+
+.signup-error{
     margin-top: 5px;
 }
 
-input:invalid+.error-message {
-    visibility: visible;
+.signup-error-message {
+    color: #d9534f;
+    font-size: 0.875rem;
+    margin-bottom: 10px;
 }
 
 /* Button Styling */
@@ -109,15 +87,15 @@ input:invalid+.error-message {
     font-size: 1rem;
     font-weight: bold;
     color: #fff;
-    background-color: #0558b1;
+    background-color: #02b3d4;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    margin-top: 1rem;
+    margin-top: 2rem;
 }
 
 .signup-submit-button:hover {
-    background-color: #086bd5;
+    background-color: #02b3d4CC;
 }
 
 .signup-submit-button:disabled {
@@ -125,24 +103,16 @@ input:invalid+.error-message {
     cursor: not-allowed;
 }
 
-/* Signup Link */
-.signup-link {
-    margin-top: 1.5rem;
+.login-link {
+    margin-top: 1rem;
     font-size: 0.875rem;
 }
 
-.signup-link a {
+.login-link a {
     color: #002a5c;
     text-decoration: none;
 }
 
-.signup-link a:hover {
+.login-link a:hover {
     text-decoration: underline;
-}
-
-.signup-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #002a5c;
-    margin-bottom: 1rem;
 }

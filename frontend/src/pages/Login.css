@@ -2,39 +2,35 @@
 .login-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
     font-family: 'Poppins', sans-serif;
-    color: #333;
     height: 100vh;
-
 }
 
-
-.l-container{
-
+.login-main{
     display: flex;
-    flex-direction: row;
-    gap: 80px;
-    align-items: center;
-    height: 70%;
+    flex-direction: column;
+    flex: 1;
     justify-content: center;
-}
-
-.login-logo-container{
-    position: sticky;
-
+    align-items: center;
+    gap: 50px;
 }
 
 /* Login Container */
 .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 350px;
     max-width: 400px;
-    margin-top: 2rem;
-    padding: 2rem;
+    padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     border: 0.1px solid #cbbaf3;
     text-align: center;
+}
+
+#login-logo{
+    width: 300px;
 }
 
 .login-title {
@@ -42,6 +38,10 @@
     font-size: 1.5rem;
     color: #002a5c;
     font-weight: 600;
+}
+
+.login-form-wrapper{
+    width: 100%;
 }
 
 /* Form Styling */
@@ -53,14 +53,13 @@
 .login-form-field {
     display: flex;
     margin-top: 1rem;
-
 }
 
 .login-input-field {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #cbbaf3;
-    border-radius: 8px;
+    border-radius: 30px;
     font-size: 1rem;
     background-color: #fff;
     color: #000000;
@@ -84,7 +83,7 @@
     font-size: 1rem;
     font-weight: bold;
     color: #fff;
-    background-color: #0558b1;
+    background-color: #02b3d4;
     border: none;
     border-radius: 50px;
     cursor: pointer;
@@ -92,7 +91,7 @@
 }
 
 .login-submit-button:hover {
-    background-color: #086bd5;
+    background-color: #02b3d4CC;
 }
 
 .login-submit-button:disabled {
@@ -100,9 +99,8 @@
     cursor: not-allowed;
 }
 
-/* Signup Link */
 .signup-link {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     font-size: 0.875rem;
 }
 

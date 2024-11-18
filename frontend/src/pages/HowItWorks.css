@@ -1,49 +1,75 @@
 
 .how-it-works-page {
- 
-    font-family: Poppins, sans-serif;
-  }
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: Poppins, sans-serif;
+}
 
+.how-it-works-main{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0 30px 40px 30px;
+  overflow-y: auto;
+  justify-content: start;
+}
   
-  
-  .how-it-works-header {
-    margin-top: 100px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .how-it-works-header h1 {
-    font-size: 2.5em;
-    font-weight: bold;
-  }
-  
-  .how-it-works-header p {
-    font-size: 1.2em;
-    color: #666;
-  }
-  
-  .how-it-works-steps {
-    margin: 50px;
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-  }
-  
-  .step {
-    text-align: center;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: auto; /* Adjust width as needed */
-  }
-  
-  .step h2 {
-    font-size: 1.5em;
-    color: #333;
-  }
-  
-  .step p {
-    font-size: 1em;
-    color: #555;
-  }
+.how-it-works-header {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  margin: 50px 0;
+}
+
+.how-it-works-header h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.how-it-works-header p {
+  font-size: 1.2em;
+  color: #666;
+}
+
+.how-it-works-steps {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: auto;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 50px 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.step h2 {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5em;
+  flex-grow: 1;
+  margin: 0;
+  text-align: center;
+  color: #333;
+  justify-content: center;
+}
+
+.step p {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+  font-size: 1em;
+  color: #555;
+}

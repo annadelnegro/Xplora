@@ -2,158 +2,194 @@
 
 .homepage {
   font-family: Poppins, sans-serif;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .homepage-header {
   display: flex;
-  justify-content: space-between; /* Align logo and nav items */
+  flex-direction: row;
   align-items: center;
-  padding: 20px;
-  width: 100%;  /* Ensure full width */
-  background-color: #ffff;  /* Optional: Set the background */
-  box-sizing: border-box; /* Ensures padding is included in width */
+  text-align: center;
+  padding: 20px 30px;
 }
 
-.homepage-logo {
-  height: 60px;
+.homepage-header a, .homepage-header button {
+  color: #000000CC;
 }
 
-.homepage-nav ul {
-  list-style: none;
+.logo-section{
   display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: start;
+  font-size: 0;
+}
+
+#homepage-logo {
+  min-height: 40px;
+  height: 2.5vw;
+  width: auto;
+}
+
+.links-section{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.user-section{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: end;
+  gap: 5px;
+}
+
+.user-section button{
+  flex-grow: 1;
+  max-width: 100px;
+  height: 100%;
+  border-radius: 30px;
+  text-align: center;
+  text-wrap: nowrap;
+}
+
+#login-btn{
+  border: 1px solid #6A0DAD55;
+  background-color: white;
+}
+
+#register-btn{
+  background-color: #6A0DAD;
+}
+
+#register-btn a{
+ color: white;
+}
+
+.homepage-main{
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 20px;  /* Add spacing between links */
-  margin: 0;
-  padding: 0;
+  flex-grow: 1;
+  width: 100%;
+  overflow-y: auto;
+  padding: 0 30px 40px 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.homepage-nav a {
-  text-decoration: none;
-  color: #333;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 50px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.homepage-nav a:hover {
-  background-color: #086bd5;
-  color: #fff;
-  text-decoration: none;
-}
-
-.centered-link {
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 16px;
-  text-decoration: none;
-  color: #333;
-  padding: 8px 16px;
-  border-radius: 50px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.centered-link:hover {
-  background-color: #086bd5;
-  color: #fff;
-  text-decoration: none;
-}
-.homepage-main {
+.homepage-intro{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 30px;
-  position: relative; /* Makes this a container for absolute positioning */
-  margin-right: 100px;
+  gap: 100px;
+  width: 50%;
+  white-space: normal; 
+  flex-grow: 1; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.homepage-intro {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column; /* Aligns logo and button vertically */
-  align-items: center;  /* Aligns items vertically in the center */
-  justify-content: center; /* Centers the content horizontally */
-  gap: 20px; /* Adds space between the logo and the button */
-  position: relative; /* Make this container relative for positioning images */
-  padding-right: 350px; /* Removed unnecessary right padding */
+.homepage-intro h1{
+  font-size: 400%;
+  margin: 0 5%;
 }
 
-.homepage-nav .sign-out-button {
-  display: flex;
-  align-items: center;
-  gap: 20px;  /* Add spacing between links */
-  margin-top: 20px;
+.homepage-intro h1 span{
+  color: #d59108;
+}
+
+.homepage-intro button{
   background-color: #6A0DAD;
   color: white;
-  cursor: pointer;
+  max-width: 35%;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  margin-inline: 5%;
 }
 
-.get-started-button {
-  width: 300px;
-  background-color: #6A0DAD;
-  color: white;
-  font-size: 20px;
-  padding: 15px 40px;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+.homepage-intro button a{
+  display: block;
 }
 
-/* All images will be positioned relative to .homepage-intro */
-.image1, .image2, .image3, .image4, .image5, .image6 {
-  position: absolute; /* Position images relative to .homepage-intro */
-  border-radius: 50%;
-  object-fit: cover;
+.map-section{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  flex-grow: 1;
+  position: relative;
 }
 
-/* Positioning the images so they don’t overlap the logo or button */
-.image1 {
-  top: 0px;  /* Adjust top position relative to the logo */
-  right: 10%; /* Move the image outwards from the logo */
-  width: 300px;
-  height: 300px;
+.map-section #map{
+  max-width: 100%;
 }
 
-.image2 {
-  top: 250px;
-  right: 30%; /* Adjust to avoid overlapping */
-  width: 180px;
-  height: 180px;
+.map-section .map-pins{
+  position: absolute; 
+  width: 10%;
+  animation: drop-pin 1s ease-in-out forwards;
+  z-index: 10;
+  opacity: 0; 
 }
 
-.image3 {
-  top: 400px;
-  left: 700px; /* Adjust left so it stays away from the button */
-  width: 250px;
-  height: 250px;
+.map-section #purple-pin{
+  position: absolute; 
+  width: 11.5%;
+  top: 25%;
+  left: 15%;
+  animation-delay: 0s; 
+  animation-name: drop-pin-purple;
 }
 
-.image4 {
-  top: 280px;
-  right:200px; /* Adjust right position to avoid overlap */
-  width: 150px;
-  height: 150px;
+.map-section #blue-pin{
+  position: absolute; 
+  top: 40%;
+  left: 40%;
+  animation-delay: 0.5s;
+  animation-name: drop-pin-blue;
 }
 
-.image5 {
-  top: 260px;
-  right: -40px; /* Position this image further to the right */
-  width: 250px;
-  height: 250px;
+.map-section #yellow-pin{
+  position: absolute; 
+  top: 33%;
+  left: 64%;
+  animation-delay: 1s;
+  animation-name: drop-pin-yellow;
 }
 
-
-.image6 {
-  top: 30px;
-  right: -150px; /* Position this image further to the right */
-  width: 270px;
-  height: 270px;
+@keyframes drop-pin-purple {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+  100% {
+    top: 25%;
+    opacity: 1;
+  }
 }
-/* Logo styling */
-.big-logo {
-  margin-top: 20px;
-  width: 700px;
+
+@keyframes drop-pin-blue {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+  100% {
+    top: 40%;
+    opacity: 1;
+  }
+}
+
+@keyframes drop-pin-yellow {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+  100% {
+    top: 33%; 
+    opacity: 1;
+  }
 }

@@ -3,7 +3,6 @@
 .addtrip-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
     font-family: 'Poppins', sans-serif;
     color: #333;
     height: 100vh;
@@ -207,7 +206,7 @@ input:-webkit-autofill:active {
 .back-arrow-container {
     display: flex;
     justify-content: flex-start;
-    width: 80%;
+    width: 70%;
     padding-left: 20px;
     margin-top: 20px;
 }

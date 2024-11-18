@@ -1,8 +1,8 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
-import './SignUp.css'; // Ensure CSS is appropriately aligned
+import { Link, useNavigate } from 'react-router-dom';
+import './SignUp.css';
 import logo from '../images/logo.png'; // Adjust path if needed
 
 interface SignupFormValues {
@@ -29,94 +29,131 @@ const SignupSchema = Yup.object().shape({
         .required('Required')
 });
 
+
+const app_name = 'xplora.fun'; // Replace with your actual production server domain, e.g., 'example.com'
+
+function buildPath(route: string): string {
+    if (process.env.NODE_ENV !== 'development') {
+        return `https://${app_name}/${route}`;
+    } else {
+        return `http://localhost:5000/${route}`;
+    }
+}
+
+
 const SignupForm: React.FC = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="signup-page">
-            <header className="homepage-header">
+            <div className="sign-up-main">
                 <Link to="/">
-                    <img src={logo} alt="Xplora Logo" className="homepage-logo" />
+                    <img id="sign-up-logo" src={logo} />
                 </Link>
-                <nav className="homepage-nav">
-                    <ul>
-                        <li><Link to="/how-it-works">How it works</Link></li>
-                        <li><Link to="/sign-up">Sign Up</Link></li>
-                        <li><Link to="/login">Sign In</Link></li>
-                  
-                    </ul>
-                </nav>
-            </header>
-            <div className="another-container">
-                <div className="logo-container">
-                <img src={logo} alt="Xplora Logo" className='big-logo' />
-                    <h1>Discover the World Your Way </h1>
-                </div>
                 <div className="signup-container">
-                    <h2 className="signup-title">Sign Up!</h2>
-                    <Formik
-                        initialValues={{
-                            email: '',
-                            firstName: '',
-                            lastName: '',
-                            password: '',
-                            confirmPassword: '',
-                        }}
-                        validationSchema={SignupSchema}
-                        onSubmit={(values: SignupFormValues) => {
-                            console.log(values);
-                        }}
-                    >
-                        {({ isSubmitting }) => (
-                            <Form className="signup-form">
-                                
-                                {/*  email field */}
-                                <div className="signup-form-field">
-                                    <Field type="email" name="email" placeholder="Email" className="signup-input-field" />
-                                </div>
-                                <div className="signup-error">
-                                    <ErrorMessage name="email" component="div" className="error-message" />
-                                </div>
+                    <div className='sign-up-form-wrapper'>
+                        <Formik
+                            initialValues={{
+                                email: '',
+                                firstName: '',
+                                lastName: '',
+                                password: '',
+                                confirmPassword: '',
+                            }}
+                            validationSchema={SignupSchema}
+                            onSubmit={async (values: SignupFormValues, { setSubmitting, setErrors }) => {
+                                const payload = {
+                                    first_name: values.firstName,
+                                    last_name: values.lastName,
+                                    email: values.email,
+                                    password: values.password,
+                                };
+                                try {
+                                    const response = await fetch(buildPath('api/register'), {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify(payload),
+                                    });
+                            
+                                    const data = await response.json();
+                            
+                                    if (response.ok) {
+                                        console.log('User registered successfully:', data.message);
 
-                                {/* firstname field */}
-                                <div className="signup-form-field">
-                                    <Field type="text" name="firstName" placeholder="First Name" className="signup-input-field" />
-                                </div>
-                                <div className="signup-error">
-                                    <ErrorMessage name="firstName" component="div" className="error-message" />
-                                </div>
+                                        console.log('User registered successfully:', data.first_name);
+                                        localStorage.setItem('firstName', data.first_name);
+                                        localStorage.setItem('lastName', data.last_name);
+                                       // localStorage.setItem('email', data.email);
+                                        
+                                        
+                                        navigate('/Dashboard'); // Redirect to login page on success
 
-                                {/* lastname field */}
-                                <div className="signup-form-field">
-                                    <Field type="text" name="lastName" placeholder="Last Name" className="signup-input-field" />
-                                </div>
-                                <div className="signup-error">
-                                    <ErrorMessage name="lastName" component="div" className="error-message" />
-                                </div>
+                                    } else {
+                                        setErrors({ email: data.error });
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                    setErrors({ email: 'An error occurred. Please try again.' });
+                                } finally {
+                                    setSubmitting(false);
+                                }
+                            }}
+                        >
+                            {({ isSubmitting }) => (
+                                <Form className="signup-form">
 
-                                {/* password field */}
-                                <div className="signup-form-field">
-                                    <Field type="password" name="password" placeholder="Password" className="signup-input-field" />
-                                </div>
-                                <div className="signup-error">
-                                    <ErrorMessage name="password" component="div" className="error-message" />
-                                </div>
+                                    {/* Email field */}
+                                    <div className="signup-form-field">
+                                        <Field type="email" name="email" placeholder="Email" className="signup-input-field" />
+                                    </div>
+                                    <div className="signup-error">
+                                        <ErrorMessage name="email" component="div" className="signup-error-message" />
+                                    </div>
 
-                                {/* confirm password field */}
-                                <div className="signup-form-field">
-                                    <Field type="password" name="confirmPassword" placeholder="Verify Password" className="signup-input-field" />
-                                </div>
-                                <div className="signup-error">
-                                    <ErrorMessage name="confirmPassword" component="div" className="error-message" />
-                                </div>
+                                    {/* First name field */}
+                                    <div className="signup-form-field">
+                                        <Field type="text" name="firstName" placeholder="First Name" className="signup-input-field" />
+                                    </div>
+                                    <div className="signup-error">
+                                        <ErrorMessage name="firstName" component="div" className="signup-error-message" />
+                                    </div>
 
-                                <button type="submit" disabled={isSubmitting} className="signup-submit-button">
-                                    Get Exploring!
-                                </button>
-                            </Form>
-                        )}
-                    </Formik>
-                    <p className="signup-link">Already have an account? <Link to="/login">Log In</Link></p>
+                                    {/* Last name field */}
+                                    <div className="signup-form-field">
+                                        <Field type="text" name="lastName" placeholder="Last Name" className="signup-input-field" />
+                                    </div>
+                                    <div className="signup-error">
+                                        <ErrorMessage name="lastName" component="div" className="signup-error-message" />
+                                    </div>
+
+                                    {/* Password field */}
+                                    <div className="signup-form-field">
+                                        <Field type="password" name="password" placeholder="Password" className="signup-input-field" />
+                                    </div>
+                                    <div className="signup-error">
+                                        <ErrorMessage name="password" component="div" className="signup-error-message" />
+                                    </div>
+
+                                    {/* Confirm password field */}
+                                    <div className="signup-form-field">
+                                        <Field type="password" name="confirmPassword" placeholder="Verify Password" className="signup-input-field" />
+                                    </div>
+                                    <div className="signup-error">
+                                        <ErrorMessage name="confirmPassword" component="div" className="signup-error-message" />
+                                    </div>
+
+                                    <button type="submit" disabled={isSubmitting} className="signup-submit-button">
+                                        Get Exploring!
+                                    </button>
+                                </Form>
+                            )}
+                        </Formik>
+                        <p className="login-link">Already have an account? <Link to="/login">Sign In</Link></p>
+                    </div>
                 </div>
-            </div> 
+            </div>
         </div>
     );
 };
