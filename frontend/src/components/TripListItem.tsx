@@ -1,5 +1,5 @@
 import React from 'react';
-import newyork from '../images/new-york.png'; // Replace with actual image or prop-based image
+import tripdefault from '../images/trip_default.png'; // Replace with actual image or prop-based image
 
 interface TripListItemProps {
     title: React.ReactNode;
@@ -9,10 +9,12 @@ interface TripListItemProps {
     onEdit: () => void;
 }
 
+
+
 const TripListItem: React.FC<TripListItemProps> = ({ title, location, dates, onDelete, onEdit }) => {
     return (
         <div className='trip-list-item'>
-            <img src={newyork} alt='trip picture' className='trip-image' />
+            <img src={tripdefault} alt='trip picture' className='trip-image' />
             <div className='trip-details'>
                 <span id='trip-title'>{title}</span>
                 <div id='trip-dates-container'>

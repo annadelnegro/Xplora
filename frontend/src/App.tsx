@@ -7,7 +7,7 @@ import SignUpPage from './pages/SignUp';
 import LoginPage from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AddTrip from './pages/AddTrip'
-import EditTrip from './pages/EditTrip';
+//import EditTrip from './pages/EditTrip';
 import TripDetails from './pages/TripDetails';
 import ForgotPasswordPage from './pages/ForgotPassword';
 import './App.css';
@@ -30,7 +30,9 @@ const App: React.FC = () => {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/trip-details/:tripId" element={<TripDetails />} />
-        <Route path="/edit-trip" element={<EditTrip />} />
+
+        {/*        <Route path="/edit-trip" element={<EditTrip />} /> */}
+
         <Route path="/addtrip" element={<AddTrip />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Routes>

@@ -90,6 +90,10 @@
     margin-top: 2rem;
 }
 
+.welcome-back {
+    color: #213547;
+}
+
 .login-submit-button:hover {
     background-color: #02b3d4CC;
 }

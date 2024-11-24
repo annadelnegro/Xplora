@@ -87,7 +87,7 @@ const LoginForm: React.FC = () => {
                             }}>
                             {({ isSubmitting }) => (
                                 <Form className="login-form">
-                                    <h2>Welcome Back!</h2>
+                                    <h2 className='welcome-back'>Welcome Back!</h2>
                                     <div className="login-form-field">
                                         <Field type="email" name="email" placeholder="Email" className="login-input-field" />
                                     </div>

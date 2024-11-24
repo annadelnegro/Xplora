@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import TripListItem from '../components/TripListItem';
+import ProfileDropdown from '../components/ProfileDropdown'
 import iconlogo from '../images/xplora-icon.png';
-import profileicon from '../images/profile-icon.png';
-import editicon from '../images/edit-icon.png';
-import cancelicon from '../images/cancel-icon.png';
-import saveicon from '../images/save-icon.png'
 
 
 export const handleLogout = () => {
@@ -32,38 +29,105 @@ const Dashboard: React.FC = () => {
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('**********');
     const [trips, setTrips] = useState<any[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [editFirstName, setEditFirstName] = useState<string>('');
-    const [editLastName, setEditLastName] = useState<string>('');
-    const [editEmail, setEditEmail] = useState<string>('');
 
+    const toggleMenu = () => {
+        setIsMenuOpen(prev => !prev);
+    }
 
-    
-    
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const renderProfile = () => {
+        
+        if (isEditing) {
+            return (
+                <ProfileDropdown
+                    firstName={firstName}
+                    lastName={lastName}
+                    email={email}
+                    password={password}
+                    onEditProfile={() => handleEditProfile()}
+                    onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
+                        handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
+                    }
+                    onCancelProfile={() => handleCancelProfile()}
+                    isEditing={true}
+                    isMenuOpen={true}
+                />
+            );
+        }
+        
+        return (
+            <ProfileDropdown
+                firstName={firstName}
+                lastName={lastName}
+                email={email}
+                password={'*************'}
+                onEditProfile={() => handleEditProfile()}
+                onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
+                    handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
+                }
+                onCancelProfile={() => handleCancelProfile()}
+                isEditing={false}
+                isMenuOpen={true}
+            />
+        );
+    }
 
     const handleEditProfile = () => {
         setIsEditing(true);
-        setEditFirstName(firstName);
-        setEditLastName(lastName);
-        setEditEmail(email);
     }
 
-    const handleCancelProfile = () => setIsEditing(false);
-
-    const handleSaveProfile = () => {
-        setEditFirstName(editFirstName);
-        setEditLastName(editLastName);
-        setEditEmail(editEmail);
-
-        localStorage.setItem('firstName', editFirstName);
-        localStorage.setItem('lastName', editLastName);
-        localStorage.setItem('email', editEmail);
+    const handleCancelProfile = () => {
         setIsEditing(false);
+        setIsMenuOpen(false);
     }
+
+    // const handleGetPassword = async () => {
+    // };
+
+    const handleSaveProfile = async (newFirstName: string, newLastName: string, newEmail: string, newPassword: string) => {
+        try {
+            setFirstName(newFirstName);
+            setLastName(newLastName);
+            setEmail(newEmail);
+            setPassword(newPassword)
+    
+            localStorage.setItem('firstName', newFirstName);
+            localStorage.setItem('lastName', newLastName);
+            localStorage.setItem('email', newEmail);
+            
+            const userId = localStorage.getItem('ID');
+            const response = await fetch(buildPath(`api/users/${userId}`), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: newFirstName,
+                    last_name: newLastName,
+                    email: newEmail,
+                    password: newPassword,
+                }),
+
+                
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to save profile');
+            }
+    
+            setIsEditing(false);
+            console.log('Profile updated successfully');
+
+        } catch (error) {
+            console.error('Error saving profile:', error);
+        
+        }
+
+        renderProfile();
+    };
+    
 
     const handleLogout = () => {
         localStorage.removeItem('firstName');
@@ -85,12 +149,12 @@ const Dashboard: React.FC = () => {
         const storedFirstName = localStorage.getItem('firstName');
         const storedLastName = localStorage.getItem('lastName');
         const storedEmail = localStorage.getItem('email');
-        console.log("Email fetched from localStorage: ", storedEmail);
 
         if (storedFirstName && storedLastName && storedEmail) {
             setFirstName(storedFirstName);
             setLastName(storedLastName);
             setEmail(storedEmail);
+            // handleGetPassword();
         } else {
             navigate('/login');
         }
@@ -180,66 +244,28 @@ const Dashboard: React.FC = () => {
         <div className="dashboard">
             <div className='dashboard-header'>
                 <div className='logo-welcome-section'>
-                    <Link to="/">
+                    <Link to="/dashboard">
                         <img src={iconlogo} alt="Xplora Logo" id="dashboard-logo" />
                     </Link>
                     <span id='welcome-text'>Welcome, {firstName} {lastName}!</span>
                 </div>
                 
                 <div className='actions-section'>
-                    {/* <button id="profile-btn"><Link to="/profile">Profile</Link></button> */}
                     <button id="profile-btn" onClick={toggleMenu}>Profile</button>
                     {isMenuOpen && (
-                        // <div className="profile-menu-container open">                            
-                        <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">
-                            <img src={profileicon} alt="Profile Icon" id="profile-icon" />
-
-                            <div className="profile-info">
-                                {isEditing ? (
-                                    <>
-                                        <input id="edit-info"
-                                            type="text"
-                                            value={editFirstName}
-                                            onChange={(e) => setEditFirstName(e.target.value)}
-                                            placeholder="First Name"
-                                        />
-                                        <input id="edit-info"
-                                            type="text"
-                                            value={editLastName}
-                                            onChange={(e) => setEditLastName(e.target.value)}
-                                            placeholder="Last Name"
-                                        />
-                                    </>
-                                ) : (
-                                    <div id="name">{firstName} {lastName}</div> 
-                                )}
-                            </div>
-                            <div className="profile-info">
-                                <div id="email">
-                                    {isEditing ? (
-                                        <input id="edit-info"
-                                            type="email"
-                                            value={editEmail}
-                                            onChange={(e) => setEditEmail(e.target.value)}
-                                            placeholder="Email"
-                                        />
-                                    ) : (
-                                        email
-                                    )}
-                                </div>
-                            </div>
-                            <div className="profile-actions-section">
-                                {isEditing ? (
-                                    <>
-                                        <button id="cancel-btn" onClick={handleCancelProfile}><img src={cancelicon} alt="Cancel" /></button>
-                                        <button id="save-btn" onClick={handleSaveProfile}><img src={saveicon} alt="Save"/></button>
-                                    </>
-                                ) : (
-                                    <button id="edit-btn" onClick={handleEditProfile}><img src={editicon} alt="Edit" /></button>
-                                )}
-                            </div>
-                        </div>
-                    )}                                                                               
+                        <ProfileDropdown
+                        firstName={firstName}
+                        lastName={lastName}
+                        email={email}
+                        password={'*************'}
+                        onEditProfile={handleEditProfile}
+                        onSaveProfile={handleSaveProfile}
+                        onCancelProfile={handleCancelProfile}
+                        isEditing={isEditing}
+                        isMenuOpen={isMenuOpen}
+                        />  
+                    )}
+                                                                                                  
                     <button id="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
