@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link,useParams  } from 'react-router-dom';
-import './TripDetails.css';
-import logo from '../images/logo.png';
-import xploraplane from '../images/xplora-plane.png';
-import hotel from '../images/accommodation_placeholder.png';
-import tripdefault from '../images/trip_default.png';
-// import test from '../images/test.jpg';
+import '../css-files/TripDetails.css';
+import logo from '../../images/logo.png';
+import xploraplane from '../../images/xplora-plane.png';
+import hotel from '../../images/accommodation_placeholder.png';
+import tripdefault from '../../images/trip_default.png';
+// import test from '../../images/test.jpg';
 import { calculateTripDays } from '../helper-files/calculateTripDays';
 import AddFlight from '../components/AddFlight';
 import AddAccommodation from '../components/AddAccomodation';
@@ -108,7 +108,8 @@ const TripDetails: React.FC = () => {
     // flight modal
     const FlightDetailsModal: React.FC <{flight:any, onClose:() => void}> = ({flight, onClose}) =>{
         if(!flight) return null;
-
+        
+       // console.log("Flight ID:", flight);
         return (
             <div className="modal-overlay" onClick={onClose}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -122,9 +123,13 @@ const TripDetails: React.FC = () => {
                     <p><strong>Departure Time:</strong> {flight.departureTime}</p>
                     <p><strong>Arrival Date:</strong> {flight.toDate} </p>
                     <p><strong>Arrival Time:</strong> {flight.arrivalTime}</p>
-                    
+                    <button
+                    className="delete-button"
+                    onClick={() => handleDeleteFlight(flight.flightId)}
+                    >
+                        Delete Flight
+                    </button>
 
-                    
                 </div>
         </div>
         )
@@ -133,7 +138,7 @@ const TripDetails: React.FC = () => {
     //accomodation modal
     const AccommodationDetailsModal: React.FC<{ accommodation: any, onClose: () => void }> = ({ accommodation, onClose }) => {
         if (!accommodation) return null;
-    
+       // console.log("Accomodation ID:", accommodation.accommodationId);
         return (
             <div className="modal-overlay" onClick={onClose}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -146,6 +151,12 @@ const TripDetails: React.FC = () => {
                     <p><strong>Check-in Time:</strong> {accommodation.checkIn}</p>
                     <p><strong>Check-out Time:</strong> {accommodation.checkOut}</p>
                     <p><strong>Check-out Date:</strong> {accommodation.checkOutDate}</p>
+                    <button className="delete-button"
+                      onClick = { () => handleDeleteAccomodation(accommodation.accommodationId)}
+                      >
+                      Delete Accommodation
+                    </button>
+
                 </div>
             </div>
         );
@@ -153,6 +164,8 @@ const TripDetails: React.FC = () => {
 
     const ActivityDetailsModal: React.FC<{ activity: any, onClose: () => void }> = ({ activity, onClose }) => {
         if (!activity) return null;
+
+        //console.log(activity);
     
         return (
             <div className="modal-overlay" onClick={onClose}>
@@ -162,7 +175,13 @@ const TripDetails: React.FC = () => {
                     <p><strong>Activity:</strong> {activity.name}</p>
                     <p><strong>Location:</strong> {activity.location}</p>
                     <p><strong>Date:</strong> {activity.date}</p>
+
+
+                <button className='delete-button' onClick = {() => handleDeleteActivity(activity.id)}> 
+                    Delete Activiy
+                </button>
                 </div>
+
             </div>
         );
     };
@@ -331,6 +350,101 @@ const TripDetails: React.FC = () => {
     const addActivityApiEndppoint = buildPath(`api/users/${userId}/trips/${tripId}/activities`)
 
 
+    //DELETE DETAILS
+
+    const handleDeleteFlight = async (flightId: string) =>{
+        try{
+            if(!tripId && !userId ){
+                return;
+            }
+
+            const confirmDelete = window.confirm("Are you sure you want to delete the trip");
+            if(!confirmDelete){
+                return;
+            }
+
+            const response = await fetch(buildPath(`api/users/${userId}/trips/${tripId}/flights/${flightId}`),{
+                method: "DELETE",
+                headers: {'Content-Type' : 'application/json'},
+            }
+
+            );
+
+
+            if(response.ok){
+                refreshFlightList();
+                setIsFlightModalOpen(false);
+            }
+            else{
+                const data = await response.json();
+                console.error("error deleting flight", data.error);
+            }
+
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    const handleDeleteAccomodation = async (AccomodationId: string) =>{
+        if (!userId || !tripId){
+            return;
+        }
+
+        const confirmDelete = window.confirm("Are you sure you want to delete the trip");
+            if(!confirmDelete){
+                return;
+            }
+
+        try{
+            const response = await fetch(buildPath(`api/users/${userId}/trips/${tripId}/accommodations/${AccomodationId}`),
+            {
+                method: "DELETE",
+                headers:{'Content-type' : 'application/json'},
+            }
+
+        );
+
+        if(response.ok){
+            refreshAccomocationList();
+            setIsAccomodationModalOpen(false);
+        }
+        else{
+            console.error("error deleting the accomodation", response.statusText);
+        }
+
+
+
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    const handleDeleteActivity = async (ActivityId: string) =>{
+        const confirmdelete = window.confirm("Are you sure you want to delete this activity");
+        if(!confirmdelete) return;
+
+        try{
+
+            const response = await fetch(buildPath(`api/users/${userId}/trips/${tripId}/activities/${ActivityId}`),{
+                method: "DELETE",
+                headers: {'Content-type' : 'application/json'}
+
+            }
+        );
+
+        if(response.ok){
+            refreshActivityList();
+            setIsActivityModalOpen(false);
+        }
+        else{
+            console.error("error deleting the accomodation", response.statusText);
+        }
+
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         // Fetch trip details using the tripId and userId, and calculate days
         const fetchTripDetails = async () => {
@@ -456,6 +570,7 @@ const TripDetails: React.FC = () => {
                                             arrivalTime: flight.arrival_time, 
                                             flightNumber: flight.flight_num,
                                             flightConformationNumber: flight.confirmation_num,
+                                            flightId: flight._id
                                             
                                         })
                                     }
@@ -519,6 +634,7 @@ const TripDetails: React.FC = () => {
                                                         checkOutDate: accommodation.checkout_date,
                                                         checkInDate: accommodation.checkin_date,
                                                         confirmationNum: accommodation.confirmation_num,
+                                                        accommodationId: accommodation._id,
                                                     })
                                                 }
                                             >
@@ -585,6 +701,7 @@ const TripDetails: React.FC = () => {
                                                         name: activity.name,
                                                         location: activity.location,
                                                         date: activity.date,
+                                                        id: activity._id,
                                                     })
                                                 }
                                             >

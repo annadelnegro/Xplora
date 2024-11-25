@@ -2,8 +2,8 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import './SignUp.css';
-import logo from '../images/logo.png'; // Adjust path if needed
+import '../css-files/SignUp.css';
+import logo from '../../images/logo.png'; // Adjust path if needed
 
 interface SignupFormValues {
     email: string;

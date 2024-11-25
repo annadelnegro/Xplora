@@ -1,5 +1,5 @@
 import React from 'react';
-import tripdefault from '../images/trip_default.png'; // Replace with actual image or prop-based image
+import tripdefault from '../../images/trip_default.png'; // Replace with actual image or prop-based image
 
 interface TripListItemProps {
     title: React.ReactNode;

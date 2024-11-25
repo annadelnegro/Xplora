@@ -16,8 +16,26 @@ const AddAccommodation: React.FC<AddAccommodationProps> = ({ onClose, onSave, ap
     const [confirmationNum, setConfirmationNum] = useState('');
     const [error, setError] = useState('');
 
+
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+    const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+        return (
+            <div className="modal-overlay-alert" onClick={onClose}>
+                <div className="modal-content-alert" onClick={(e) => e.stopPropagation()}>
+                    <h2>Success</h2>
+                    <p>Your Accommodation has been added successfully!</p>
+                    <button onClick={onClose}>OK</button>
+                </div>
+            </div>
+        );
+    };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault();
+        
 
         if (!name || !address || !checkInDate || !checkOutDate || !confirmationNum) {
             setError("All fields are required");
@@ -47,9 +65,8 @@ const AddAccommodation: React.FC<AddAccommodationProps> = ({ onClose, onSave, ap
             });
 
             if (response.ok) {
-                alert("Accommodation successfully added!");
-                onSave();
-                onClose();
+                setIsSuccessModalOpen(true); // Open the success modal
+                onSave(); // Refresh the parent list
             } else {
                 setError("Failed to save accommodation, please try again!");
             }
@@ -128,9 +145,15 @@ const AddAccommodation: React.FC<AddAccommodationProps> = ({ onClose, onSave, ap
                             onChange={(e) => setConfirmationNum(e.target.value)}
                         />
                     </div>
-                    <button type="submit">Save Accommodation</button>
+                    <button className='submit-accommodation' type="submit">Save Accommodation</button>
                 </form>
             </div>
+
+            {isSuccessModalOpen && <SuccessModal onClose={() => {
+                    setIsSuccessModalOpen(false); 
+                    onClose(); // Close the main modal
+                }} />}
+
         </div>
     );
 };

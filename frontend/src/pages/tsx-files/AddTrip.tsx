@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './AddTrip.css';
-import logo from '../images/logo.png';
+import '../css-files/AddTrip.css';
+import logo from '../../images/logo.png';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'; {/*faCalendarAlt, removed because unused */} 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import LocationSearch from '../helper-files/LocationSearch';
 
 
 const validationSchema = Yup.object({
@@ -98,11 +97,6 @@ const AddTrip: React.FC = () => {
         alert('Photo uploaded successfully!');
     };
 
-    const handleBack = () => {
-        navigate(-1);
-    };
-
-
     return (
         <div className="addtrip-page">
             <header className="homepage-header">
@@ -117,9 +111,6 @@ const AddTrip: React.FC = () => {
             </header>
 
             <main className="addtrip-main">
-                <div className="back-arrow-container">
-                    <FontAwesomeIcon icon={faArrowLeft} className="back-arrow" onClick={handleBack} />
-                </div>
                 <h1 className="add-trip-header">Add a Trip</h1>
                 <p className="p1">Let's make the best out of your trip together!</p>
 
@@ -145,8 +136,11 @@ const AddTrip: React.FC = () => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label htmlFor="location">Location</label>
-                                        <Field type="text" id="location" name="location" className="input-field" />
+                                        <label htmlFor="location">Location <span className='location-format'>City, State, Country</span></label>
+                                        <Field
+                                            name='location'
+                                            component={LocationSearch}
+                                        />
                                         <ErrorMessage name="location" component="div" className="error" />
                                     </div>
 
@@ -228,9 +222,6 @@ const AddTrip: React.FC = () => {
                         <div className="button-group">
                             <button type="button" className="cancel-btn" onClick={() => navigate('/dashboard')}>
                                 Cancel
-                            </button>
-                            <button type="submit" className="save-btn">
-                                Save
                             </button>
                         </div>
                     </div>

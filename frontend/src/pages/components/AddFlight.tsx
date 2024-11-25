@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../components/AddStyling.css';
 
 interface AddFlightProps {
     onClose: () => void; // Function to close the modal
@@ -21,13 +22,35 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     });
 
     const [isSaving] = useState(false); // Loading indicator
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+    const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+        return (
+            <div className="modal-overlay-alert" onClick={onClose}>
+                <div className="modal-content-alert" onClick={(e) => e.stopPropagation()}>
+                    <h2>Success</h2>
+                    <p>Your flight has been added successfully!</p>
+                    <button onClick={onClose}>OK</button>
+                </div>
+            </div>
+        );
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFlightDetails({ ...flightDetails, [name]: value });
     };
 
+
+    const [error, setError] = useState('');
     const handleSubmit = async () => {
+
+        if(!flightDetails.departureCity || !flightDetails.departureAirport || !flightDetails.arrivalCity || !flightDetails.arrivalAirport || !!flightDetails.departureDate
+            || !flightDetails.departureTime || !flightDetails.arrivalDate || !flightDetails.arrivalTime || !flightDetails.flightNumber ||!flightDetails.confirmationNumber
+        ){
+            setError("All fields are required");
+            return;
+        }
         const payload = {
             confirmation_num: flightDetails.confirmationNumber,
             flight_num: flightDetails.flightNumber,
@@ -52,10 +75,9 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     
             if (response.ok) {
                 console.log('Flight added successfully');
-                alert("flight added!");
-               // Refresh the page
-               onSave();
-               onClose();
+                setIsSuccessModalOpen(true); // Open the success modal
+                onSave(); // Refresh the parent list
+               //onClose();
                // location.reload();
             } else {
                 const errorData = await response.json();
@@ -67,12 +89,14 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     };
 
 
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button" onClick={onClose}>✖</button>
                 <h2>Add New Flight</h2>
                 <form>
+                {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
                         <label>Departure City:</label>
                         <input
@@ -163,13 +187,21 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                             onChange={handleChange}
                         />
                     </div>
-                    <button type="button" onClick={handleSubmit} disabled={isSaving}>
+                    <button className='submit-flight' type="button" onClick={handleSubmit} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save Flight'}
                     </button>
                 </form>
             </div>
+
+                {isSuccessModalOpen && <SuccessModal onClose={() => {
+                    setIsSuccessModalOpen(false); 
+                    onClose(); // Close the main modal
+                }} />}
         </div>
+
+        
     );
 };
 
 export default AddFlight;
+

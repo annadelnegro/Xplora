@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as yup from 'yup';
-import '../pages/Dashboard.css'
-import defaultprofile from '../images/default_profile.png';
+import '../css-files/Dashboard.css'
+import defaultprofile from '../../images/default_profile.png';
 
 interface ProfileDropdownProps {
     firstName: string;

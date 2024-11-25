@@ -1,0 +1,74 @@
+
+
+@keyframes goUp {
+    0% {
+        transform: translateY(30px); /* Start 50px below */
+        opacity: 0; /* Fully transparent */
+    }
+    100% {
+        transform: translateY(0); /* End at its original position */
+        opacity: 1; /* Fully visible */
+    }
+}
+
+
+.modal-overlay-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content-alert {
+    background: #fff;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    animation: goUp 0.6s ease-out forwards;
+}
+
+.submit-flight, .submit-accommodation, .submit-activity {
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.submit-flight:hover, .submit-accommodation:hover,
+.submit-activity:hover{
+    background-color: #c8f4b1;
+    border: none;
+}
+
+.notes-textarea{
+    width: 95%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #cbbaf3;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: vertical;
+}
+
+ .modal-content .error-message{
+    color: rgb(251, 85, 85);
+}
+
+input[type="time"] {
+    width: 100%; 
+    padding: 8px 10px;
+    font-size: 14px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+    transition: border-color 0.3s ease; 
+}
+

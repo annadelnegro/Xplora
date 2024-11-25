@@ -1,7 +1,7 @@
 import React from 'react';
-import './HowItWorks.css';
-import './ForgotPassword.css';
-import logo from '../images/logo.png';
+import '../css-files/HowItWorks.css';
+import '../css-files/ForgotPassword.css';
+import logo from '../../images/logo.png';
 
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';

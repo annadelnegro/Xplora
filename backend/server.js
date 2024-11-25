@@ -2,12 +2,38 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const multer = require('multer');
+const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const PORT = 5000;
-
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
+
+app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/uploads')));
+
+// const storageUsers = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, path.join(__dirname, '../frontend/public/uploads/users/'));
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `${Date.now()}-${file.originalname}`);
+//     }
+// });
+
+// const uploadUserPic = multer({ storageUsers });
+
+const storageTrips = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../frontend/public/uploads/trips/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const uploadTripPic = multer({ storageTrips });
+
 client.connect();
 
 app.listen(PORT, () => {
@@ -98,6 +124,7 @@ app.put('/api/users/:id', async (req, res, next) => {
     let error = '';
     const { id } = req.params;
     const { first_name, last_name, email, password } = req.body;
+    const objectId = new ObjectId(String(id));
 
     console.log(`${first_name} ${last_name} ${email} ${password}`);
 
@@ -116,7 +143,7 @@ app.put('/api/users/:id', async (req, res, next) => {
 
         // Update the user document in the database
         const result = await db.collection('users').updateOne(
-            { _id: new ObjectId(id) },
+            { _id: objectId },
             { $set: updateFields }
         );
 
@@ -133,6 +160,23 @@ app.put('/api/users/:id', async (req, res, next) => {
         console.log(`${first_name} ${last_name} ${email} ${password}`);
     }
 });
+
+// // Upload user pictures
+// app.post('/api/:userId/upload', uploadUserPic.single('photo'), (req, res) => {
+//     const { userId } = req.params;
+
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded');
+//     }
+
+//     // Construct the file path
+//     const filePath = `/uploads/${req.file.filename}`;
+
+//     // TODO: Save the filePath and userId in your database if needed
+//     console.log(`UserId: ${userId}, File: ${filePath}`);
+
+//     res.status(200).send({ userId, filePath });
+// });
 
 // Get Password API
 app.get('/api/users/:id/password', async (req, res) => {
@@ -160,15 +204,20 @@ app.get('/api/users/:id/password', async (req, res) => {
 
 //--------------------------------
 // TRIPS -- POST to add a new trip
-app.post('/api/users/:userId/trips', async (req, res) => {
-    const { name, city, start_date, end_date, notes, picture_url } = req.body;
+app.post('/api/:userId/trips', uploadTripPic.single('photo'), async (req, res) => {
+    const { userId } = req.params;
+    const { name, city, start_date, end_date, notes } = req.body;
 
     if (!name || !city || !start_date || !end_date) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const user_id = req.params.userId;
-    const objectId = new ObjectId(String(user_id));
+    let picture_url = "/uploads/trips/trip_default.jpg";
+    if (req.file) {
+        picture_url = `/uploads/trips/${req.file.filename}`;
+    }
+
+    const objectId = new ObjectId(String(userId));
 
     try {
         const db = client.db('xplora');
@@ -749,7 +798,6 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
 //PASSWORD RESET APIs
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -790,7 +838,6 @@ app.post('/api/forgot-password', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while requesting password reset' });
     }
 });
-
 app.post('/api/reset-password', async (req, res) => {
     const { token, id, newPassword } = req.body;
 
