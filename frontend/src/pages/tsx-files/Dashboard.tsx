@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css-files/Dashboard.css';
 import TripListItem from '../components/TripListItem';
@@ -34,6 +34,8 @@ const Dashboard: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
@@ -127,6 +129,22 @@ const Dashboard: React.FC = () => {
 
         renderProfile();
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
     
 
     const handleLogout = () => {
@@ -251,21 +269,24 @@ const Dashboard: React.FC = () => {
                 </div>
                 
                 <div className='actions-section'>
-                    <button id="profile-btn" onClick={toggleMenu}>Profile</button>
-                    {isMenuOpen && (
-                        <ProfileDropdown
-                        firstName={firstName}
-                        lastName={lastName}
-                        email={email}
-                        password={'*************'}
-                        onEditProfile={handleEditProfile}
-                        onSaveProfile={handleSaveProfile}
-                        onCancelProfile={handleCancelProfile}
-                        isEditing={isEditing}
-                        isMenuOpen={isMenuOpen}
-                        />  
-                    )}
-                                                                                                  
+                    <div ref={menuRef}>
+                        <button id="profile-btn" onClick={toggleMenu}>Profile</button>
+                        {isMenuOpen && (
+                            <ProfileDropdown
+                            firstName={firstName}
+                            lastName={lastName}
+                            email={email}
+                            password={'*************'}
+                            onEditProfile={handleEditProfile}
+                            onSaveProfile={handleSaveProfile}
+                            onCancelProfile={handleCancelProfile}
+                            isEditing={isEditing}
+                            isMenuOpen={isMenuOpen}
+                            />  
+                        )}
+                                                                                                    
+                        
+                    </div>
                     <button id="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
