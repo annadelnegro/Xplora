@@ -78,11 +78,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
     };
     
     return(
-        <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">
-            <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                <span>{errorMessage}</span>
-            </div>
-            
+        <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">          
             {/* Conditional classNames based on isEditing status */}
             <div className={`profile-info ${isEditing ? "editing" : ""}`}>                           
                 {isEditing ? (
@@ -109,6 +105,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                 placeholder="Last Name"
                             />
                         </div>
+
+                        {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                            <span>{errorMessage}</span>
+                        </div> */}
                     </>
                 ) : (
                     <>
@@ -130,6 +130,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                     placeholder="Email"
                                 />
                             </div>
+
+                            <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                <span>{errorMessage}</span>
+                            </div>
                         </>
                     ) : (
                         <div className="edit-info">{email}</div>
@@ -146,6 +150,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="Current Password"
                                     />
+
+                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div>
                                 </div>
                                 
                                 <div className="password-field">
@@ -155,6 +163,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         placeholder="New Password"
                                     />
+
+                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div>
                                 </div>
 
                                 <div className="password-field">
@@ -164,6 +176,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         placeholder="Confirm New Password"
                                     />
+
+                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div>
                                 </div>
                             </div>
                         </>

@@ -19,11 +19,12 @@
     position: absolute;
     top: 100%;
     left: 100%; 
-    background-color: #FF0000; 
-    color: white;
-    font-size: 0.875rem;
-    padding: 10px 15px;
-    border-radius: 12px;
+    background-color: white; 
+    color: #FF0000;
+    font-size: 0.675rem;
+    padding: 4px 4px;
+    border-radius: 7px;
+    border: 2px solid #FF0000;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 20;
     visibility: hidden;
@@ -38,18 +39,24 @@
     visibility: visible;
     opacity: 1;
     transform: translateX(0); 
+    transform: translateY(-165%);
     transition: opacity 0.3s ease, visibility 0s 0s, transform 0.3s ease;
+}
+
+.password-field{
+    position: relative;
 }
 
 .error-flag::before {
     content: '';
     position: absolute;
-    top: 50%; 
-    right: 100%; 
-    transform: translateY(-50%); 
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #FF0000; 
+    top: 50%;
+    left: -10px; 
+    transform: translateY(-50%);
+    border-left: none;
+    border-right: 10px solid #FF0000;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
 }
 
 .profile-menu-container{
