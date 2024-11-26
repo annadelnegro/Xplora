@@ -39,9 +39,9 @@ const AddTrip: React.FC = () => {
         if (event.target.files && event.target.files[0]){
             const selectedFile = event.target.files[0];
 
-            const maxSize = 5 * 1024 * 1024;
+            const maxSize = 10 * 1024 * 1024;
             if(selectedFile.size > maxSize){
-                alert("File size must be no larger than 5MB.");
+                alert("File size must be no larger than 10MB.");
                 return;
             }
 

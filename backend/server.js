@@ -32,11 +32,21 @@ const storageTrips = multer.diskStorage({
     }
 });
 
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    if(allowedTypes.includes(file.mimetype)){
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only JPEG and PNG allowed.'), false);
+    }
+};
+
 const uploadTripPic = multer({ 
     storage: storageTrips,
     limits: {
-        fileSize: 5 * 1024 * 1024
-    }
+        fileSize: 10 * 1024 * 1024
+    },
+    fileFilter
 }); 
 
 client.connect();
@@ -217,7 +227,12 @@ app.post('/api/users/:userId/trips', async (req, res) => {
                     if (err.code === 'LIMIT_FILE_SIZE') {
                         return reject({
                             status: 413,
-                            message: 'File size exceeds the 5 MB limit',
+                            message: 'File size exceeds the 10 MB limit',
+                        });
+                    } else if (err.message === 'Invalid file type. Only JPEG and PNG allowed.') {
+                        return reject({
+                            status: 400,
+                            message: err.message,
                         });
                     }
                     return reject({
