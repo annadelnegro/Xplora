@@ -47,7 +47,7 @@ const AddTrip: React.FC = () => {
 
         const formatDate = (date: Date) => {
             const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         };
@@ -61,11 +61,6 @@ const AddTrip: React.FC = () => {
         if (photo) {
             formData.append('photo', photo);
         }
-
-
-        const apiUrl = buildPath(`api/users/${values.userId}/trips`);
-        console.log('Submitting to URL:', apiUrl);
-        console.log('FormData content:', Array.from(formData.entries()));
 
         const userId = localStorage.getItem('ID'); // Get user ID from localStorage
     
@@ -198,6 +193,7 @@ const AddTrip: React.FC = () => {
                                             onChange={handlePhotoChange}
                                             style={{ display: 'none' }}
                                         />
+                                        {photo && <p className='file-name'>{photo.name}</p>}
                                     </div>
 
                                     <div className='save-and-cancel-buttons'>

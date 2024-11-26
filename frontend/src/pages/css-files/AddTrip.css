@@ -126,6 +126,11 @@ input[type="file"].input-field {
     border: none;
 }
 
+.file-name {
+    color: rgb(85, 84, 84);
+    font-size: 13px;
+}
+
 .custom-upload-button{
     font-weight: 500;
     font-family: inherit;
