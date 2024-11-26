@@ -186,24 +186,32 @@ const AddTrip: React.FC = () => {
                                         <ErrorMessage name="notes" component="div" className="error" />
                                     </div>
 
-                                    {/* Save Button Inside Formik Form */}
-                                    {/* Save button should be inside the formik form because formik, handles submission */}
-                                    <div className="button-group">
+                                    <div className="photo-upload-container">
+                                        <h2 className='upload-photo-text'>Upload Photo</h2>
+                                        <label htmlFor='photo-upload' className='custom-upload-button'>
+                                            Choose File
+                                        </label>
+                                        <input 
+                                            id='photo-upload'
+                                            type="file" 
+                                            name="photo" 
+                                            onChange={handlePhotoChange}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </div>
+
+                                    <div className='save-and-cancel-buttons'>
                                         <button type="submit" className="save-btn" disabled={isSubmitting}>
                                             {isSubmitting ? 'Saving...' : 'Save'}
                                         </button>
+
+                                        <button type="button" className="cancel-btn" onClick={() => navigate('/dashboard')}>
+                                            Cancel
+                                        </button>
                                     </div>
-                                   
                                 </Form>
                             )}
                         </Formik>
-                    </div>
-                    <div className="photo-upload-container">
-                        <h2>Upload Photo</h2>
-                        <input type="file" name="photo" className='choose-file' onChange={handlePhotoChange} />
-                        <button type="button" className="cancel-btn" onClick={() => navigate('/dashboard')}>
-                            Cancel
-                        </button>
                     </div>
                 </div>
             </main>
