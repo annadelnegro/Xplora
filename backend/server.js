@@ -44,7 +44,7 @@ const fileFilter = (req, file, cb) => {
 const uploadTripPic = multer({ 
     storage: storageTrips,
     limits: {
-        fileSize: 10 * 1024 * 1024
+        fileSize: 5 * 1024 * 1024
     },
     fileFilter
 }); 
@@ -227,7 +227,7 @@ app.post('/api/users/:userId/trips', async (req, res) => {
                     if (err.code === 'LIMIT_FILE_SIZE') {
                         return reject({
                             status: 413,
-                            message: 'File size exceeds the 10 MB limit',
+                            message: 'File size exceeds the 5 MB limit',
                         });
                     } else if (err.message === 'Invalid file type. Only JPEG and PNG allowed.') {
                         return reject({

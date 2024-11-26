@@ -34,21 +34,26 @@ function buildPath(route: string): string {
 const AddTrip: React.FC = () => {
     const navigate = useNavigate();
     const [photo, setPhoto] = useState<File | null>(null);
+    const [imageError, setImageError] = useState<string | null>(null);
 
     const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]){
             const selectedFile = event.target.files[0];
 
-            const maxSize = 10 * 1024 * 1024;
+            const maxSize = 5 * 1024 * 1024;
             if(selectedFile.size > maxSize){
-                alert("File size must be no larger than 10MB.");
+                setImageError("File size must be no larger than 5MB.");
+                setPhoto(null);
                 return;
             }
 
             const allowedTypes = ['image/jpeg', 'image/png'];
             if(!allowedTypes.includes(selectedFile.type)) {
-                alert("Invalid file type. Please upload JPEG or PNG only. ")
+                setImageError("Invalid file type. Please upload JPEG or PNG only.");
+                setPhoto(null);
+                return;
             }
+            setImageError(null);
             setPhoto(selectedFile);
         }
     }
@@ -206,6 +211,7 @@ const AddTrip: React.FC = () => {
                                             style={{ display: 'none' }}
                                         />
                                         {photo && <p className='file-name'>{photo.name}</p>}
+                                        {imageError && <div className='error'>{imageError}</div>}
                                     </div>
 
                                     <div className='save-and-cancel-buttons'>
