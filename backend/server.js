@@ -32,7 +32,12 @@ const storageTrips = multer.diskStorage({
     }
 });
 
-const uploadTripPic = multer({ storage: storageTrips }); 
+const uploadTripPic = multer({ 
+    storage: storageTrips,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
+}); 
 
 client.connect();
 
@@ -204,22 +209,40 @@ app.get('/api/users/:id/password', async (req, res) => {
 
 //--------------------------------
 // TRIPS -- POST to add a new trip
-app.post('/api/users/:userId/trips', uploadTripPic.single('photo'), async (req, res) => {
-    const { userId } = req.params;
-    const { name, city, start_date, end_date, notes } = req.body;
-
-    if (!name || !city || !start_date || !end_date) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    let picture_url = "/uploads/trips/trip_default.jpg";
-    if (req.file) {
-        picture_url = `/uploads/trips/${req.file.filename}`;
-    }
-
-    const objectId = new ObjectId(String(userId));
-
+app.post('/api/users/:userId/trips', async (req, res) => {
     try {
+        await new Promise((resolve, reject) => {
+            uploadTripPic.single('photo')(req, res, (err) => {
+                if (err) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return reject({
+                            status: 413,
+                            message: 'File size exceeds the 5 MB limit',
+                        });
+                    }
+                    return reject({
+                        status: 500,
+                        message: 'An error occurred during file upload',
+                    });
+                }
+                resolve();
+            });
+        });
+
+        const { userId } = req.params;
+        const { name, city, start_date, end_date, notes } = req.body;
+
+        if (!name || !city || !start_date || !end_date) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        let picture_url = '/uploads/trips/trip_default.jpg';
+        if (req.file) {
+            picture_url = `/uploads/trips/${req.file.filename}`;
+        }
+
+        const objectId = new ObjectId(String(userId));
+
         const db = client.db('xplora');
 
         const existingTrip = await db.collection('trips').findOne({
@@ -227,7 +250,7 @@ app.post('/api/users/:userId/trips', uploadTripPic.single('photo'), async (req, 
             name,
             city,
             start_date,
-            end_date
+            end_date,
         });
 
         if (existingTrip) {
@@ -251,10 +274,16 @@ app.post('/api/users/:userId/trips', uploadTripPic.single('photo'), async (req, 
             trip_id: result.insertedId,
         });
     } catch (error) {
-        console.error('Error occurred while adding trip:', error);
+        console.error('Error occurred while processing trip:', error);
+
+        if (error.status) {
+            return res.status(error.status).json({ error: error.message });
+        }
+
         res.status(500).json({ error: 'An error occurred while adding the trip' });
     }
 });
+
 
 //TRIPS -- GET trips from user_id
 app.get('/api/users/:userId/trips', async (req, res) => {
