@@ -37,7 +37,19 @@ const AddTrip: React.FC = () => {
 
     const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]){
-            setPhoto(event.target.files[0]);
+            const selectedFile = event.target.files[0];
+
+            const maxSize = 5 * 1024 * 1024;
+            if(selectedFile.size > maxSize){
+                alert("File size must be no larger than 5MB.");
+                return;
+            }
+
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if(!allowedTypes.includes(selectedFile.type)) {
+                alert("Invalid file type. Please upload JPEG or PNG only. ")
+            }
+            setPhoto(selectedFile);
         }
     }
 
