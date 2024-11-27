@@ -227,6 +227,7 @@ TripDetails.css .tripdetails-logo {
 
 .deets-and-photo {
     display: flex;
+    gap: 180px;
 }
 
 .td-trip-details {
