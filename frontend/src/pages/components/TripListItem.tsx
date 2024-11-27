@@ -26,11 +26,8 @@ const TripListItem: React.FC<TripListItemProps> = ({ id, title, location, dates,
         setIsEditModalOpen(true);
     };
 
-    // const [pictureUrl, setPictureUrl] = useState<string | null>(null);
-
     return (
         <div className='trip-list-item'>
-            {/* <img src={pictureUrl || tripdefault} alt="Image Trip" className="trip-image" /> */}
             <img src={pictureUrl || tripdefault} alt='trip picture' className='trip-image' />
             <div className='trip-details'>
                 <span id='trip-title'>
