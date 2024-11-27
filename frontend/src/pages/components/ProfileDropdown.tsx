@@ -18,22 +18,6 @@ interface ProfileDropdownProps {
     isMenuOpen: boolean;
 }
 
-const passwordChangeSchema = yup.object().shape({
-    currentPassword: yup.string().required('Current password is required'),
-    newPassword: yup
-        .string()
-        .required('New password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .matches(/[0-9]/, 'Password must contain at least one number')
-        .matches(/[\W_]/, 'Password must contain at least one special character'),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref('newPassword')], 'Passwords must match')
-        .required('Confirm password is required'),
-});
-
 
 
 
@@ -45,34 +29,97 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null); 
-    
+    const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
+
+    // Password schema only required when currentPassword has input
+    const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+
+    const profileChangeSchema = yup.object().shape({
+        newFirstName: yup.string().required('First name is required'),
+        newLastName: yup.string().required('Last name is required'),
+        newEmail: yup
+            .string()
+            .email('Invalid email address')
+            .required('Email is required'),
+        currentPassword: yup
+            .string()
+            .test('current-password-required', 'Current password is required', function (value) {
+                return !this.options.context?.isEditingPassword || !!value?.trim();
+            }),
+            newPassword: yup
+            .string()
+            .test('new-password-required', 'New password is required', function (value) {
+                if (this.options.context?.isEditingPassword) {
+                    return !!value?.trim();
+                }
+                return true;
+            })
+            .when('$isEditingPassword', {
+                is: true,
+                then: (schema) =>
+                    schema
+                        .min(8, 'Password must be at least 8 characters')
+                        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+                        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+                        .matches(/[0-9]/, 'Password must contain at least one number')
+                        .matches(/[\W_]/, 'Password must contain at least one special character'),
+                otherwise: (schema) => schema,
+            }),
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref('newPassword')], 'Passwords must match')
+            .test('confirm-password-required', 'Confirm password is required', function (value) {
+                if (this.options.context?.isEditingPassword) {
+                    return !!value?.trim();
+                }
+                return true;
+            }),
+    });
+   
+    const toggleEditPassword = () => {
+        setIsEditingPassword(currentPassword.trim().length > 0);
+    };
 
     const handleSaveChange = async () => {
-        const passwordData = {
-            currentPassword: currentPassword, 
-            newPassword: newPassword,
-            confirmPassword: confirmPassword
+        const profileData = {
+            newFirstName,
+            newLastName,
+            newEmail,
+            currentPassword,
+            newPassword,
+            confirmPassword,
         };
     
         const actualPassword = password;
     
         try {
-            await passwordChangeSchema.validate(passwordData, { abortEarly: false });
+            await profileChangeSchema.validate(profileData, {
+                abortEarly: false,
+                context: { isEditingPassword },
+            });
     
-            if (currentPassword !== actualPassword) {
-                // alert("Current password is incorrect.");
-                setErrorMessage("Current password is incorrect.");
+            // If password editing is active, validate the current password
+            if (isEditingPassword && currentPassword !== actualPassword) {
+                setErrorMessages((prev) => ({
+                    ...prev,
+                    currentPassword: 'Current password is incorrect.',
+                }));
                 return;
             }
     
+            // Save profile data if validation passes
             onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
-
-            setErrorMessage(null);
+            setErrorMessages({}); // Clear errors on success
         } catch (error) {
             if (error instanceof yup.ValidationError) {
-                const validationErrors = error.inner.map((err) => err.message);
-                // console.error("Validation errors:", validationErrors);
-                setErrorMessage(validationErrors.join("\n"));
+                const newErrors: Record<string, string> = {};
+                error.inner.forEach((err) => {
+                    if (err.path) {
+                        newErrors[err.path] = err.message;
+                    }
+                });
+                setErrorMessages(newErrors);
             }
         }
     };
@@ -147,13 +194,20 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                     <input id="current-password"
                                         type="password"
                                         value={currentPassword}
+                                        onInput={toggleEditPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="Current Password"
                                     />
 
-                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
                                         <span>{errorMessage}</span>
-                                    </div>
+                                    </div> */}
+
+                                    {errorMessages.currentPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.currentPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
                                 
                                 <div className="password-field">
@@ -164,9 +218,14 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="New Password"
                                     />
 
-                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
                                         <span>{errorMessage}</span>
-                                    </div>
+                                    </div> */}
+                                    {errorMessages.newPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.newPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="password-field">
@@ -177,9 +236,14 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="Confirm New Password"
                                     />
 
-                                    <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
                                         <span>{errorMessage}</span>
-                                    </div>
+                                    </div> */}
+                                    {errorMessages.confirmPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.confirmPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </>
