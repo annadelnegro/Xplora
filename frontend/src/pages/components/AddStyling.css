@@ -58,6 +58,12 @@
     resize: vertical;
 }
 
+.notes-edit-trip{
+    height: 150px;
+    position: relative;
+    text-align: left;
+}
+
  .modal-content .error-message{
     color: rgb(251, 85, 85);
 }
