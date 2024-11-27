@@ -10,12 +10,11 @@ const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
-app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/uploads')));
-
+app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
 
 // const storageUsers = multer.diskStorage({
 //     destination: (req, file, cb) => {
-//         cb(null, path.join(__dirname, '../frontend/public/uploads/users/'));
+//         cb(null, path.join('/var/www/html/uploads/users/')));
 //     },
 //     filename: (req, file, cb) => {
 //         cb(null, `${Date.now()}-${file.originalname}`);
@@ -26,7 +25,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/uplo
 
 const storageTrips = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../frontend/public/uploads/trips/'));
+        cb(null, path.join('/var/www/html/uploads/trips/'));
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -37,20 +36,20 @@ const fileFilter = (req, file, cb) => {
     console.log('File Name:', file.originalname);
     console.log('MIME Type:', file.mimetype);
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if(allowedTypes.includes(file.mimetype)){
+    if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
         cb(new Error('Invalid file type. Only JPEG, JPG and PNG allowed.'), false);
     }
 };
 
-const uploadTripPic = multer({ 
+const uploadTripPic = multer({
     storage: storageTrips,
     limits: {
         fileSize: 10 * 1024 * 1024
     },
     fileFilter
-}); 
+});
 
 client.connect();
 
@@ -347,7 +346,7 @@ app.get('/api/users/:userId/trips/:tripId', async (req, res) => {
 //TRIPS -- PUT to update trip
 app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async (req, res) => {
     const { userId, tripId } = req.params;
-    const { name, city, start_date, end_date, notes} = req.body;
+    const { name, city, start_date, end_date, notes } = req.body;
     const tripObjId = new ObjectId(String(tripId));
     const userObjId = new ObjectId(String(userId));
 
@@ -367,7 +366,7 @@ app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async
         if (end_date !== undefined) updatedTrip.end_date = end_date;
         if (notes !== undefined) updatedTrip.notes = notes;
 
-        if(req.file){
+        if (req.file) {
             updatedTrip.picture_url = `/uploads/trips/${req.file.filename}`;
         }
 
