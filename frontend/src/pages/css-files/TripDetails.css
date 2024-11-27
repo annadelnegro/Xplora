@@ -473,10 +473,6 @@ TripDetails.css .tripdetails-logo {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-
-.activities-list>div{
-}
-
 .accommodation-details:hover,
 .flight-details:hover,
 .activities-list > div:hover {
