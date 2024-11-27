@@ -12,6 +12,7 @@ const client = new MongoClient(url);
 
 app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/uploads')));
 
+
 // const storageUsers = multer.diskStorage({
 //     destination: (req, file, cb) => {
 //         cb(null, path.join(__dirname, '../frontend/public/uploads/users/'));
