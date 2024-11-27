@@ -227,6 +227,7 @@ const Dashboard: React.FC = () => {
                         title={String(trip.name)}
                         location={trip.city}
                         dates={`${trip.start_date} - ${trip.end_date}`}
+                        pictureUrl={trip.picture_url}
                         onDelete={() => handleDeleteTrip(trip._id)}
                         onEdit={() => handleEditTrip(trip._id)} 
                     />

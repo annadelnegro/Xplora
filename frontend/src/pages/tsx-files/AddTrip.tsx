@@ -47,9 +47,9 @@ const AddTrip: React.FC = () => {
                 return;
             }
 
-            const allowedTypes = ['image/jpeg', 'image/png'];
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if(!allowedTypes.includes(selectedFile.type)) {
-                setImageError("Invalid file type. Please upload JPEG or PNG only.");
+                setImageError("Invalid file type. Please upload JPEG, JPG or PNG only.");
                 setPhoto(null);
                 return;
             }
