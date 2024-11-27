@@ -114,9 +114,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
     const [editDetails, setEditDetails] = useState({
         flightNumber: flight.flightNumber,
         flightConformationNumber: flight.flightConformationNumber,
-        fromCity: flight.fromCity,
         fromAirport: flight.fromAirport,
-        toCity: flight.toCity,
         toAirport: flight.toAirport,
         fromDate: flight.fromDate,
         toDate: flight.toDate,
@@ -927,9 +925,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                         key={index}
                                         className="flight-details"
                                         onClick={() => handleFlightClick({
-                                            fromCity: flight.departure_city,
                                             fromAirport: flight.departure_airport,
-                                            toCity: flight.arrival_city,
                                             toAirport: flight.arrival_airport,
                                             fromDate: flight.departure_date,
                                             toDate: flight.arrival_date,
@@ -952,11 +948,11 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                         </div>
                                         <div className="bottom-info">
                                             <div className="from-info">
-                                                <span id="from-city">{flight.departure_city}</span>
+                                                <span id="from-city">{"Departure"}</span>
                                                 <span id="from-date">{flight.departure_date}</span>
                                             </div>
                                             <div className="dest-info">
-                                                <span id="dest-city">{flight.arrival_city}</span>
+                                                <span id="dest-city">{"Destination"}</span>
                                                 <span id="dest-date">{flight.arrival_date}</span>
                                             </div>
                                         </div>

@@ -8,10 +8,9 @@ interface AddFlightProps {
 }
 
 const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) => {
+    
     const [flightDetails, setFlightDetails] = useState({
-        departureCity: '',
         departureAirport: '',
-        arrivalCity: '',
         arrivalAirport: '',
         departureDate: '',
         departureTime: '',
@@ -20,6 +19,8 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
         flightNumber: '',
         confirmationNumber: '',
     });
+
+    console.log('Flight details', flightDetails);
 
     const [isSaving] = useState(false); // Loading indicator
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -45,7 +46,9 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     const [error, setError] = useState('');
     const handleSubmit = async () => {
 
-        if(!flightDetails.departureCity || !flightDetails.departureAirport || !flightDetails.arrivalCity || !flightDetails.arrivalAirport || !!flightDetails.departureDate
+        console.log('Flight details pt2', flightDetails);
+
+        if(!flightDetails.departureAirport || !flightDetails.arrivalAirport || !flightDetails.departureDate
             || !flightDetails.departureTime || !flightDetails.arrivalDate || !flightDetails.arrivalTime || !flightDetails.flightNumber ||!flightDetails.confirmationNumber
         ){
             setError("All fields are required");
@@ -78,7 +81,7 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                 setIsSuccessModalOpen(true); // Open the success modal
                 onSave(); // Refresh the parent list
                //onClose();
-               // location.reload();
+               location.reload();
             } else {
                 const errorData = await response.json();
                 console.error('Error adding flight:', errorData.error);
@@ -98,11 +101,20 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                 <form>
                 {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
-                        <label>Departure City:</label>
+                        <label>Confirmation Number:</label>
                         <input
                             type="text"
-                            name="departureCity"
-                            value={flightDetails.departureCity}
+                            name="confirmationNumber"
+                            value={flightDetails.confirmationNumber}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Flight Number:</label>
+                        <input
+                            type="text"
+                            name="flightNumber"
+                            value={flightDetails.flightNumber}
                             onChange={handleChange}
                         />
                     </div>
@@ -112,24 +124,6 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                             type="text"
                             name="departureAirport"
                             value={flightDetails.departureAirport}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Arrival City:</label>
-                        <input
-                            type="text"
-                            name="arrivalCity"
-                            value={flightDetails.arrivalCity}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Arrival Airport:</label>
-                        <input
-                            type="text"
-                            name="arrivalAirport"
-                            value={flightDetails.arrivalAirport}
                             onChange={handleChange}
                         />
                     </div>
@@ -152,6 +146,15 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                         />
                     </div>
                     <div className="form-group">
+                        <label>Arrival Airport:</label>
+                        <input
+                            type="text"
+                            name="arrivalAirport"
+                            value={flightDetails.arrivalAirport}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
                         <label>Arrival Date:</label>
                         <input
                             type="date"
@@ -166,24 +169,6 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                             type="time"
                             name="arrivalTime"
                             value={flightDetails.arrivalTime}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Flight Number:</label>
-                        <input
-                            type="text"
-                            name="flightNumber"
-                            value={flightDetails.flightNumber}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Confirmation Number:</label>
-                        <input
-                            type="text"
-                            name="confirmationNumber"
-                            value={flightDetails.confirmationNumber}
                             onChange={handleChange}
                         />
                     </div>
