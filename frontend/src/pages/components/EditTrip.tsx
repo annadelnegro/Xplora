@@ -153,11 +153,13 @@ const EditTrip: React.FC<EditTripProps> = ({ onClose, onSave, apiEndpoint, selec
                     </div>
                     <div className="form-group">
                         <label>Notes:</label>
-                        <input
-                            type="text"
+                        <textarea
+                            className='notes-edit-trip'
                             name="notes"
                             value={editDetails.notes}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                setEditDetails({ ...editDetails, notes: e.target.value })
+                            }
                         />
                     </div>
 
