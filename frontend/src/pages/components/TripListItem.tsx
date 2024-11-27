@@ -8,6 +8,7 @@ interface TripListItemProps {
     title: string;
     location: string;
     dates: string;
+    notes: string,
     pictureUrl: string | null;
     onDelete: () => void;
     onEdit: () => void;
@@ -15,14 +16,14 @@ interface TripListItemProps {
 
 
 
-const TripListItem: React.FC<TripListItemProps> = ({ id, title, location, dates, pictureUrl, onDelete, onEdit }) => {
+const TripListItem: React.FC<TripListItemProps> = ({ id, title, location, dates, notes, pictureUrl, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedEdit, setSelectedEdit] = useState<any>(null);
 
     const handleEditClick = () => {
-        const selectedTrip = { id, title, location, dates };
+        const selectedTrip = { id, title, location, dates, notes };
         console.log('Selected Trip for Editing:', selectedTrip);
-        setSelectedEdit({ id, title, location, dates });
+        setSelectedEdit({ id, title, location, dates, notes });
         setIsEditModalOpen(true);
     };
 

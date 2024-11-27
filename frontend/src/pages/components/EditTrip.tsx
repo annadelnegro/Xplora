@@ -19,6 +19,7 @@ function buildPath(route: string): string {
 }
 
 const EditTrip: React.FC<EditTripProps> = ({ onClose, onSave, apiEndpoint, selectedEdit }) => {
+    console.log('Selected Edit:', selectedEdit);
     const navigate = useNavigate();
     const [editDetails, setEditDetails] = useState({
         tripName: selectedEdit?.title || '',
