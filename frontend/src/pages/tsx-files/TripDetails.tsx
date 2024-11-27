@@ -4,6 +4,7 @@ import '../css-files/TripDetails.css';
 import logo from '../../images/logo.png';
 import xploraplane from '../../images/xplora-plane.png';
 import hotel from '../../images/accommodation_placeholder.png';
+import activityPlaceholder from '../../images/activity.png';
 import tripdefault from '../../images/trip_default.png';
 // import test from '../../images/test.jpg';
 import { calculateTripDays } from '../helper-files/calculateTripDays';
@@ -113,7 +114,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
     // State for editing flight details
     const [editDetails, setEditDetails] = useState({
         flightNumber: flight.flightNumber,
-        flightConformationNumber: flight.flightConformationNumber,
+        flightConfirmationNumber: flight.flightConfirmationNumber,
         fromAirport: flight.fromAirport,
         toAirport: flight.toAirport,
         fromDate: flight.fromDate,
@@ -130,7 +131,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
     const handleEdit = async () => {
         const payload = {
             flight_num: editDetails.flightNumber,
-            confirmation_num: editDetails.flightConformationNumber,
+            confirmation_num: editDetails.flightConfirmationNumber,
             departure_airport: editDetails.fromAirport,
             arrival_airport: editDetails.toAirport,
             departure_time: editDetails.departureTime,
@@ -184,8 +185,8 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                 <label>Confirmation Number:</label>
                                 <input
                                     type="text"
-                                    name="flightConformationNumber"
-                                    value={editDetails.flightConformationNumber}
+                                    name="flightConfirmationNumber"
+                                    value={editDetails.flightConfirmationNumber}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -256,18 +257,18 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                       <button className="close-button" onClick={onClose}>✖</button>
                         <h2>Flight Details</h2>
                         <p><strong>Flight Number:</strong> {flight.flightNumber}</p>
-                        <p><strong>Confirmation Number:</strong> {flight.flightConformationNumber}</p>
-                        <p><strong>From:</strong> {flight.fromCity} ({flight.fromAirport})</p>
-                        <p><strong>To:</strong> {flight.toCity} ({flight.toAirport})</p>
+                        <p><strong>Confirmation Number:</strong> {flight.flightConfirmationNumber}</p>
+                        <p><strong>From:</strong> {flight.fromAirport}</p>
+                        <p><strong>To:</strong> {flight.toAirport}</p>
                         <p><strong>Departure Date:</strong> {flight.fromDate}</p>
                         <p><strong>Departure Time:</strong> {flight.departureTime}</p>
                         <p><strong>Arrival Date:</strong> {flight.toDate}</p>
                         <p><strong>Arrival Time:</strong> {flight.arrivalTime}</p>
-                        <button className="edit-button" onClick={() => setIsEditing(true)}>
+                        <button className="li-edit-button" onClick={() => setIsEditing(true)}>
                             Edit Flight
                         </button>
                         <button
-                            className="delete-button"
+                            className="li-delete-button"
                             onClick={() => handleDeleteFlight(flight.flightId)}
                         >
                             Delete Flight
@@ -421,10 +422,10 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                             <p><strong>Check-in Time:</strong> {accommodation.checkIn}</p>
                             <p><strong>Check-out Time:</strong> {accommodation.checkOut}</p>
                             <p><strong>Check-out Date:</strong> {accommodation.checkOutDate}</p>
-                            <button className="edit-button" onClick={() => setIsEditing(true)}>
+                            <button className="li-edit-button" onClick={() => setIsEditing(true)}>
                                 Edit Accommodation
                             </button>
-                            <button className="delete-button" onClick={() => handleDeleteAccomodation(accommodation.accommodationId)}>
+                            <button className="li-delete-button" onClick={() => handleDeleteAccomodation(accommodation.accommodationId)}>
                                 Delete Accommodation
                             </button>
                         </>
@@ -539,10 +540,10 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                             <p><strong>Location:</strong> {activity.location}</p>
                             <p><strong>Date:</strong> {activity.date}</p>
                             <p><strong>Notes:</strong> {activity.notes}</p>
-                            <button className="edit-button" onClick={() => setIsEditing(true)}>
+                            <button className="li-edit-button" onClick={() => setIsEditing(true)}>
                                 Edit Activity
                             </button>
-                            <button className="delete-button" onClick={() => handleDeleteActivity(activity.id)}>
+                            <button className="li-delete-button" onClick={() => handleDeleteActivity(activity.id)}>
                                 Delete Activity
                             </button>
                         </>
@@ -739,6 +740,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
             if(response.ok){
                 refreshFlightList();
                 setIsFlightModalOpen(false);
+                location.reload();
             }
             else{
                 const data = await response.json();
@@ -772,9 +774,10 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
         if(response.ok){
             refreshAccomocationList();
             setIsAccomodationModalOpen(false);
+            location.reload();
         }
         else{
-            console.error("error deleting the accomodation", response.statusText);
+            console.error("error deleting the accommodation", response.statusText);
         }
 
 
@@ -800,9 +803,11 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
         if(response.ok){
             refreshActivityList();
             setIsActivityModalOpen(false);
+            location.reload();
+            
         }
         else{
-            console.error("error deleting the accomodation", response.statusText);
+            console.error("error deleting the activity", response.statusText);
         }
 
         }catch(error){
@@ -932,7 +937,7 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                             departureTime: flight.departure_time, 
                                             arrivalTime: flight.arrival_time, 
                                             flightNumber: flight.flight_num,
-                                            flightConformationNumber: flight.confirmation_num,
+                                            flightConfirmationNumber: flight.confirmation_num,
                                             flightId: flight._id
                                             
                                         })
@@ -940,19 +945,19 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                     
                                     >
                                         <div className="top-info">
-                                            <span id="from-airport">{flight.departure_airport}</span>
+                                            <span id="from-airport">{'Departure'}</span>
                                             <div className="airport-separation-line">
                                                 <img src={xploraplane} alt="Airplane Icon" className="airplane-icon" />
                                             </div>
-                                            <span id="dest-airport">{flight.arrival_airport}</span>
+                                            <span id="dest-airport">{'Arrival'}</span>
                                         </div>
                                         <div className="bottom-info">
                                             <div className="from-info">
-                                                <span id="from-city">{"Departure"}</span>
+                                                <span id="from-city">{flight.departure_airport}</span>
                                                 <span id="from-date">{flight.departure_date}</span>
                                             </div>
                                             <div className="dest-info">
-                                                <span id="dest-city">{"Destination"}</span>
+                                                <span id="dest-city">{flight.arrival_airport}</span>
                                                 <span id="dest-date">{flight.arrival_date}</span>
                                             </div>
                                         </div>
@@ -1069,6 +1074,9 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
                                                     })
                                                 }
                                             >
+                                                <div>
+                                                    <img src={activityPlaceholder} alt="Activity Icon" className="activity-icon" />
+                                                </div>
                                                 <p><strong>Activity:</strong> {activity.name}</p>
                                                 <p><strong>Location:</strong> {activity.location}</p>
                                                 <p><strong>Date:</strong> {activity.date}</p>

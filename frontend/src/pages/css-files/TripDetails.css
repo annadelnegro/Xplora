@@ -369,10 +369,29 @@ TripDetails.css .tripdetails-logo {
     width: 100%;
 }
 
-.accommodation-icon {
+.accommodation-icon, .activity-icon {
     width: 35px;
     height: auto;
     display: inline-block;
+}
+
+.li-edit-button, .li-delete-button {
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.li-edit-button:hover {
+    background-color: #a263eab8;
+    border: none;
+}
+
+.li-delete-button:hover {
+    background-color: #f56a6586;
+    border: none;
+}
+
+.li-delete-button {
+    margin-left: 40px;
 }
 
 #from-deets {
@@ -444,7 +463,6 @@ TripDetails.css .tripdetails-logo {
 .flight-details,
 .activities-list > div {
     margin-top: 15px;
-    display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -454,6 +472,9 @@ TripDetails.css .tripdetails-logo {
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.activities-list>div{
 }
 
 .accommodation-details:hover,
