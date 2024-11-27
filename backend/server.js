@@ -344,9 +344,9 @@ app.get('/api/users/:userId/trips/:tripId', async (req, res) => {
 });
 
 //TRIPS -- PUT to update trip
-app.put('/api/users/:userId/trips/:tripId', async (req, res) => {
+app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async (req, res) => {
     const { userId, tripId } = req.params;
-    const { name, city, start_date, end_date, notes, picture_url } = req.body;
+    const { name, city, start_date, end_date, notes} = req.body;
     const tripObjId = new ObjectId(String(tripId));
     const userObjId = new ObjectId(String(userId));
 
@@ -365,7 +365,10 @@ app.put('/api/users/:userId/trips/:tripId', async (req, res) => {
         if (start_date !== undefined) updatedTrip.start_date = start_date;
         if (end_date !== undefined) updatedTrip.end_date = end_date;
         if (notes !== undefined) updatedTrip.notes = notes;
-        if (picture_url !== undefined) updatedTrip.picture_url = picture_url;
+
+        if(req.file){
+            updatedTrip.picture_url = `/uploads/trips/${req.file.filename}`;
+        }
 
         const result = await db.collection('trips').updateOne(
             { _id: tripObjId },

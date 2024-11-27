@@ -25,11 +25,36 @@ const EditTrip: React.FC<EditTripProps> = ({ onClose, onSave, apiEndpoint, selec
         tripLocation: selectedEdit?.location || '',
         startDate: selectedEdit?.dates?.split(' - ')[0] || '',
         endDate: selectedEdit?.dates?.split(' - ')[1] || '',
-        notes: '',
+        pictureUrl: selectedEdit?.pictureUrl || '',
+        notes: selectedEdit?.notes || '',
     });
+
+    const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const selectedFile = event.target.files[0];
+
+            const maxSize = 5 * 1024 * 1024;
+            if (selectedFile.size > maxSize) {
+                setImageError("File size must be no larger than 5MB.");
+                setPhoto(null);
+                return;
+            }
+
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(selectedFile.type)) {
+                setImageError("Invalid file type. Please upload JPEG, JPG or PNG only.");
+                setPhoto(null);
+                return;
+            }
+            setImageError(null);
+            setPhoto(selectedFile);
+        }
+    }
 
     const [isSaving] = useState(false); // Loading indicator
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [photo, setPhoto] = useState<File | null>(null);
+    const [imageError, setImageError] = useState<string | null>(null);
 
     const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         return (
@@ -50,29 +75,29 @@ const EditTrip: React.FC<EditTripProps> = ({ onClose, onSave, apiEndpoint, selec
 
 
     const handleSubmit = async () => {
-        const payload = {
-            name: editDetails.tripName,
-            city: editDetails.tripLocation,
-            start_date: editDetails.startDate,
-            end_date: editDetails.endDate,
-            notes: editDetails.notes,
-        };
+        const formData = new FormData();
+        formData.append('name', editDetails.tripName);
+        formData.append('city', editDetails.tripLocation);
+        formData.append('start_date', editDetails.startDate);
+        formData.append('end_date', editDetails.endDate);
+        formData.append('notes', editDetails.notes);
+
+        if (photo) {
+            formData.append('photo', photo);
+        }
 
         try {
             const response = await fetch(buildPath(apiEndpoint), {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
+                body: formData,
             }); 
 
             if (response.ok) {
-                console.log('Trip editted succesfully!');
+                const data = await response.json();
+                console.log('Trip updated succesfully!', data);
                 setIsSuccessModalOpen(true); // Open the success modal
                 onSave(); // Refresh the parent list
                 navigate('/dashboard');
-                //onClose();
                 location.reload();
             } else {
                 const errorData = await response.json();
@@ -135,19 +160,21 @@ const EditTrip: React.FC<EditTripProps> = ({ onClose, onSave, apiEndpoint, selec
                             onChange={handleChange}
                         />
                     </div>
+
                     <div className="form-group">
                         <label>Change Photo:</label>
+                        <label htmlFor='photo-upload' className='custom-upload-button-edit'>
+                            Choose File
+                        </label>
                         <input
+                            id='photo-upload'
                             type="file"
                             name="photoUrl"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if(file) {
-                                    //handle pic update here
-                                    console.log('File selected:', file);
-                                }
-                            }}
+                            onChange={handlePhotoChange}
+                            style={{ display: 'none' }}
                         />
+                        {photo && <p className='file-name'>{photo.name}</p>}
+                        {imageError && <div className='error'>{imageError}</div>}
                     </div>
                     <button className='submit-flight' type="button" onClick={handleSubmit} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save Changes'}
