@@ -21,7 +21,7 @@ app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
 //     }
 // });
 
-// const uploadUserPic = multer({ storageUsers });
+// const uploadUserPic = multer({ storageUsers }); 
 
 const storageTrips = multer.diskStorage({
     destination: (req, file, cb) => {
