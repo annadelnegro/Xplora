@@ -90,3 +90,11 @@ input[type="time"] {
     background-color: #a263eab8;
     border: none;
 }
+
+.trip-link, .location-of-trip {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    display: block;
+}

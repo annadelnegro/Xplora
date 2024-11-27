@@ -35,7 +35,7 @@ const TripListItem: React.FC<TripListItemProps> = ({ id, title, location, dates,
                         {title}
                     </Link></span>
                 <div id='trip-dates-container'>
-                    <span>{location}</span><span>{dates}</span>
+                    <span className='location-of-trip'>{location}</span><span>{dates}</span>
                 </div>
             </div>
            
