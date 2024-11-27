@@ -37,7 +37,7 @@ const fileFilter = (req, file, cb) => {
     if(allowedTypes.includes(file.mimetype)){
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only JPEG and PNG allowed.'), false);
+        cb(new Error('Invalid file type. Only JPEG , JPG and PNG allowed.'), false);
     }
 };
 
@@ -229,7 +229,7 @@ app.post('/api/users/:userId/trips', async (req, res) => {
                             status: 413,
                             message: 'File size exceeds the 5 MB limit',
                         });
-                    } else if (err.message === 'Invalid file type. Only JPEG and PNG allowed.') {
+                    } else if (err.message === 'Invalid file type. Only JPEG , JPG and PNG allowed.') {
                         return reject({
                             status: 400,
                             message: err.message,
