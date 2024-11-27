@@ -175,10 +175,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                 placeholder="Last Name"
                             />
                         </div>
-
-                        {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                            <span>{errorMessage}</span>
-                        </div> */}
                     </>
                 ) : (
                     <>
@@ -200,10 +196,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                     placeholder="Email"
                                 />
                             </div>
-
-                            {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                <span>{errorMessage}</span>
-                            </div> */}
                         </>
                     ) : (
                         <div className="edit-info">{email}</div>
@@ -222,10 +214,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="Current Password"
                                     />
 
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
-
                                     {errorMessages.currentPassword && (
                                         <div className="error-flag show">
                                             <span>{errorMessages.currentPassword}</span>
@@ -241,9 +229,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="New Password"
                                     />
 
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
                                     {errorMessages.newPassword && (
                                         <div className="error-flag show">
                                             <span>{errorMessages.newPassword}</span>
@@ -259,9 +244,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="Confirm New Password"
                                     />
 
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
                                     {errorMessages.confirmPassword && (
                                         <div className="error-flag show">
                                             <span>{errorMessages.confirmPassword}</span>
