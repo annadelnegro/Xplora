@@ -8,6 +8,8 @@ interface ProfileDropdownProps {
     lastName: string;
     email: string;
     password: string;
+    id: string;
+    resetToken: string;
 
     onEditProfile: () => void;
     // onSaveProfile: () => void;
@@ -18,17 +20,13 @@ interface ProfileDropdownProps {
     isMenuOpen: boolean;
 }
 
-
-
-
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email, password, onEditProfile, onSaveProfile, onCancelProfile, isEditing, isMenuOpen }) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email, password, id, resetToken, onEditProfile, onSaveProfile, onCancelProfile, isEditing, isMenuOpen }) => {
     const [newFirstName, setNewFirstName] = useState<string>(firstName);
     const [newLastName, setNewLastName] = useState<string>(lastName);
     const [newEmail, setNewEmail] = useState<string>(email);
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null); 
     const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
     // Password schema only required when currentPassword has input
@@ -90,27 +88,52 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             newPassword,
             confirmPassword,
         };
-    
-        const actualPassword = password;
-    
+
         try {
             await profileChangeSchema.validate(profileData, {
                 abortEarly: false,
                 context: { isEditingPassword },
             });
-    
+
             // If password editing is active, validate the current password
-            if (isEditingPassword && currentPassword !== actualPassword) {
+            if (isEditingPassword && currentPassword !== password) {
                 setErrorMessages((prev) => ({
                     ...prev,
                     currentPassword: 'Current password is incorrect.',
                 }));
                 return;
             }
-    
-            // Save profile data if validation passes
-            onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
-            setErrorMessages({}); // Clear errors on success
+
+            // If a reset is being performed (through the token and id)
+            if (resetToken && id && newPassword.trim()) {
+                // Make API call to reset password
+                const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        token: resetToken,
+                        id,
+                        newPassword,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Password reset successful
+                    setErrorMessages({});
+                    alert(data.message);
+                } else {
+                    // Handle error from API
+                    setErrorMessages({ resetPassword: data.error });
+                }
+            } else {
+                // Save profile data if validation passes
+                onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
+                setErrorMessages({}); // Clear errors on success
+            }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors: Record<string, string> = {};
@@ -178,9 +201,9 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                 />
                             </div>
 
-                            <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                            {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
                                 <span>{errorMessage}</span>
-                            </div>
+                            </div> */}
                         </>
                     ) : (
                         <div className="edit-info">{email}</div>

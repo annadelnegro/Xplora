@@ -4,6 +4,7 @@ import '../css-files/Dashboard.css';
 import TripListItem from '../components/TripListItem';
 import ProfileDropdown from '../components/ProfileDropdown'
 import iconlogo from '../../images/xplora-icon.png';
+// import { render } from 'react-dom';
 
 
 export const handleLogout = () => {
@@ -34,6 +35,7 @@ const Dashboard: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [resetToken, setResetToken] = useState<string | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
 
@@ -42,6 +44,7 @@ const Dashboard: React.FC = () => {
     }
 
     const renderProfile = () => {
+        const userId = localStorage.getItem('ID') || '';
         
         if (isEditing) {
             return (
@@ -50,6 +53,8 @@ const Dashboard: React.FC = () => {
                     lastName={lastName}
                     email={email}
                     password={password}
+                    id={userId}
+                    resetToken={resetToken || ''}
                     onEditProfile={() => handleEditProfile()}
                     onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
                         handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
@@ -67,6 +72,8 @@ const Dashboard: React.FC = () => {
                 lastName={lastName}
                 email={email}
                 password={'*************'}
+                id={userId}
+                resetToken={resetToken || ''}
                 onEditProfile={() => handleEditProfile()}
                 onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
                     handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
@@ -168,11 +175,13 @@ const Dashboard: React.FC = () => {
         const storedFirstName = localStorage.getItem('firstName');
         const storedLastName = localStorage.getItem('lastName');
         const storedEmail = localStorage.getItem('email');
+        const storedResetToken = localStorage.getItem('resetToken');
 
         if (storedFirstName && storedLastName && storedEmail) {
             setFirstName(storedFirstName);
             setLastName(storedLastName);
             setEmail(storedEmail);
+            setResetToken(storedResetToken || null);
             // handleGetPassword();
         } else {
             navigate('/login');
@@ -272,19 +281,20 @@ const Dashboard: React.FC = () => {
                 <div className='actions-section'>
                     <div ref={menuRef}>
                         <button id="profile-btn" onClick={toggleMenu}>Profile</button>
-                        {isMenuOpen && (
-                            <ProfileDropdown
-                            firstName={firstName}
-                            lastName={lastName}
-                            email={email}
-                            password={'*************'}
-                            onEditProfile={handleEditProfile}
-                            onSaveProfile={handleSaveProfile}
-                            onCancelProfile={handleCancelProfile}
-                            isEditing={isEditing}
-                            isMenuOpen={isMenuOpen}
-                            />  
-                        )}
+                        {isMenuOpen && renderProfile()}
+                        {/* // (
+                        //     <ProfileDropdown
+                        //     firstName={firstName}
+                        //     lastName={lastName}
+                        //     email={email}
+                        //     password={'*************'}
+                        //     onEditProfile={handleEditProfile}
+                        //     onSaveProfile={handleSaveProfile}
+                        //     onCancelProfile={handleCancelProfile}
+                        //     isEditing={isEditing}
+                        //     isMenuOpen={isMenuOpen}
+                        //     />  
+                        // )} */}
                                                                                                     
                         
                     </div>
