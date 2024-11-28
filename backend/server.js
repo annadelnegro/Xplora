@@ -186,6 +186,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// Verify email API 
 app.get('/api/verify-email', async (req, res) => {
     const { user_id, token } = req.query;
 
@@ -955,6 +956,7 @@ app.post('/api/forgot-password', async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiration = Date.now() + 3600000; // one hour
 
@@ -963,26 +965,20 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        const transporter = nodemailer.createTransport({
-            service: 'Proton',
-            auth: {
-                user: 'team10poosd@proton.me',
-                pass: 'FriendersTeam10!',
-            },
-        });
+        const resetLink = `http://xplora.fun/reset-password?token=${resetToken}&id=${user._id}`; 
+        const subject = 'Password Reset Request';
+        const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
+        const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
 
-        const mailOptions = {
-            from: 'team10poosd@proton.me',
-            to: user.email,
-            subject: 'Password Reset Request',
-            text: `You requested a password reset. Click the link below to reset your password:
-            http://your-domain.com/reset-password?token=${resetToken}&id=${user._id}`
-        };
+        const emailResult = await sendEmail(user.email, subject, text, html);
 
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: 'Password reset email sent' });
+        if(emailResult.success) {
+            res.status(200).json({ message: 'Password reset link sent to your email' });
+        } else {
+            res.status(500).json({ error: 'Failed to send password reset link' });
+        }
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while requesting password reset' });
+        res.status(500).json({ error: 'An error occurred while sending password reset link'});
     }
 });
 app.post('/api/reset-password', async (req, res) => {
