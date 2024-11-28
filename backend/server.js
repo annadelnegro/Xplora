@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
@@ -60,6 +62,35 @@ const uploadTripPic = multer({
     fileFilter
 });
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    // port: 465,
+    // secure: true,
+    auth: 
+    {
+        user: 'xploratravelteam@gmail.com', // Gmail address
+        pass: 'odveslwtjhhgphax', // App password
+    },
+});
+
+// Send Email Function
+const sendEmail = async (to, subject, text, html) => {
+    try {
+        const info = await transporter.sendMail({
+            from: '"Xplora Team" <xploratravelteam@gmail.com>', // Sender address
+            to, // Recipient email address
+            subject, // Subject line
+            text, // Plain text body
+            html, // HTML body
+        });
+
+        console.log("Email sent successfully:", info);
+        return { success: true };
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return { success: false, error: error.message };
+    }
+};
 
 client.connect();
 
@@ -108,42 +139,100 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 // Register API
-app.post('/api/register', async (req, res, next) => {
-    let error = '';
+app.post('/api/register', async (req, res) => {
     const { first_name, last_name, email, password } = req.body;
-    console.log(`${first_name} ${last_name} ${email} ${password}`);
 
     try {
         const db = client.db('xplora');
+        const existingUser = await db.collection('users').findOne({ email });
 
-        const results = await db.collection('users').findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
 
-        if (!results) {
-            const newUser = {
-                first_name,
-                last_name,
-                email,
-                password,
-            };
+        const verification_token = crypto.randomBytes(32).toString('hex').trim();
+        const newUser = {
+            first_name,
+            last_name,
+            email,
+            password,
+            email_verified: false,
+            verification_token,
+        };
 
-            const result = await db.collection('users').insertOne(newUser);
-            const message = 'User added successfully';
+        await db.collection('users').insertOne(newUser);
 
-            // Send the user's data along with the success message
-            res.status(201).json({
-                message: message,
-                user_id: result.insertedId,
-                first_name: newUser.first_name,
-                last_name: newUser.last_name,
-                email: newUser.email,
+        // Send verification email
+        const verificationLink = `https://xplora.fun/api/verify-email?user_id=${newUser._id}&token=${verification_token}`;
+        const subject = "Verify Your Email";
+        const text = `Hi ${first_name},\n\nPlease verify your email by clicking the link below:\n\n${verificationLink}\n\nThank you!`;
+        const html = `<p>Hi ${first_name},</p><p>Please verify your email by clicking the link below:</p><p><a href="${verificationLink}">Verify Email</a></p><p>Thank you!</p>`;
+
+        const emailResult = await sendEmail(email, subject, text, html);
+
+        if (emailResult.success) {
+            return res.status(201).json({
+                message: 'User registered successfully. Verification email sent.',
             });
         } else {
-            error = 'Email already exists';
-            res.status(401).json({ error });
+            return res.status(500).json({
+                message: 'User registered, but verification email failed to send.',
+                error: emailResult.error,
+            });
         }
-    } catch (err) {
-        error = 'An error occurred while accessing the database';
-        res.status(500).json({ error });
+    } catch (error) {
+        console.error('Error during registration:', error.message);
+        res.status(500).json({ error: 'An error occurred during registration.' });
+    }
+});
+
+app.get('/api/verify-email', async (req, res) => {
+    const { user_id, token } = req.query;
+
+    try {
+        console.log("Received user_id:", user_id);
+        console.log("Received token:", token);
+
+        const sanitizedToken = token.trim();
+        console.log("Sanitized token:", sanitizedToken);
+
+        const db = client.db('xplora');
+
+        const user = await db.collection('users').findOne({
+            _id: new ObjectId(user_id),
+            verification_token: sanitizedToken,
+        });
+
+        console.log("Database query result:", user);
+
+        if (!user) {
+            console.error("Invalid user_id or expired token:", { user_id, token });
+            return res.status(400).send('<h1>Invalid or expired token. Please register again.</h1>');
+        }
+
+        // Mark the user as verified and remove the token
+        await db.collection('users').updateOne(
+            { _id: new ObjectId(user_id) },
+            { $set: { email_verified: true }, $unset: { verification_token: '' } }
+        );
+
+        console.log("User verified successfully:", user.email);
+        res.send(`
+            <html>
+            <head>
+                <title>Verification Successful</title>
+                <meta http-equiv="refresh" content="5;url=https://xplora.fun/login" />
+            </head>
+            <body>
+                <h1>Email successfully verified! You can now log in.</h1>
+                <p>You will be redirected to the login page in 5 seconds.</p>
+                <p>If you are not redirected, <a href="https://xplora.fun/login">click here</a>.</p>
+            </body>
+            </html>
+        `);
+    } catch (error) {
+        console.error('Error verifying email:', error.message);
+        res.status(500).send('<h1>An error occurred while verifying your email. Please try again later.</h1>');
     }
 });
 
@@ -856,9 +945,6 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
 
 //------------------
 //PASSWORD RESET APIs
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const { ErrorMessage } = require('formik');
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
 
