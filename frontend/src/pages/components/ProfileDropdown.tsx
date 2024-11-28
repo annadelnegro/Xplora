@@ -23,16 +23,18 @@ interface ProfileDropdownProps {
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email, password, id, resetToken, onEditProfile, onSaveProfile, onCancelProfile, isEditing, isMenuOpen }) => {
     const [newFirstName, setNewFirstName] = useState<string>(firstName);
     const [newLastName, setNewLastName] = useState<string>(lastName);
-    const [newEmail, setNewEmail] = useState<string>(email);
+    const [newEmail] = useState<string>(email);
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
+    const [profilePic, setProfilePic] = useState<string>(defaultprofile);
+
     // Password schema only required when currentPassword has input
     const [isEditingPassword, setIsEditingPassword] = useState(false);
 
-
+    // good
     const profileChangeSchema = yup.object().shape({
         newFirstName: yup.string().required('First name is required'),
         newLastName: yup.string().required('Last name is required'),
@@ -75,10 +77,12 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             }),
     });
    
+    // good
     const toggleEditPassword = () => {
         setIsEditingPassword(currentPassword.trim().length > 0);
     };
 
+    //
     const handleSaveChange = async () => {
         const profileData = {
             newFirstName,
@@ -146,6 +150,35 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             }
         }
     };
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if(!event.target.files || event.target.files.length === 0){
+            return;
+        }
+
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const userId = localStorage.getItem('ID');
+
+        try {
+            const response = await fetch(`/api/users/:${userId}`, {
+                method: 'PUT',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const uploadedImageUrl = data.filePath;
+                setProfilePic(uploadedImageUrl);
+                location.reload();
+            } else {
+                console.error('Error uploading file:', await response.text());
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+        }
+    };
     
     return(
         <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">          
@@ -153,10 +186,25 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             <div className={`profile-info ${isEditing ? "editing" : ""}`}>                           
                 {isEditing ? (
                     <>
+                    <div className='profile-img-wrapper'>
                         <div className="profile-img-container">
-                            <img src={defaultprofile} alt="Profile Icon"/>  
-                            <i id="edit-profile-img-icon" className="fa fa-pen"></i>
+                            <img src={profilePic || defaultprofile} alt="Profile Icon" />
                         </div>
+                        <div>
+                                <i 
+                                    id="trip-item-edit-icon-2" 
+                                    className='fa fa-pen-alt' 
+                                    onClick={() => document.getElementById('file-input')?.click()} 
+                                ></i>
+                        </div>
+                            <input
+                                type="file"
+                                id="file-input"
+                                accept="image/jpeg, image/png, image/jpg"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                            />
+                    </div>
                         <div className="edit-info">
                             <input id="edit-first-name"
                                 type="text"
@@ -175,10 +223,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                 placeholder="Last Name"
                             />
                         </div>
-
-                        {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                            <span>{errorMessage}</span>
-                        </div> */}
                     </>
                 ) : (
                     <>
@@ -193,20 +237,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                     {isEditing ? (
                         <>
                             <div className='edit-info'>
-                                <input id="email"
-                                    type="email"
-                                    value={newEmail}
-                                    onChange={(e) => setNewEmail(e.target.value)}
-                                    placeholder="Email"
-                                />
+                                <div id="email" className="non-editable-email">
+                    {newEmail}
+                </div>
                             </div>
-
-                            {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                <span>{errorMessage}</span>
-                            </div> */}
                         </>
                     ) : (
-                        <div className="edit-info">{email}</div>
+                        <div className="edit-info-d">{email}</div>
                     )}
             </div>
             <div className={`profile-info ${isEditing ? "editing" : ""}`}>
@@ -221,10 +258,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="Current Password"
                                     />
-
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
 
                                     {errorMessages.currentPassword && (
                                         <div className="error-flag show">
@@ -273,7 +306,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
 
                     ) : (
                         <>
-                            <div className="edit-info">{password}</div>
+                            <div className="edit-info-d">{password}</div>
                         </>
 
                     )}
