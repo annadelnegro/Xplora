@@ -227,18 +227,40 @@
     box-sizing: border-box;
 }
 
+.edit-info-d {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.non-editable-email {
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: not-allowed;
+    
+}
+
 .edit-info input, .profile-info input{
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    font-family: Poppins, sans-serif;
     position:relative;
-    border: none;
-    background-color: rgb(235, 235, 235);
+    border: none !important;
+    background-color: #ffff;
     color: black;
     border-radius: 10px;
     padding: 10px 10px 10px 10px;
-    /* margin: 7px 0px 7px; */
     margin-bottom: 15px;
-    /* margin: 15px; */
     width: 92%;
     font-weight: 300;
+}
+
+.edit-info input {
+    padding: 8px !important;
 }
 
 .profile-actions-section{
@@ -472,6 +494,21 @@
     transform: translateY(-1px);
     transition: color 0.3s ease-in-out;
    
+}
+
+#trip-item-edit-icon-2 {
+    color: #02b3d4CC;
+    font-size: 18px;
+    margin-right: 25px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#trip-item-edit-icon-2:hover {
+    color: #83d2e0cc;
+    transform: translateY(-1px);
+    transition: color 0.3s ease-in-out;
+
 }
 
 .no-trips-message {

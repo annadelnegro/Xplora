@@ -12,26 +12,7 @@ const client = new MongoClient(url);
 
 app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
 
-// const storageUsers = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, path.join('/var/www/html/uploads/users/')));
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, `${Date.now()}-${file.originalname}`);
-//     }
-// });
-
-// const uploadUserPic = multer({ storageUsers });
-
-const storageTrips = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('/var/www/html/uploads/trips/'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-
+// file filter for photo upload (user and trip photo)
 const fileFilter = (req, file, cb) => {
     console.log('File Name:', file.originalname);
     console.log('MIME Type:', file.mimetype);
@@ -43,6 +24,34 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+// user pic multer 
+const storageUsers = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('/var/www/html/uploads/users/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const uploadUserPic = multer({
+    storage: storageUsers,
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    },
+    fileFilter
+});
+
+// trip pic multer 
+const storageTrips = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('/var/www/html/uploads/trips/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
 const uploadTripPic = multer({
     storage: storageTrips,
     limits: {
@@ -50,6 +59,7 @@ const uploadTripPic = multer({
     },
     fileFilter
 });
+
 
 client.connect();
 
@@ -139,14 +149,34 @@ app.post('/api/register', async (req, res, next) => {
 
 // Update User API
 app.put('/api/users/:id', async (req, res, next) => {
-    let error = '';
-    const { id } = req.params;
-    const { first_name, last_name, email, password } = req.body;
-    const objectId = new ObjectId(String(id));
-
-    console.log(`${first_name} ${last_name} ${email} ${password}`);
-
     try {
+        await new Promise((resolve, reject) => {
+            uploadUserPic.single('photo')(req, res, (err) => {
+                if (err) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return reject({
+                            status: 413,
+                            message: 'File size exceeds the 5 MB limit',
+                        });
+                    } else if (err.message === 'Invalid file type. Only JPEG, JPG and PNG allowed.') {
+                        return reject({
+                            status: 400,
+                            message: err.message,
+                        });
+                    }
+                    return reject({
+                        status: 500,
+                        message: 'An error occurred during file upload',
+                    });
+                }
+                resolve();
+            });
+        });
+
+        const { id } = req.params;
+        const { first_name, last_name, password } = req.body;
+        const objectId = new ObjectId(String(id));
+    
         const db = client.db('xplora');
 
         if (!ObjectId.isValid(id)) {
@@ -156,7 +186,6 @@ app.put('/api/users/:id', async (req, res, next) => {
         const updateFields = {};
         if (first_name) updateFields.first_name = first_name;
         if (last_name) updateFields.last_name = last_name;
-        if (email) updateFields.email = email;
         if (password) updateFields.password = password;
 
         // Update the user document in the database
@@ -172,29 +201,10 @@ app.put('/api/users/:id', async (req, res, next) => {
         }
 
     } catch (err) {
-        error = 'An error occurred while updating the user information';
-        res.status(500).json({ error });
-    } finally {
-        console.log(`${first_name} ${last_name} ${email} ${password}`);
+        errormsg = 'An error occurred while updating the user information';
+        res.status(500).json({ "error": errormsg });
     }
 });
-
-// // Upload user pictures
-// app.post('/api/:userId/upload', uploadUserPic.single('photo'), (req, res) => {
-//     const { userId } = req.params;
-
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded');
-//     }
-
-//     // Construct the file path
-//     const filePath = `/uploads/${req.file.filename}`;
-
-//     // TODO: Save the filePath and userId in your database if needed
-//     console.log(`UserId: ${userId}, File: ${filePath}`);
-
-//     res.status(200).send({ userId, filePath });
-// });
 
 // Get Password API
 app.get('/api/users/:id/password', async (req, res) => {
@@ -848,6 +858,7 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
 //PASSWORD RESET APIs
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const { ErrorMessage } = require('formik');
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
 
