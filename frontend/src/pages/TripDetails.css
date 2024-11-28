@@ -1,0 +1,308 @@
+TripDetails.css .tripdetails-logo {
+    height: 50px;
+}
+
+.tripdetails-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    color: #fff;
+    background-color: #ffff;
+    box-sizing: border-box;
+}
+
+.trip-details-page {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.tripdetails-nav a {
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+.tripdetails-nav ul li a {
+    color: #0f1dd6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tripdetails-nav ul li a:hover {
+    text-decoration: none;
+}
+
+.tripdetails-i-header {
+    background-color: #e9d8fd;
+    font-family: Poppins, sans-serif;
+    color: #5c3b94;
+    font-size: 1.5rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-weight: bold;
+}
+
+.tripdetails-i-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    font-size: 1rem;
+}
+
+.tripdetails-i-container {
+    margin-bottom: 10%;
+    border: 1px solid #d8baf3;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    /* Removed fixed height to allow dynamic resizing */
+}
+
+.trip-card-tripdetails {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 19px;
+    padding: 16px;
+    margin-top: 10px;
+    position: relative;
+    width: 90%;
+    margin: 30px;
+    height: auto;
+    border: 1px solid #ababab;
+    margin-top: 60px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.trip-dates {
+    color: #666;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.trip-location {
+    color: #666;
+    font-size: 1.6rem;
+    text-align: left;
+    font-family: Poppins, sans-serif;
+}
+
+.dropdown-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+    border-bottom: 1px solid #cbbaf3;
+    padding: 10px;
+}
+
+.dropdown-all {
+    width: 100%;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.dropdown-header .text {
+    flex: 1;
+    text-align: left;
+    font-family: Poppins, sans-serif;
+}
+
+.dropdown-header .arrow {
+    font-size: 16px;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-header .arrow.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-header .add-button {
+    font-size: 24px;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 30px;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 170px;
+    background-color: #5c3b949d;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    white-space: nowrap;
+    font-family: Poppins, sans-serif;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tripdetails-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    margin-top: 15px;
+}
+
+.tripdetails-image-container {
+    position: relative;
+    width: 30%;
+    height: 80%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.note-box {
+    padding: 15px;
+    background-color: #fff8dc;
+    border-left: 4px solid #ffa500;
+    border-radius: 4px;
+    margin: 15px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    font-style: italic;
+    color: #333;
+    flex-direction: column;
+    width: 90%;
+}
+
+.deets-and-photo {
+    display: flex;
+}
+
+.td-trip-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0.7;
+    justify-content: center;
+    gap: 10px;
+    text-align: left;
+    margin-left: 50px;
+}
+
+.tripdetails-logo {
+    min-height: 40px;
+    height: 2.5vw;
+    width: auto;
+}
+
+.flights-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 5px;
+}
+
+.flight-details{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    border-radius: 25px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+.top-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.airport-separation-line {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.airport-separation-line::before,
+.airport-separation-line::after {
+    content: "";
+    flex: 1;
+    border-top: 2px dotted #00000055;
+    margin: 0 8px;
+}
+
+.airplane-icon {
+    width: 35px;
+    height: auto;
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+#from-airport{
+    text-align: start;
+}
+
+#dest-airport {
+    text-align: end;
+}
+
+.bottom-info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.from-info, .dest-info{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.from-info{
+    align-items: start;
+}
+
+.dest-info{
+    align-items: end;
+}

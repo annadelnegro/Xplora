@@ -481,9 +481,11 @@
     margin-top: 20px;
 }
 
-.trip-link {
-    font-family: Poppins, sans-serif;
-    text-decoration: none;
-    color: #551A8B;
-    font-weight: bold;
+@media (prefers-color-scheme: dark) {
+    /* Change general text to black for visibility */
+    .trip-list-container {
+        color: black;
+    }
+
+
 }
