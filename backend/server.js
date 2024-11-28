@@ -122,6 +122,7 @@ app.post('/api/register', async (req, res, next) => {
             // Send the user's data along with the success message
             res.status(201).json({
                 message: message,
+                user_id: result.insertedId,
                 first_name: newUser.first_name,
                 last_name: newUser.last_name,
                 email: newUser.email,
