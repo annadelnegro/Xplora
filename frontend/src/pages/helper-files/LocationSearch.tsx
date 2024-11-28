@@ -28,9 +28,11 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ field, form }) => {
                     }
                 );
 
-                console.log("API Response:", response.data);
-                console.log("Field:", field);
-                console.log("Form:", form);
+                // console.log("API Response:", response.data);
+                // console.log("Field:", field);
+                // console.log("Form:", form);
+                // console.log('API URL:', `https://api.opencagedata.com/geocode/v1/json?q=${value}&key=${apiKey}&limit=5&language=en`);
+
                 const locations = response.data.results.map((result: any) => result.formatted);
                 setSuggestions(locations);
                 setError(null); // Clear any existing errors

@@ -8,6 +8,8 @@ interface ProfileDropdownProps {
     lastName: string;
     email: string;
     password: string;
+    id: string;
+    resetToken: string;
 
     onEditProfile: () => void;
     // onSaveProfile: () => void;
@@ -18,71 +20,135 @@ interface ProfileDropdownProps {
     isMenuOpen: boolean;
 }
 
-const passwordChangeSchema = yup.object().shape({
-    currentPassword: yup.string().required('Current password is required'),
-    newPassword: yup
-        .string()
-        .required('New password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .matches(/[0-9]/, 'Password must contain at least one number')
-        .matches(/[\W_]/, 'Password must contain at least one special character'),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref('newPassword')], 'Passwords must match')
-        .required('Confirm password is required'),
-});
-
-
-
-
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email, password, onEditProfile, onSaveProfile, onCancelProfile, isEditing, isMenuOpen }) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email, password, id, resetToken, onEditProfile, onSaveProfile, onCancelProfile, isEditing, isMenuOpen }) => {
     const [newFirstName, setNewFirstName] = useState<string>(firstName);
     const [newLastName, setNewLastName] = useState<string>(lastName);
     const [newEmail, setNewEmail] = useState<string>(email);
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null); 
-    
+    const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
+
+    // Password schema only required when currentPassword has input
+    const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+
+    const profileChangeSchema = yup.object().shape({
+        newFirstName: yup.string().required('First name is required'),
+        newLastName: yup.string().required('Last name is required'),
+        newEmail: yup
+            .string()
+            .email('Invalid email address')
+            .required('Email is required'),
+        currentPassword: yup
+            .string()
+            .test('current-password-required', 'Current password is required', function (value) {
+                return !this.options.context?.isEditingPassword || !!value?.trim();
+            }),
+            newPassword: yup
+            .string()
+            .test('new-password-required', 'New password is required', function (value) {
+                if (this.options.context?.isEditingPassword) {
+                    return !!value?.trim();
+                }
+                return true;
+            })
+            .when('$isEditingPassword', {
+                is: true,
+                then: (schema) =>
+                    schema
+                        .min(8, 'Password must be at least 8 characters')
+                        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+                        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+                        .matches(/[0-9]/, 'Password must contain at least one number')
+                        .matches(/[\W_]/, 'Password must contain at least one special character'),
+                otherwise: (schema) => schema,
+            }),
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref('newPassword')], 'Passwords must match')
+            .test('confirm-password-required', 'Confirm password is required', function (value) {
+                if (this.options.context?.isEditingPassword) {
+                    return !!value?.trim();
+                }
+                return true;
+            }),
+    });
+   
+    const toggleEditPassword = () => {
+        setIsEditingPassword(currentPassword.trim().length > 0);
+    };
 
     const handleSaveChange = async () => {
-        const passwordData = {
-            currentPassword: currentPassword, 
-            newPassword: newPassword,
-            confirmPassword: confirmPassword
+        const profileData = {
+            newFirstName,
+            newLastName,
+            newEmail,
+            currentPassword,
+            newPassword,
+            confirmPassword,
         };
-    
-        const actualPassword = password;
-    
+
         try {
-            await passwordChangeSchema.validate(passwordData, { abortEarly: false });
-    
-            if (currentPassword !== actualPassword) {
-                // alert("Current password is incorrect.");
-                setErrorMessage("Current password is incorrect.");
+            await profileChangeSchema.validate(profileData, {
+                abortEarly: false,
+                context: { isEditingPassword },
+            });
+
+            // If password editing is active, validate the current password
+            if (isEditingPassword && currentPassword !== password) {
+                setErrorMessages((prev) => ({
+                    ...prev,
+                    currentPassword: 'Current password is incorrect.',
+                }));
                 return;
             }
-    
-            onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
 
-            setErrorMessage(null);
+            // If a reset is being performed (through the token and id)
+            if (resetToken && id && newPassword.trim()) {
+                // Make API call to reset password
+                const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        token: resetToken,
+                        id,
+                        newPassword,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Password reset successful
+                    setErrorMessages({});
+                    alert(data.message);
+                } else {
+                    // Handle error from API
+                    setErrorMessages({ resetPassword: data.error });
+                }
+            } else {
+                // Save profile data if validation passes
+                onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
+                setErrorMessages({}); // Clear errors on success
+            }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
-                const validationErrors = error.inner.map((err) => err.message);
-                // console.error("Validation errors:", validationErrors);
-                setErrorMessage(validationErrors.join("\n"));
+                const newErrors: Record<string, string> = {};
+                error.inner.forEach((err) => {
+                    if (err.path) {
+                        newErrors[err.path] = err.message;
+                    }
+                });
+                setErrorMessages(newErrors);
             }
         }
     };
     
     return(
-        <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">
-            <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                <span>{errorMessage}</span>
-            </div>
-            
+        <div className={`profile-menu-container ${isMenuOpen ? 'open-menu' : ''}`} id="profile-menu">          
             {/* Conditional classNames based on isEditing status */}
             <div className={`profile-info ${isEditing ? "editing" : ""}`}>                           
                 {isEditing ? (
@@ -109,6 +175,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                 placeholder="Last Name"
                             />
                         </div>
+
+                        {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                            <span>{errorMessage}</span>
+                        </div> */}
                     </>
                 ) : (
                     <>
@@ -130,6 +200,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                     placeholder="Email"
                                 />
                             </div>
+
+                            {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                <span>{errorMessage}</span>
+                            </div> */}
                         </>
                     ) : (
                         <div className="edit-info">{email}</div>
@@ -143,9 +217,20 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                     <input id="current-password"
                                         type="password"
                                         value={currentPassword}
+                                        onInput={toggleEditPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="Current Password"
                                     />
+
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div> */}
+
+                                    {errorMessages.currentPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.currentPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
                                 
                                 <div className="password-field">
@@ -155,6 +240,15 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         placeholder="New Password"
                                     />
+
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div> */}
+                                    {errorMessages.newPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.newPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="password-field">
@@ -164,6 +258,15 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         placeholder="Confirm New Password"
                                     />
+
+                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
+                                        <span>{errorMessage}</span>
+                                    </div> */}
+                                    {errorMessages.confirmPassword && (
+                                        <div className="error-flag show">
+                                            <span>{errorMessages.confirmPassword}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </>

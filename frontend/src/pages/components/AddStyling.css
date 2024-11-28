@@ -58,6 +58,12 @@
     resize: vertical;
 }
 
+.notes-edit-trip{
+    height: 150px;
+    position: relative;
+    text-align: left;
+}
+
  .modal-content .error-message{
     color: rgb(251, 85, 85);
 }
@@ -72,3 +78,29 @@ input[type="time"] {
     transition: border-color 0.3s ease; 
 }
 
+.custom-upload-button-edit {
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 23%;
+    max-width: 200px;
+    background-color: #f9f9f9;
+    border: none;
+    font-weight: 500;
+    font-family: inherit;
+    color: #000;
+}
+
+.custom-upload-button-edit:hover {
+    background-color: #a263eab8;
+    border: none;
+}
+
+.trip-link, .location-of-trip {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    display: block;
+}

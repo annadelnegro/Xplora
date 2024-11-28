@@ -8,10 +8,9 @@ interface AddFlightProps {
 }
 
 const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) => {
+    
     const [flightDetails, setFlightDetails] = useState({
-        departureCity: '',
         departureAirport: '',
-        arrivalCity: '',
         arrivalAirport: '',
         departureDate: '',
         departureTime: '',
@@ -21,20 +20,9 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
         confirmationNumber: '',
     });
 
-    const [isSaving] = useState(false); // Loading indicator
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    console.log('Flight details', flightDetails);
 
-    const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-        return (
-            <div className="modal-overlay-alert" onClick={onClose}>
-                <div className="modal-content-alert" onClick={(e) => e.stopPropagation()}>
-                    <h2>Success</h2>
-                    <p>Your flight has been added successfully!</p>
-                    <button onClick={onClose}>OK</button>
-                </div>
-            </div>
-        );
-    };
+    const [isSaving] = useState(false); // Loading indicator
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -45,7 +33,9 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     const [error, setError] = useState('');
     const handleSubmit = async () => {
 
-        if(!flightDetails.departureCity || !flightDetails.departureAirport || !flightDetails.arrivalCity || !flightDetails.arrivalAirport || !!flightDetails.departureDate
+        console.log('Flight details pt2', flightDetails);
+
+        if(!flightDetails.departureAirport || !flightDetails.arrivalAirport || !flightDetails.departureDate
             || !flightDetails.departureTime || !flightDetails.arrivalDate || !flightDetails.arrivalTime || !flightDetails.flightNumber ||!flightDetails.confirmationNumber
         ){
             setError("All fields are required");
@@ -75,10 +65,8 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     
             if (response.ok) {
                 console.log('Flight added successfully');
-                setIsSuccessModalOpen(true); // Open the success modal
-                onSave(); // Refresh the parent list
-               //onClose();
-               // location.reload();
+                onSave();
+                location.reload();
             } else {
                 const errorData = await response.json();
                 console.error('Error adding flight:', errorData.error);
@@ -98,11 +86,20 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                 <form>
                 {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
-                        <label>Departure City:</label>
+                        <label>Confirmation Number:</label>
                         <input
                             type="text"
-                            name="departureCity"
-                            value={flightDetails.departureCity}
+                            name="confirmationNumber"
+                            value={flightDetails.confirmationNumber}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Flight Number:</label>
+                        <input
+                            type="text"
+                            name="flightNumber"
+                            value={flightDetails.flightNumber}
                             onChange={handleChange}
                         />
                     </div>
@@ -112,24 +109,6 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                             type="text"
                             name="departureAirport"
                             value={flightDetails.departureAirport}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Arrival City:</label>
-                        <input
-                            type="text"
-                            name="arrivalCity"
-                            value={flightDetails.arrivalCity}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Arrival Airport:</label>
-                        <input
-                            type="text"
-                            name="arrivalAirport"
-                            value={flightDetails.arrivalAirport}
                             onChange={handleChange}
                         />
                     </div>
@@ -152,6 +131,15 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                         />
                     </div>
                     <div className="form-group">
+                        <label>Arrival Airport:</label>
+                        <input
+                            type="text"
+                            name="arrivalAirport"
+                            value={flightDetails.arrivalAirport}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
                         <label>Arrival Date:</label>
                         <input
                             type="date"
@@ -169,37 +157,12 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>Flight Number:</label>
-                        <input
-                            type="text"
-                            name="flightNumber"
-                            value={flightDetails.flightNumber}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Confirmation Number:</label>
-                        <input
-                            type="text"
-                            name="confirmationNumber"
-                            value={flightDetails.confirmationNumber}
-                            onChange={handleChange}
-                        />
-                    </div>
                     <button className='submit-flight' type="button" onClick={handleSubmit} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save Flight'}
                     </button>
                 </form>
             </div>
-
-                {isSuccessModalOpen && <SuccessModal onClose={() => {
-                    setIsSuccessModalOpen(false); 
-                    onClose(); // Close the main modal
-                }} />}
         </div>
-
-        
     );
 };
 

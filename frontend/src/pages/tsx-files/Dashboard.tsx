@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css-files/Dashboard.css';
 import TripListItem from '../components/TripListItem';
 import ProfileDropdown from '../components/ProfileDropdown'
 import iconlogo from '../../images/xplora-icon.png';
-
+// import { render } from 'react-dom';
 
 export const handleLogout = () => {
     const navigate = useNavigate();
@@ -34,12 +34,16 @@ const Dashboard: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [resetToken, setResetToken] = useState<string | null>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
     }
 
     const renderProfile = () => {
+        const userId = localStorage.getItem('ID') || '';
         
         if (isEditing) {
             return (
@@ -48,6 +52,8 @@ const Dashboard: React.FC = () => {
                     lastName={lastName}
                     email={email}
                     password={password}
+                    id={userId}
+                    resetToken={resetToken || ''}
                     onEditProfile={() => handleEditProfile()}
                     onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
                         handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
@@ -65,6 +71,8 @@ const Dashboard: React.FC = () => {
                 lastName={lastName}
                 email={email}
                 password={'*************'}
+                id={userId}
+                resetToken={resetToken || ''}
                 onEditProfile={() => handleEditProfile()}
                 onSaveProfile={(newFirstName, newLastName, newEmail, newPassword) =>
                     handleSaveProfile(newFirstName, newLastName, newEmail, newPassword)
@@ -127,6 +135,23 @@ const Dashboard: React.FC = () => {
 
         renderProfile();
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+                setIsEditing(false);
+            }
+        };
+
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
     
 
     const handleLogout = () => {
@@ -149,11 +174,13 @@ const Dashboard: React.FC = () => {
         const storedFirstName = localStorage.getItem('firstName');
         const storedLastName = localStorage.getItem('lastName');
         const storedEmail = localStorage.getItem('email');
+        const storedResetToken = localStorage.getItem('resetToken');
 
         if (storedFirstName && storedLastName && storedEmail) {
             setFirstName(storedFirstName);
             setLastName(storedLastName);
             setEmail(storedEmail);
+            setResetToken(storedResetToken || null);
             // handleGetPassword();
         } else {
             navigate('/login');
@@ -167,6 +194,7 @@ const Dashboard: React.FC = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setTrips(data);
+                    console.log('Fetched trips:', data);
                 } else {
                     console.error('Failed to fetch trips:', response.statusText);
                 }
@@ -223,13 +251,12 @@ const Dashboard: React.FC = () => {
                 return filteredTrip.map((trip) => (
                     <TripListItem
                         key={trip._id}
-                        title={
-                            <Link to={`/trip-details/${trip._id}`} className='trip-link'>
-                                {trip.name}
-                             </Link>
-                        }
+                        id={String(trip._id)}
+                        title={String(trip.name)}
                         location={trip.city}
                         dates={`${trip.start_date} - ${trip.end_date}`}
+                        notes={String(trip.notes)}
+                        pictureUrl={trip.picture_url}
                         onDelete={() => handleDeleteTrip(trip._id)}
                         onEdit={() => handleEditTrip(trip._id)} 
                     />
@@ -251,21 +278,25 @@ const Dashboard: React.FC = () => {
                 </div>
                 
                 <div className='actions-section'>
-                    <button id="profile-btn" onClick={toggleMenu}>Profile</button>
-                    {isMenuOpen && (
-                        <ProfileDropdown
-                        firstName={firstName}
-                        lastName={lastName}
-                        email={email}
-                        password={'*************'}
-                        onEditProfile={handleEditProfile}
-                        onSaveProfile={handleSaveProfile}
-                        onCancelProfile={handleCancelProfile}
-                        isEditing={isEditing}
-                        isMenuOpen={isMenuOpen}
-                        />  
-                    )}
-                                                                                                  
+                    <div ref={menuRef}>
+                        <button id="profile-btn" onClick={toggleMenu}>Profile</button>
+                        {isMenuOpen && renderProfile()}
+                        {/* // (
+                        //     <ProfileDropdown
+                        //     firstName={firstName}
+                        //     lastName={lastName}
+                        //     email={email}
+                        //     password={'*************'}
+                        //     onEditProfile={handleEditProfile}
+                        //     onSaveProfile={handleSaveProfile}
+                        //     onCancelProfile={handleCancelProfile}
+                        //     isEditing={isEditing}
+                        //     isMenuOpen={isMenuOpen}
+                        //     />  
+                        // )} */}
+                                                                                                    
+                        
+                    </div>
                     <button id="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </div>

@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
+
+
+
+
 .homepage {
   font-family: Poppins, sans-serif;
   height: 100vh;
@@ -13,6 +17,7 @@
   align-items: center;
   text-align: center;
   padding: 20px 30px;
+  
 }
 
 .homepage-header a, .homepage-header button {
@@ -61,10 +66,24 @@
 #login-btn{
   border: 1px solid #6A0DAD55;
   background-color: white;
+  transition: all 0.3s ease-in-out;
 }
 
+#login-btn:hover{
+  background-color: #6A0DAD55;
+  color: aliceblue !important;
+}
+
+
 #register-btn{
+  border: 1px solid #6A0DAD55;
   background-color: #6A0DAD;
+
+}
+#register-btn:hover{
+  background-color: #6A0DAD55;
+  transition: all 0.3s ease-in-out;
+
 }
 
 #register-btn a{
@@ -92,6 +111,7 @@
   flex-grow: 1; 
   word-wrap: break-word;
   overflow-wrap: break-word;
+  animation: goRight 0.6s ease-out forwards;
 }
 
 .homepage-intro h1{
@@ -192,5 +212,16 @@
   100% {
     top: 33%; 
     opacity: 1;
+  }
+}
+
+@keyframes goRight {
+  0% {
+      transform: translateX(-50px);
+      opacity: 0; 
+  }
+  100% {
+      transform: translateX(0);
+      opacity: 1; 
   }
 }
