@@ -2,12 +2,55 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const multer = require('multer');
+const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const PORT = 5000;
-
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
+
+app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
+
+// const storageUsers = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, path.join('/var/www/html/uploads/users/')));
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `${Date.now()}-${file.originalname}`);
+//     }
+// });
+
+// const uploadUserPic = multer({ storageUsers });
+
+const storageTrips = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('/var/www/html/uploads/trips/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    console.log('File Name:', file.originalname);
+    console.log('MIME Type:', file.mimetype);
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only JPEG, JPG and PNG allowed.'), false);
+    }
+};
+
+const uploadTripPic = multer({
+    storage: storageTrips,
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    },
+    fileFilter
+});
+
 client.connect();
 
 app.listen(PORT, () => {
@@ -79,6 +122,7 @@ app.post('/api/register', async (req, res, next) => {
             // Send the user's data along with the success message
             res.status(201).json({
                 message: message,
+                user_id: result.insertedId,
                 first_name: newUser.first_name,
                 last_name: newUser.last_name,
                 email: newUser.email,
@@ -93,19 +137,130 @@ app.post('/api/register', async (req, res, next) => {
     }
 });
 
+// Update User API
+app.put('/api/users/:id', async (req, res, next) => {
+    let error = '';
+    const { id } = req.params;
+    const { first_name, last_name, email, password } = req.body;
+    const objectId = new ObjectId(String(id));
+
+    console.log(`${first_name} ${last_name} ${email} ${password}`);
+
+    try {
+        const db = client.db('xplora');
+
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid user ID' });
+        }
+
+        const updateFields = {};
+        if (first_name) updateFields.first_name = first_name;
+        if (last_name) updateFields.last_name = last_name;
+        if (email) updateFields.email = email;
+        if (password) updateFields.password = password;
+
+        // Update the user document in the database
+        const result = await db.collection('users').updateOne(
+            { _id: objectId },
+            { $set: updateFields }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: 'User information updated successfully' });
+        } else {
+            res.status(200).json({ message: 'No changes made' });
+        }
+
+    } catch (err) {
+        error = 'An error occurred while updating the user information';
+        res.status(500).json({ error });
+    } finally {
+        console.log(`${first_name} ${last_name} ${email} ${password}`);
+    }
+});
+
+// // Upload user pictures
+// app.post('/api/:userId/upload', uploadUserPic.single('photo'), (req, res) => {
+//     const { userId } = req.params;
+
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded');
+//     }
+
+//     // Construct the file path
+//     const filePath = `/uploads/${req.file.filename}`;
+
+//     // TODO: Save the filePath and userId in your database if needed
+//     console.log(`UserId: ${userId}, File: ${filePath}`);
+
+//     res.status(200).send({ userId, filePath });
+// });
+
+// Get Password API
+app.get('/api/users/:id/password', async (req, res) => {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    try {
+        const db = client.db('xplora');
+        const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Password received' });
+
+    } catch (error) {
+        console.error('Error fetching password:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
 //--------------------------------
 // TRIPS -- POST to add a new trip
 app.post('/api/users/:userId/trips', async (req, res) => {
-    const { name, city, start_date, end_date, notes, picture_url } = req.body;
-
-    if (!name || !city || !start_date || !end_date) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    const user_id = req.params.userId;
-    const objectId = new ObjectId(String(user_id));
-
     try {
+        await new Promise((resolve, reject) => {
+            uploadTripPic.single('photo')(req, res, (err) => {
+                if (err) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return reject({
+                            status: 413,
+                            message: 'File size exceeds the 5 MB limit',
+                        });
+                    } else if (err.message === 'Invalid file type. Only JPEG, JPG and PNG allowed.') {
+                        return reject({
+                            status: 400,
+                            message: err.message,
+                        });
+                    }
+                    return reject({
+                        status: 500,
+                        message: 'An error occurred during file upload',
+                    });
+                }
+                resolve();
+            });
+        });
+
+        const { userId } = req.params;
+        const { name, city, start_date, end_date, notes } = req.body;
+
+        if (!name || !city || !start_date || !end_date) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        let picture_url = '/uploads/trips/trip_default.jpg';
+        if (req.file) {
+            picture_url = `/uploads/trips/${req.file.filename}`;
+        }
+
+        const objectId = new ObjectId(String(userId));
+
         const db = client.db('xplora');
 
         const existingTrip = await db.collection('trips').findOne({
@@ -113,7 +268,7 @@ app.post('/api/users/:userId/trips', async (req, res) => {
             name,
             city,
             start_date,
-            end_date
+            end_date,
         });
 
         if (existingTrip) {
@@ -137,10 +292,16 @@ app.post('/api/users/:userId/trips', async (req, res) => {
             trip_id: result.insertedId,
         });
     } catch (error) {
-        console.error('Error occurred while adding trip:', error);
+        console.error('Error occurred while processing trip:', error);
+
+        if (error.status) {
+            return res.status(error.status).json({ error: error.message });
+        }
+
         res.status(500).json({ error: 'An error occurred while adding the trip' });
     }
 });
+
 
 //TRIPS -- GET trips from user_id
 app.get('/api/users/:userId/trips', async (req, res) => {
@@ -163,10 +324,30 @@ app.get('/api/users/:userId/trips', async (req, res) => {
     }
 });
 
-//TRIPS -- PUT to update trip
-app.put('/api/users/:userId/trips/:tripId', async (req, res) => {
+//TRIPS -- GET singular trip from user_id
+app.get('/api/users/:userId/trips/:tripId', async (req, res) => {
     const { userId, tripId } = req.params;
-    const { name, city, start_date, end_date, notes, picture_url } = req.body;
+    const tripObjId = new ObjectId(String(tripId));
+
+    try {
+        const db = client.db('xplora');
+        const trip = await db.collection('trips').findOne({ _id: tripObjId });
+
+        if (!trip) {
+            return res.status(404).json({ error: 'Trip not found' });
+        }
+
+        res.status(200).json(trip);
+    } catch (error) {
+        console.error('Error fetching trip:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the trip' });
+    }
+});
+
+//TRIPS -- PUT to update trip
+app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async (req, res) => {
+    const { userId, tripId } = req.params;
+    const { name, city, start_date, end_date, notes } = req.body;
     const tripObjId = new ObjectId(String(tripId));
     const userObjId = new ObjectId(String(userId));
 
@@ -185,7 +366,10 @@ app.put('/api/users/:userId/trips/:tripId', async (req, res) => {
         if (start_date !== undefined) updatedTrip.start_date = start_date;
         if (end_date !== undefined) updatedTrip.end_date = end_date;
         if (notes !== undefined) updatedTrip.notes = notes;
-        if (picture_url !== undefined) updatedTrip.picture_url = picture_url;
+
+        if (req.file) {
+            updatedTrip.picture_url = `/uploads/trips/${req.file.filename}`;
+        }
 
         const result = await db.collection('trips').updateOne(
             { _id: tripObjId },
@@ -661,10 +845,9 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
 });
 
 //------------------
-//PASWORD RESET APIs
+//PASSWORD RESET APIs
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -705,7 +888,6 @@ app.post('/api/forgot-password', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while requesting password reset' });
     }
 });
-
 app.post('/api/reset-password', async (req, res) => {
     const { token, id, newPassword } = req.body;
 

@@ -1,12 +1,12 @@
 /* General Page Styling */
-.signup-page{
+.login-page {
     display: flex;
     flex-direction: column;
     font-family: 'Poppins', sans-serif;
     height: 100vh;
 }
 
-.sign-up-main{
+.login-main{
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -14,10 +14,21 @@
     align-items: center;
     gap: 50px;
 }
+@keyframes goDown {
+    0% {
+        transform: translateY(-30px); /* Start 50px below */
+        opacity: 0; /* Fully transparent */
+    }
+    100% {
+        transform: translateY(0); /* End at its original position */
+        opacity: 1; /* Fully visible */
+    }
+}
+
 
 /* Login Container */
-.signup-container {
-    margin-bottom: 10%;
+.login-container {
+    animation: goUp 0.6s ease-out forwards;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,9 +41,9 @@
     text-align: center;
 }
 
-#sign-up-logo{
-    margin-top: 10%;
+#login-logo{
     width: 300px;
+    animation: goDown 0.6s ease-out forwards;
 }
 
 .login-title {
@@ -42,22 +53,22 @@
     font-weight: 600;
 }
 
-.sign-up-form-wrapper{
+.login-form-wrapper{
     width: 100%;
 }
 
 /* Form Styling */
-.signup-form {
+.login-form {
     display: flex;
     flex-direction: column;
 }
 
-.signup-form-field {
+.login-form-field {
     display: flex;
     margin-top: 1rem;
 }
 
-.signup-input-field {
+.login-input-field {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #cbbaf3;
@@ -68,18 +79,18 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.signup-error{
+.login-error-container{
     margin-top: 5px;
 }
 
-.signup-error-message {
+.login-error-message {
     color: #d9534f;
     font-size: 0.875rem;
     margin-bottom: 10px;
 }
 
 /* Button Styling */
-.signup-submit-button {
+.login-submit-button {
     width: 100%;
     padding: 0.75rem;
     font-size: 1rem;
@@ -92,33 +103,39 @@
     margin-top: 2rem;
 }
 
-.signup-submit-button:hover {
+.welcome-back {
+    color: #213547;
+}
+
+.login-submit-button:hover {
     background-color: #02b3d4CC;
 }
 
-.signup-submit-button:disabled {
+.login-submit-button:disabled {
     background-color: #7a7a7a;
     cursor: not-allowed;
 }
 
-.login-link {
+.signup-link {
     margin-top: 1rem;
     font-size: 0.875rem;
 }
 
-.login-link a {
+.signup-link a {
     color: #002a5c;
     text-decoration: none;
 }
 
-.login-link a:hover {
+.signup-link a:hover {
     text-decoration: underline;
 }
 
 @media (prefers-color-scheme: dark) {
     /* Change general text to black for visibility */
-
-    .login-link {
+    .login-form h2, .signup-link {
+        color: black;
+    }
+    .signup-link {
         color: #002a5c;
     }
 }

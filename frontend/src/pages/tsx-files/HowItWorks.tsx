@@ -1,6 +1,6 @@
 import React from 'react';
-import './HowItWorks.css'; // Create this CSS file for styling
-import logo from '../images/logo.png';
+import '../css-files/HowItWorks.css'; // Create this CSS file for styling
+import logo from '../../images/logo.png';
 import { Link } from 'react-router-dom';
 
 const HowItWorksPage: React.FC = () => {

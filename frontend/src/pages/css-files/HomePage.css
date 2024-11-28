@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
+
+
+
+
 .homepage {
   font-family: Poppins, sans-serif;
   height: 100vh;
@@ -13,6 +17,7 @@
   align-items: center;
   text-align: center;
   padding: 20px 30px;
+  
 }
 
 .homepage-header a, .homepage-header button {
@@ -61,10 +66,24 @@
 #login-btn{
   border: 1px solid #6A0DAD55;
   background-color: white;
+  transition: all 0.3s ease-in-out;
 }
 
+#login-btn:hover{
+  background-color: #6A0DAD55;
+  color: aliceblue !important;
+}
+
+
 #register-btn{
+  border: 1px solid #6A0DAD55;
   background-color: #6A0DAD;
+
+}
+#register-btn:hover{
+  background-color: #6A0DAD55;
+  transition: all 0.3s ease-in-out;
+
 }
 
 #register-btn a{
@@ -92,11 +111,13 @@
   flex-grow: 1; 
   word-wrap: break-word;
   overflow-wrap: break-word;
+  animation: goRight 0.6s ease-out forwards;
 }
 
 .homepage-intro h1{
   font-size: 400%;
   margin: 0 5%;
+  color: #213547;
 }
 
 .homepage-intro h1 span{
@@ -194,21 +215,13 @@
   }
 }
 
-
-@media (prefers-color-scheme: dark) {
-  /* Change general text to black for visibility */
-  .homepage-header a, .homepage-intro h1 {
-      color: black;
+@keyframes goRight {
+  0% {
+      transform: translateX(-50px);
+      opacity: 0; 
   }
-
-  /* Keep "XPLORA" in the original yellow */
-  .homepage-intro h1 span {
-      color: #d59108; /* Replace #FFD700 with the exact hex code if different */
-  }
-
-  /* Keep button text white */
-  .homepage-header button, .homepage-intro button, #register-btn a {
-      color: white;
+  100% {
+      transform: translateX(0);
+      opacity: 1; 
   }
 }
-

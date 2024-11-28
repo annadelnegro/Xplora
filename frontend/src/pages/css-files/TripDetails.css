@@ -1,0 +1,602 @@
+/* Modal "going up" animation */
+@keyframes goUp {
+    0% {
+        transform: translateY(30px); /* Start 50px below */
+        opacity: 0; /* Fully transparent */
+    }
+    100% {
+        transform: translateY(0); /* End at its original position */
+        opacity: 1; /* Fully visible */
+    }
+}
+
+TripDetails.css .tripdetails-logo {
+    height: 50px;
+}
+
+.tripdetails-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    color: #fff;
+    background-color: #ffff;
+    box-sizing: border-box;
+}
+
+.trip-details-page {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.tripdetails-nav a {
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+.tripdetails-nav ul li a {
+    color: #0f1dd6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tripdetails-nav ul li a:hover {
+    text-decoration: none;
+}
+
+.tripdetails-i-header {
+    background-color: #e9d8fd;
+    font-family: Poppins, sans-serif;
+    color: #5c3b94;
+    font-size: 1.5rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow-x: scroll;
+    max-width: 350px;
+    overflow-y: hidden;
+    display: block;
+}
+
+.tripdetails-i-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    font-size: 1rem;
+}
+
+.tripdetails-i-container {
+    border: 1px solid #d8baf3;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    width: 70%;
+    margin: 50px auto;
+    position: relative;
+    animation: goUp 0.6s ease-out forwards;
+    /* Removed fixed height to allow dynamic resizing */
+}
+
+.trip-card-tripdetails {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 19px;
+    padding: 16px;
+    margin-top: 10px;
+    position: relative;
+    width: 90%;
+    margin: 30px;
+    height: auto;
+    border: 1px solid #ababab;
+    margin-top: 60px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.trip-dates {
+    color: #666;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.trip-location {
+    color: #666;
+    font-size: 1.9rem;
+    text-align: left;
+    font-family: Poppins, sans-serif;
+    max-width: 400px;
+}
+
+.dropdown-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+    border-bottom: 1px solid #cbbaf3;
+    padding: 10px;
+}
+
+.dropdown-all {
+    width: 100%;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.dropdown-header .text {
+    flex: 1;
+    text-align: left;
+    font-family: Poppins, sans-serif;
+}
+
+.dropdown-header .arrow {
+    font-size: 16px;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-header .arrow.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-header .add-button {
+    font-size: 24px;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 30px;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 170px;
+    background-color: #5c3b949d;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    white-space: nowrap;
+    font-family: Poppins, sans-serif;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tripdetails-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 20px;
+    margin-top: 15px;
+    object-fit: cover;
+    max-width: 400px;
+    max-height: 200px;
+}
+
+.tripdetails-image-container {
+    position: relative;
+    width: 200px;
+    height: 80%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.note-box {
+    padding: 15px;
+    background-color: #fff8dc;
+    border-left: 4px solid #ffa500;
+    border-radius: 4px;
+    margin: 15px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    font-style: italic;
+    color: #333;
+    flex-direction: column;
+    width: 80%;
+}
+
+.deets-and-photo {
+    display: flex;
+    gap: 180px;
+}
+
+.td-trip-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0.7;
+    justify-content: flex-start;
+    gap: 10px;
+    text-align: left;
+    margin-left: 50px;
+}
+
+.tripdetails-logo {
+    min-height: 40px;
+    height: 2.5vw;
+    width: auto;
+}
+
+.flights-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 5px;
+}
+
+.flight-details{
+    font-family: Poppins, sans-serif;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    border-radius: 25px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.top-info{
+    font-family: Poppins, sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.airport-separation-line {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.airport-separation-line::before,
+.airport-separation-line::after {
+    content: "";
+    flex: 1;
+    border-top: 2px dotted #00000055;
+    margin: 0 8px;
+}
+
+.airplane-icon {
+    width: 35px;
+    height: auto;
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+#from-airport{
+    text-align: start;
+}
+
+#dest-airport {
+    text-align: end;
+}
+
+.bottom-info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.from-info, .dest-info{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.from-info{
+    align-items: start;
+}
+
+.dest-info{
+    align-items: end;
+}
+
+.dest-acc-info {
+    align-items: end;
+}
+
+
+.accommodations-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 5px;
+    
+}
+
+.accommodation-details {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    border-radius: 25px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+.top-acc-info {
+
+    font-family: Poppins, sans-serif;
+    display: grid;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.accommodation-icon, .activity-icon {
+    width: 35px;
+    height: auto;
+    display: inline-block;
+}
+
+.li-edit-button, .li-delete-button {
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.li-edit-button:hover {
+    background-color: #a263eab8;
+    border: none;
+}
+
+.li-delete-button:hover {
+    background-color: #f56a6586;
+    border: none;
+}
+
+.li-delete-button {
+    margin-left: 40px;
+}
+
+#from-deets {
+    text-align: start;
+    font-family: Poppins, sans-serif;
+}
+
+#dest-deets {
+    text-align: end;
+    font-family: Poppins, sans-serif;
+}
+
+.from-dest-deets {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.your-stay-at, .accommodation-name {
+    font-family: Poppins, sans-serif;
+}
+
+.accommodation-name{
+    color: #5c3b94;
+    font-weight: bold;
+}
+
+.bottom-acc-info {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    font-family: Poppins, sans-serif;
+}
+
+.from-acc-info,
+.dest-acc-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.from-acc-info {
+    align-items: start;
+}
+
+.flight-details:hover {
+    cursor: pointer;
+}
+
+.dropdown-section .dropdown-content{
+    cursor: pointer;
+}
+
+
+/* Shared Styling for All Lists */
+.dropdown-section .accommodations-list,
+.dropdown-section .flights-list,
+.dropdown-section .activities-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.accommodation-details,
+.flight-details,
+.activities-list > div {
+    margin-top: 15px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    border-radius: 15px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.accommodation-details:hover,
+.flight-details:hover,
+.activities-list > div:hover {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+
+
+
+/* MODAL STYLING */
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%;
+    width: 500px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    font-family: Poppins, sans-serif;
+    animation: goUp 0.6s ease-out forwards;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #000;
+    /* Darker hover effect */
+}
+
+/* Text and Details in Modal */
+.modal-content h2 {
+    margin-top: 0;
+    /* Remove default margin */
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.modal-content p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+
+
+.dropdown-accommodation-empty {
+    font-family: Poppins, sans-serif;
+    font-style: italic;
+    color: #5d5c5cdb;
+    font-size: small;
+}
+
+.plus {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.notes-styling {
+    font-family: Poppins, sans-serif;
+    color: #3c3b3bdb;
+    font-size: 14px;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 100px;
+    white-space: normal;
+}
+
+.delete-button {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a;
+}
+
+
+
+.form-group textarea {
+    width: 100%; 
+    height: 120px; 
+    padding: 10px; 
+    font-size: 14px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: #f9f9f9;
+    color: #333; 
+    resize: vertical; 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease
+}

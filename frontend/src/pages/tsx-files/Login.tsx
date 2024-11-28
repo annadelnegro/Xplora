@@ -1,19 +1,17 @@
 import React from 'react';
-import './HowItWorks.css';
-import './ForgotPassword.css';
-import logo from '../images/logo.png';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import * as Yup from 'yup';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
+import '../css-files/Login.css';
+import logo from '../../images/logo.png'; // Replace with actual path
 
-
-interface ForgotPasswordFormValues {
+interface LoginFormValues {
     email: string;
-    // password: string;
+    password: string;
 }
 
-const ForgotPasswordSchema = Yup.object().shape({
+const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
     password: Yup.string().required('Required')
 });
@@ -28,25 +26,26 @@ function buildPath(route: string): string {
     }
 }
 
-const ForgotPasswordPage: React.FC = () => {
-    
+
+const LoginForm: React.FC = () => {
+
     const navigate = useNavigate();
 
     return (
-        <div className="forgot-password-page">
-            <div className="forgot-password-main">
+        <div className="login-page">
+            <div className="login-main">
                 <Link to="/">
-                    <img id="forgot-password-logo" src={logo} />
+                    <img id="login-logo" src={logo} />
                 </Link>
-                <div className="forgot-password-container">
-                    <div className="forgot-password-form-wrapper">
+                <div className="login-container">
+                    <div className="login-form-wrapper">
                         <Formik
                             initialValues={{
                                 email: '',
-                                // password: '',
+                                password: '',
                             }}
-                            validationSchema={ForgotPasswordSchema}
-                            onSubmit={async (values: ForgotPasswordFormValues, { setSubmitting, setErrors }) => {
+                            validationSchema={LoginSchema}
+                            onSubmit={async (values: LoginFormValues, { setSubmitting, setErrors }) => {
                                 //debugger
                                 console.log("Form submitted");
                                 try {
@@ -87,29 +86,28 @@ const ForgotPasswordPage: React.FC = () => {
                                 }
                             }}>
                             {({ isSubmitting }) => (
-                                <Form className="forgot-password-form">
-                                    <h2 id="forgot-h2">Forgot Your Password?</h2>
-                                    <p>Please enter your account's email below. You will receive an email containing a link to reset your password.</p>
-                                    <div className="forgot-password-form-field">
-                                        <Field type="email" name="email" placeholder="Email" className="forgot-password-input-field" />
+                                <Form className="login-form">
+                                    <h2 className='welcome-back'>Welcome Back!</h2>
+                                    <div className="login-form-field">
+                                        <Field type="email" name="email" placeholder="Email" className="login-input-field" />
                                     </div>
-                                    <div className="forgot-password-error-container">
-                                        <ErrorMessage name="email" component="div" className="forgot-password-error-message" />
-                                    </div>
-
-                                    {/* <div className="forgot-password-form-field">
-                                        <Field type="password" name="password" placeholder="Password" className="forgot-password-input-field" />
-                                    </div>
-                                    <div className="forgot-password-error-container">
-                                        <ErrorMessage name="password" component="div" className="forgot-password-error-message" />
-                                    </div> */}
-
-                                    <div className="return-login-forgot-password-container">
-                                        <Link to="/login" className="return-login-link">Return to Login Page</Link>
+                                    <div className="login-error-container">
+                                        <ErrorMessage name="email" component="div" className="login-error-message" />
                                     </div>
 
-                                    <button type="submit" disabled={isSubmitting} className="forgot-password-submit-button">
-                                        Reset My Password
+                                    <div className="login-form-field">
+                                        <Field type="password" name="password" placeholder="Password" className="login-input-field" />
+                                    </div>
+                                    <div className="login-error-container">
+                                        <ErrorMessage name="password" component="div" className="login-error-message" />
+                                    </div>
+
+                                    <div className="login-forgot-password-container">
+                                        <Link to="/forgot-password" className="forgot-password-link">Forgot Password?</Link>
+                                    </div>
+
+                                    <button type="submit" disabled={isSubmitting} className="login-submit-button">
+                                        Get Exploring!
                                     </button>
                                 </Form>
                             )}
@@ -122,4 +120,4 @@ const ForgotPasswordPage: React.FC = () => {
     );
 };
 
-export default ForgotPasswordPage;
+export default LoginForm;

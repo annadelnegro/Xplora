@@ -1,12 +1,12 @@
 /* General Page Styling */
-.login-page {
+.signup-page{
     display: flex;
     flex-direction: column;
     font-family: 'Poppins', sans-serif;
     height: 100vh;
 }
 
-.login-main{
+.sign-up-main{
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -16,7 +16,8 @@
 }
 
 /* Login Container */
-.login-container {
+.signup-container {
+    animation: goUp 0.6s ease-out forwards;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,7 +30,8 @@
     text-align: center;
 }
 
-#login-logo{
+#sign-up-logo{
+    animation: goDown 0.6s ease-out forwards;
     width: 300px;
 }
 
@@ -40,22 +42,22 @@
     font-weight: 600;
 }
 
-.login-form-wrapper{
+.sign-up-form-wrapper{
     width: 100%;
 }
 
 /* Form Styling */
-.login-form {
+.signup-form {
     display: flex;
     flex-direction: column;
 }
 
-.login-form-field {
+.signup-form-field {
     display: flex;
     margin-top: 1rem;
 }
 
-.login-input-field {
+.signup-form .signup-input-field {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #cbbaf3;
@@ -66,18 +68,22 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.login-error-container{
+
+
+
+
+.signup-error{
     margin-top: 5px;
 }
 
-.login-error-message {
+.signup-error-message {
     color: #d9534f;
     font-size: 0.875rem;
     margin-bottom: 10px;
 }
 
 /* Button Styling */
-.login-submit-button {
+.signup-submit-button {
     width: 100%;
     padding: 0.75rem;
     font-size: 1rem;
@@ -90,35 +96,25 @@
     margin-top: 2rem;
 }
 
-.login-submit-button:hover {
+.signup-submit-button:hover {
     background-color: #02b3d4CC;
 }
 
-.login-submit-button:disabled {
+.signup-submit-button:disabled {
     background-color: #7a7a7a;
     cursor: not-allowed;
 }
 
-.signup-link {
+.login-link {
     margin-top: 1rem;
     font-size: 0.875rem;
 }
 
-.signup-link a {
+.login-link a {
     color: #002a5c;
     text-decoration: none;
 }
 
-.signup-link a:hover {
+.login-link a:hover {
     text-decoration: underline;
-}
-
-@media (prefers-color-scheme: dark) {
-    /* Change general text to black for visibility */
-    .login-form h2, .signup-link {
-        color: black;
-    }
-    .signup-link {
-        color: #002a5c;
-    }
 }
