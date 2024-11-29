@@ -10,6 +10,7 @@ import AddTrip from './pages/tsx-files/AddTrip'
 //import EditTrip from './pages/EditTrip';
 import TripDetails from './pages/tsx-files/TripDetails';
 import ForgotPasswordPage from './pages/tsx-files/ForgotPassword';
+import NewPassword from './pages/tsx-files/NewPassword';
 import './App.css';
 
 const App: React.FC = () => {
@@ -35,6 +36,7 @@ const App: React.FC = () => {
 
         <Route path="/addtrip" element={<AddTrip />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/newpassword" element={<NewPassword />} />
       </Routes>
     </Router>
   );

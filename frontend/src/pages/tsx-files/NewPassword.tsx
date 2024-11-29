@@ -6,14 +6,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../css-files/Login.css';
 import logo from '../../images/logo.png'; // Replace with actual path
 
-interface LoginFormValues {
-    email: string;
-    password: string;
+interface NewPasswordValues {
+    newPassword: string;
+    confirmPassword: string;
 }
 
-const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().required('Required')
+const NewPasswordSchema = Yup.object().shape({
+    newPassword: Yup.string().required('Required'),
+    confirmPassword: Yup.string().required('Required')
 });
 
 const app_name = 'xplora.fun'; 
@@ -27,18 +27,18 @@ function buildPath(route: string): string {
 }
 
 
-const LoginForm: React.FC = () => {
+const NewPasswordForm: React.FC = () => {
 
     const navigate = useNavigate();
 
     return (
-        <div className="new-password-page">
-            <div className="new-password-main">
+        <div className="login-page">
+            <div className="login-main">
                 <Link to="/">
-                    <img id="new-password-logo" src={logo} />
+                    <img id="login-logo" src={logo} />
                 </Link>
-                <div className="new-password-container">
-                    <div className="new-password-form-wrapper">
+                <div className="login-container">
+                    <div className="login-form-wrapper">
                         <Formik
                             initialValues={{
                                 email: '',
@@ -86,27 +86,27 @@ const LoginForm: React.FC = () => {
                                 }
                             }}>
                             {({ isSubmitting }) => (
-                                <Form className="new-password-form">
+                                <Form className="login-form">
                                     <h2 className='welcome-back'>Welcome Back!</h2>
-                                    <div className="new-password-form-field">
-                                        <Field type="email" name="email" placeholder="Email" className="new-password-input-field" />
+                                    <div className="login-form-field">
+                                        <Field type="email" name="email" placeholder="Email" className="login-input-field" />
                                     </div>
-                                    <div className="new-password-error-container">
-                                        <ErrorMessage name="email" component="div" className="new-password-error-message" />
-                                    </div>
-
-                                    <div className="new-password-form-field">
-                                        <Field type="password" name="password" placeholder="Password" className="new-password-input-field" />
-                                    </div>
-                                    <div className="new-password-error-container">
-                                        <ErrorMessage name="password" component="div" className="new-password-error-message" />
+                                    <div className="login-error-container">
+                                        <ErrorMessage name="email" component="div" className="login-error-message" />
                                     </div>
 
-                                    <div className="new-password-forgot-password-container">
+                                    <div className="login-form-field">
+                                        <Field type="password" name="password" placeholder="Password" className="login-input-field" />
+                                    </div>
+                                    <div className="login-error-container">
+                                        <ErrorMessage name="password" component="div" className="login-error-message" />
+                                    </div>
+
+                                    <div className="login-forgot-password-container">
                                         <Link to="/forgot-password" className="forgot-password-link">Forgot Password?</Link>
                                     </div>
 
-                                    <button type="submit" disabled={isSubmitting} className="new-password-submit-button">
+                                    <button type="submit" disabled={isSubmitting} className="login-submit-button">
                                         Get Exploring!
                                     </button>
                                 </Form>
