@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css-files/Login.css';
+import '../css-files/NewPassword.css';
 import logo from '../../images/logo.png'; // Replace with actual path
 
 interface NewPasswordValues {
@@ -32,24 +33,24 @@ const NewPasswordForm: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="login-page">
-            <div className="login-main">
+        <div className="new-password-page">
+            <div className="new-password-main">
                 <Link to="/">
-                    <img id="login-logo" src={logo} />
+                    <img id="new-password-logo" src={logo} />
                 </Link>
-                <div className="login-container">
-                    <div className="login-form-wrapper">
+                <div className="new-password-container">
+                    <div className="new-password-form-wrapper">
                         <Formik
                             initialValues={{
-                                email: '',
-                                password: '',
+                                newPassword: '',
+                                confirmPassword: '',
                             }}
-                            validationSchema={LoginSchema}
-                            onSubmit={async (values: LoginFormValues, { setSubmitting, setErrors }) => {
+                            validationSchema={NewPasswordSchema}
+                            onSubmit={async (values: NewPasswordValues, { setSubmitting, setErrors }) => {
                                 //debugger
                                 console.log("Form submitted");
                                 try {
-                                    // calls the login api 
+                                    // calls the login api ****must change this
                                     const response = await fetch(buildPath('api/login'), {
                                         // get information from database
                                         method: 'POST',
@@ -71,48 +72,48 @@ const NewPasswordForm: React.FC = () => {
                                         console.log(data.id);
                                         localStorage.setItem('firstName', data.firstName);
                                         localStorage.setItem('lastName', data.lastName);
-                                        localStorage.setItem('email', data.email);
+                                        localStorage.setItem('email', data.newPassword);
 
                                         navigate('/dashboard');
                                         // Handle successful login here
                                     } else {
-                                        setErrors({ email: data.error });
+                                        setErrors({ newPassword: data.error });
                                     }
                                 } catch (error) {
                                     console.error('Error:', error);
-                                    setErrors({ email: 'An error occurred. Please try again.' });
+                                    setErrors({ newPassword: 'An error occurred. Please try again.' });
                                 } finally {
                                     setSubmitting(false);
                                 }
                             }}>
                             {({ isSubmitting }) => (
-                                <Form className="login-form">
-                                    <h2 className='welcome-back'>Welcome Back!</h2>
-                                    <div className="login-form-field">
-                                        <Field type="email" name="email" placeholder="Email" className="login-input-field" />
+                                <Form className="new-password-form">
+                                    <h2 className='welcome-back'>Create a new password</h2>
+                                    <div className="new-password-form-field">
+                                        <Field type="newPassword" name="newPassword" placeholder="New password" className="new-password-input-field" />
                                     </div>
-                                    <div className="login-error-container">
-                                        <ErrorMessage name="email" component="div" className="login-error-message" />
-                                    </div>
-
-                                    <div className="login-form-field">
-                                        <Field type="password" name="password" placeholder="Password" className="login-input-field" />
-                                    </div>
-                                    <div className="login-error-container">
-                                        <ErrorMessage name="password" component="div" className="login-error-message" />
+                                    <div className="new-password-error-container">
+                                        <ErrorMessage name="newPassword" component="div" className="new-password-error-message" />
                                     </div>
 
-                                    <div className="login-forgot-password-container">
+                                    <div className="new-password-form-field">
+                                        <Field type="password" name="password" placeholder="Confirm password" className="new-password-input-field" />
+                                    </div>
+                                    <div className="new-password-error-container">
+                                        <ErrorMessage name="password" component="div" className="new-password-error-message" />
+                                    </div>
+
+                                    <div className="new-password-forgot-password-container">
                                         <Link to="/forgot-password" className="forgot-password-link">Forgot Password?</Link>
                                     </div>
 
-                                    <button type="submit" disabled={isSubmitting} className="login-submit-button">
-                                        Get Exploring!
+                                    <button type="submit" disabled={isSubmitting} className="new-password-submit-button">
+                                        Confirm
                                     </button>
                                 </Form>
                             )}
                         </Formik>
-                        <p className="signup-link">Don't have an account? <Link to="/sign-up">Sign Up</Link></p>
+                        
                     </div>
                 </div>
             </div>
@@ -120,4 +121,4 @@ const NewPasswordForm: React.FC = () => {
     );
 };
 
-export default LoginForm;
+export default NewPasswordForm;
