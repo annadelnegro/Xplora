@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
@@ -43,9 +43,23 @@ function buildPath(route: string): string {
 
 const SignupForm: React.FC = () => {
     const navigate = useNavigate();
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     return (
         <div className="signup-page">
+            {isModalVisible && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <p>An email verification link has been sent.</p>
+                        <button className='ok-email-sent'
+                            onClick={() => {
+                                setIsModalVisible(false);
+                                navigate('/');
+                            }} > OK
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="sign-up-main">
                 <Link to="/">
                     <img id="sign-up-logo" src={logo} />
@@ -81,14 +95,10 @@ const SignupForm: React.FC = () => {
                             
                                     if (response.ok) {
                                         console.log('User registered successfully:', data.message);
+                                        setIsModalVisible(true);
 
-                                        console.log('User registered successfully:', data.first_name);
                                         localStorage.setItem('firstName', data.first_name);
                                         localStorage.setItem('lastName', data.last_name);
-                                       // localStorage.setItem('email', data.email);
-                                        
-                                        
-                                        navigate('/Dashboard'); // Redirect to login page on success
 
                                     } else {
                                         setErrors({ email: data.error });

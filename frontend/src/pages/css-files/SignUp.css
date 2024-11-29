@@ -118,3 +118,13 @@
 .login-link a:hover {
     text-decoration: underline;
 }
+
+.ok-email-sent{
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.ok-email-sent:hover {
+    background-color: #a263eab8;
+    border: none;
+}
