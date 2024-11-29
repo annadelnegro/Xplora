@@ -171,7 +171,9 @@ app.post('/api/register', async (req, res) => {
         await db.collection('users').insertOne(newUser);
 
         // Send verification email
-        const verificationLink = `https://xplora.fun/api/verify-email?user_id=${newUser._id}&token=${verification_token}`;
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const verificationLink = `${baseUrl}/api/verify-email?user_id=${newUser._id}&token=${verification_token}`;
+        
         const subject = "Verify Your Email";
         const text = `Hi ${first_name},\n\nPlease verify your email by clicking the link below:\n\n${verificationLink}\n\nThank you!`;
         const html = `<p>Hi ${first_name},</p><p>Please verify your email by clicking the link below:</p><p><a href="${verificationLink}">Verify Email</a></p><p>Thank you!</p>`;
@@ -225,12 +227,15 @@ app.get('/api/verify-email', async (req, res) => {
             { $set: { email_verified: true }, $unset: { verification_token: '' } }
         );
 
+        const isProduction = process.env.NODE_ENV === 'production';
+        const baseUrl = isProduction ? 'https://xplora.fun/login' : 'http://localhost:5174/login';
+
         console.log("User verified successfully:", user.email);
         res.send(`
             <html>
             <head>
                 <title>Verification Successful</title>
-                <meta http-equiv="refresh" content="5;url=https://xplora.fun/login" />
+                <meta http-equiv="refresh" content="5;url=${baseUrl}" />
             </head>
             <body>
                 <h1>Email successfully verified! You can now log in.</h1>
