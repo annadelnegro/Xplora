@@ -13,8 +13,16 @@ interface NewPasswordValues {
 }
 
 const NewPasswordSchema = Yup.object().shape({
-    newPassword: Yup.string().required('Required'),
-    confirmPassword: Yup.string().required('Required')
+    newPassword: Yup.string()
+        .min(8, 'Password must be at least 8 characters long')
+        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .matches(/[0-9]/, 'Password must contain at least one number')
+        .matches(/[\^$*.[\]{}()?-“!@#%&/,><’:;|_~`]/, 'Password must contain a special character')
+        .required('Required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password')], 'Passwords must match')
+        .required('Required')
 });
 
 const app_name = 'xplora.fun'; 
@@ -89,6 +97,7 @@ const NewPasswordForm: React.FC = () => {
                             {({ isSubmitting }) => (
                                 <Form className="new-password-form">
                                     <h2 className='welcome-back'>Create a new password</h2>
+                                    {/* New password field */}
                                     <div className="new-password-form-field">
                                         <Field type="newPassword" name="newPassword" placeholder="New password" className="new-password-input-field" />
                                     </div>
@@ -96,17 +105,15 @@ const NewPasswordForm: React.FC = () => {
                                         <ErrorMessage name="newPassword" component="div" className="new-password-error-message" />
                                     </div>
 
+                                    {/* Confirm password field */}
                                     <div className="new-password-form-field">
-                                        <Field type="password" name="password" placeholder="Confirm password" className="new-password-input-field" />
+                                        <Field type="confirm-password" name="confirmPassword" placeholder="Confirm password" className="new-password-input-field" />
                                     </div>
                                     <div className="new-password-error-container">
-                                        <ErrorMessage name="password" component="div" className="new-password-error-message" />
+                                        <ErrorMessage name="confirmPassword" component="div" className="new-password-error-message" />
                                     </div>
-
-                                    <div className="new-password-forgot-password-container">
-                                        <Link to="/forgot-password" className="forgot-password-link">Forgot Password?</Link>
-                                    </div>
-
+                                    
+                        
                                     <button type="submit" disabled={isSubmitting} className="new-password-submit-button">
                                         Confirm
                                     </button>
