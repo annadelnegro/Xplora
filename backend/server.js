@@ -125,14 +125,22 @@ app.post('/api/login', async (req, res, next) => {
             { email: email, password: password }
         );
 
+        console.log('Login attempt with:', { email, password });
+
+        if (results && !results.email_verified){
+            error = "Please verify your e-mail to log in.";
+            return res.status(403).json({ error });
+        }
+
         if (results) {
-            const { _id: id, first_name: firstName, last_name: lastName, email: email } = results;
-            res.status(200).json({ id, firstName, lastName, email, error: '' });
+            const { _id: id, first_name: firstName, last_name: lastName, email: userEmail } = results;
+            res.status(200).json({ id, firstName, lastName, email: userEmail, error: '' });
         } else {
             error = 'Invalid login or password';
             res.status(401).json({ error });
         }
     } catch (err) {
+        console.error('Error during login:', err.message);
         error = 'An error occurred while accessing the database';
         res.status(500).json({ error });
     }
