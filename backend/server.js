@@ -1029,8 +1029,11 @@ app.put('/api/reset-password', async (req, res) => {
             return res.status(400).json({ error: 'Invalid or expired token' });
         }
 
+        console.log("before hash", newPassword);
+
         const hashedPassword = crypto.createHash('sha256').update(newPassword).digest('hex');
 
+        console.log("after hash", hashedPassword);
 
         await db.collection('users').updateOne(
             { _id: user._id },
