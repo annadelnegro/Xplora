@@ -288,7 +288,7 @@ app.put('/api/users/:id', async (req, res, next) => {
         });
 
         const { id } = req.params;
-        const { first_name, last_name, password } = req.body;
+        const { first_name, last_name, email, password } = req.body;
         const objectId = new ObjectId(String(id));
     
         const db = client.db('xplora');
@@ -297,10 +297,13 @@ app.put('/api/users/:id', async (req, res, next) => {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
 
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
         const updateFields = {};
         if (first_name) updateFields.first_name = first_name;
         if (last_name) updateFields.last_name = last_name;
-        if (password) updateFields.password = password;
+        if (email) updateFields.email = email;
+        if (password) updateFields.password = hashedPassword;
 
         // Update the user document in the database
         const result = await db.collection('users').updateOne(
