@@ -974,7 +974,7 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        const resetLink = `http://xplora.fun/reset-password?token=${resetToken}&id=${user._id}`; 
+        const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
         const subject = 'Password Reset Request';
         const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
         const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
@@ -990,6 +990,7 @@ app.post('/api/forgot-password', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while sending password reset link'});
     }
 });
+
 app.post('/api/reset-password', async (req, res) => {
     const { token, id, newPassword } = req.body;
 
