@@ -25,26 +25,26 @@ const NewPasswordSchema = Yup.object().shape({
         .required('Required')
 });
 
-// const app_name = 'xplora.fun'; 
-
-// function buildPath(route: string): string {
-//     if (process.env.NODE_ENV !== 'development') {
-//         return `https://${app_name}/${route}`;
-//     } else {
-//         return `http://localhost:5000/${route}`;
-//     }
-// }
-
+const app_name = 'xplora.fun'; 
 
 function buildPath(route: string): string {
-    if (import.meta.env.MODE === 'development') {
-        console.log("development");
-        return `${import.meta.env.VITE_BASE_URL}/${route}`;
+    if (process.env.NODE_ENV !== 'development') {
+        return `https://${app_name}/${route}`;
     } else {
-        console.log("not evelopment");
-        return `${import.meta.env.production.VITE_BASE_URL}/${route}`;
+        return `http://localhost:5000/${route}`;
     }
 }
+
+
+// function buildPath(route: string): string {
+//     if (import.meta.env.MODE === 'development') {
+//         console.log("development");
+//         return `${import.meta.env.VITE_BASE_URL}/${route}`;
+//     } else {
+//         console.log("not evelopment");
+//         return `${import.meta.env.production.VITE_BASE_URL}/${route}`;
+//     }
+// }
 
 const NewPasswordForm: React.FC = () => {
 
@@ -86,18 +86,6 @@ const NewPasswordForm: React.FC = () => {
                                         id,
                                         newPassword: values.newPassword,
                                     };
-
-                                    console.log('Current VITE_NODE_ENV:', import.meta.env.VITE_PROD_URL);
-
-                                    console.log('Payload being sent', payload);
-                                    console.log('API URL:', buildPath('api/reset-password'));
-                                    console.log('Fetch method:', {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify(payload),
-                                    });
 
                                     console.log('memer');
                                     // calls the reset password api

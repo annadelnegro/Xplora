@@ -12,22 +12,19 @@ const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 
-if (process.env.NODE_ENV === 'production') {
-    dotenv.config({ path: './.env.production' });
-} else {
-    dotenv.config();
-}
+// if (process.env.NODE_ENV === 'production') {
+//     dotenv.config({ path: './.env.production' });
+// } else {
+//     dotenv.config();
+// }
 app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-});
-
-console.log('Environment:', process.env.NODE_ENV);
-console.log('Base URL:', process.env.BASE_URL);
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// });
 
 // file filter for photo upload (user and trip photo)
 const fileFilter = (req, file, cb) => {
@@ -968,10 +965,10 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
-const baseUrl =
-    process.env.NODE_ENV === 'development'
-        ? process.env.BASE_URL
-        : process.env.production.BASE_URL;
+// const baseUrl =
+//     process.env.NODE_ENV === 'development'
+//         ? process.env.BASE_URL
+//         : process.env.production.BASE_URL;
 
 //------------------
 //PASSWORD RESET APIs
@@ -994,8 +991,8 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
-        // const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
+        // const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
+        const resetLink = `https://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
         const subject = 'Password Reset Request';
         const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
         const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
@@ -1033,6 +1030,7 @@ app.put('/api/reset-password', async (req, res) => {
         }
 
         const hashedPassword = crypto.createHash('sha256').update(newPassword).digest('hex');
+
 
         await db.collection('users').updateOne(
             { _id: user._id },
