@@ -370,9 +370,9 @@ app.post('/api/users/:id/password', async (req, res) => {
         const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
         if (hashedPassword === user.password) {
-            return res.status(200).json({ message: 'Password match' });
+            return res.status(200).json({ message: 'Correct password' });
         } else {
-            return res.status(401).json({ message: 'Password does not match' });
+            return res.status(401).json({ message: 'Incorrect password' });
         }
 
     } catch (error) {
