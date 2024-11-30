@@ -321,40 +321,11 @@ app.put('/api/users/:id', async (req, res, next) => {
 });
 
 // Get Password API
-app.get('/api/users/:id/password', async (req, res) => {
-    const { id } = req.params;
+// app.get('/api/users/:id/password', async (req, res) => {
+//     const { id } = req.params;
 
-    if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'Invalid user ID' });
-    }
-
-    try {
-        const db = client.db('xplora');
-        const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.status(200).json({ message: 'Password received' });
-
-    } catch (error) {
-        console.error('Error fetching password:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
-});
-
-// app.post('/api/users/:id/password', async (req, res) => {
-//     const { id } = req.params; 
-//     const { password } = req.body;
-
-//     // Validate inputs
 //     if (!ObjectId.isValid(id)) {
 //         return res.status(400).json({ message: 'Invalid user ID' });
-//     }
-
-//     if (!password) {
-//         return res.status(400).json({ message: 'Password is required' });
 //     }
 
 //     try {
@@ -365,19 +336,47 @@ app.get('/api/users/:id/password', async (req, res) => {
 //             return res.status(404).json({ message: 'User not found' });
 //         }
 
-//         const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-
-//         if (hashedPassword === user.password) {
-//             return res.status(200).json({ message: 'Password match' });
-//         } else {
-//             return res.status(401).json({ message: 'Password does not match' });
-//         }
+//         res.status(200).json({ message: 'Password received' });
 
 //     } catch (error) {
-//         console.error('Error checking password:', error);
+//         console.error('Error fetching password:', error);
 //         res.status(500).json({ message: 'Internal server error', error: error.message });
 //     }
 // });
+
+app.post('/api/users/:id/password', async (req, res) => {
+    const { id } = req.params; 
+    const { password } = req.body;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required' });
+    }
+
+    try {
+        const db = client.db('xplora');
+        const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+        if (hashedPassword === user.password) {
+            return res.status(200).json({ message: 'Password match' });
+        } else {
+            return res.status(401).json({ message: 'Password does not match' });
+        }
+
+    } catch (error) {
+        console.error('Error checking password:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
 
 //--------------------------------
 // TRIPS -- POST to add a new trip
@@ -460,7 +459,6 @@ app.post('/api/users/:userId/trips', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while adding the trip' });
     }
 });
-
 
 //TRIPS -- GET trips from user_id
 app.get('/api/users/:userId/trips', async (req, res) => {
