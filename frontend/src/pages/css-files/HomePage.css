@@ -225,3 +225,58 @@
       opacity: 1; 
   }
 }
+
+
+@media (max-width: 768px){
+
+  .map-section{
+    display: none;
+  }
+
+  .homepage-intro h1{
+    text-align: center;
+  }
+
+  .homepage-intro button{
+    margin: auto;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 580px) {
+
+  .logo-section{
+    width: 100%;
+  }
+  .homepage-intro h1
+  {
+    font-size: 300%;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-header {
+    flex-direction: column; /* Stack items vertically */
+     /* Center items horizontally */
+  }
+
+  .logo-section {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin-bottom: 20px;
+  }
+
+  .logo-section img{
+    width: 200px !important; 
+    height: auto !important;
+  }
+
+  .links-section{
+    margin-bottom: 20px;
+  }
+
+ 
+}

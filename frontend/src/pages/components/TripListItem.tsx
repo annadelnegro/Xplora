@@ -38,6 +38,7 @@ const TripListItem: React.FC<TripListItemProps> = ({ id, title, location, dates,
                 <div id='trip-dates-container'>
                     <span className='location-of-trip'>{location}</span><span>{dates}</span>
                 </div>
+                
             </div>
            
             <i id="trip-item-edit-icon" className='fa fa-pen-alt' onClick={handleEditClick}></i>

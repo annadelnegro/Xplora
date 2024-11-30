@@ -350,6 +350,7 @@ TripDetails.css .tripdetails-logo {
 .accommodation-details {
     margin-top: 30px;
     display: flex;
+
     flex-direction: column;
     width: 100%;
     text-align: center;
@@ -599,4 +600,35 @@ TripDetails.css .tripdetails-logo {
     resize: vertical; 
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
     transition: border-color 0.3s ease, box-shadow 0.3s ease
+}
+
+
+@media (max-width: 780px){
+
+
+.trip-details-page{
+    padding-left: 0;
+}
+    .trip-card-tripdetails {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .deets-and-photo {
+        display: flex;
+        flex-direction: column !important;
+        gap: 0px;
+    }
+
+    .td-trip-details {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 0.7;
+        justify-content: none;
+        gap: 0px;
+
+        margin-left: 0px;
+    }
+    
 }
