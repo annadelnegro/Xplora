@@ -12,7 +12,13 @@ const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
+require('dotenv').config();
 app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 
 // file filter for photo upload (user and trip photo)
 const fileFilter = (req, file, cb) => {
@@ -953,7 +959,6 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
-require('dotenv').config();
 //------------------
 //PASSWORD RESET APIs
 app.post('/api/forgot-password', async (req, res) => {
