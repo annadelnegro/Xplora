@@ -178,7 +178,7 @@ app.post('/api/register', async (req, res) => {
             first_name,
             last_name,
             email,
-            hashedPassword,
+            password: hashedPassword,
             email_verified: false,
             verification_token,
         };
