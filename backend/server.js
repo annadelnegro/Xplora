@@ -12,13 +12,22 @@ const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
-require('dotenv').config();
+const dotenv = require('dotenv');
+
+if (process.env.NODE_ENV === 'production') {
+    dotenv.config({ path: './.env.production' });
+} else {
+    dotenv.config();
+}
 app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
+
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Base URL:', process.env.BASE_URL);
 
 // file filter for photo upload (user and trip photo)
 const fileFilter = (req, file, cb) => {
@@ -959,6 +968,11 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
+const baseUrl =
+    process.env.NODE_ENV === 'development'
+        ? process.env.BASE_URL
+        : process.env.production.BASE_URL;
+
 //------------------
 //PASSWORD RESET APIs
 app.post('/api/forgot-password', async (req, res) => {
@@ -979,11 +993,6 @@ app.post('/api/forgot-password', async (req, res) => {
             { _id: user._id },
             { $set: { resetToken, resetTokenExpiration } }
         );
-
-        const baseUrl =
-            process.env.NODE_ENV === 'development'
-                ? process.env.BASE_URL
-                : process.env.PROD_URL;
 
         const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
         // const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
@@ -1013,7 +1022,7 @@ app.put('/api/reset-password', async (req, res) => {
         const db = client.db('xplora');
         console.log('Connecting to database...');
         const user = await db.collection('users').findOne({
-            _id: ObjectId(id),
+            _id: new ObjectId(String(id)),
             resetToken: token,
             resetTokenExpiration: { $gt: Date.now() }
         });

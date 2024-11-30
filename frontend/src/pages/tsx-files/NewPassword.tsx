@@ -35,11 +35,14 @@ const NewPasswordSchema = Yup.object().shape({
 //     }
 // }
 
+
 function buildPath(route: string): string {
-    if (import.meta.env.VITE_NODE_ENV !== 'development') {
-        return `https://${import.meta.env.VITE_PROD_URL}/${route}`;
-    } else {
+    if (import.meta.env.MODE === 'development') {
+        console.log("development");
         return `${import.meta.env.VITE_BASE_URL}/${route}`;
+    } else {
+        console.log("not evelopment");
+        return `${import.meta.env.production.VITE_BASE_URL}/${route}`;
     }
 }
 
@@ -96,7 +99,7 @@ const NewPasswordForm: React.FC = () => {
                                         body: JSON.stringify(payload),
                                     });
 
-                                    console.log('hello');
+                                    console.log('memer');
                                     // calls the reset password api
                                     const response = await fetch(buildPath('api/reset-password'), {
                                         // get information from database
