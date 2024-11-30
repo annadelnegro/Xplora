@@ -68,7 +68,7 @@ const NewPasswordForm: React.FC = () => {
                             onSubmit={async (values: NewPasswordValues, { setSubmitting, setErrors }) => {
                                 //debugger
                                 console.log("Form submitted");
-                                console.log('hello');
+                                
                                 try {
 
                                     const payload = {            
@@ -78,10 +78,20 @@ const NewPasswordForm: React.FC = () => {
                                     };
 
                                     console.log('Payload being sent', payload);
+                                    console.log('API URL:', buildPath('api/reset-password'));
+                                    console.log('Fetch method:', {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify(payload),
+                                    });
+
+                                    console.log('hello');
                                     // calls the reset password api
                                     const response = await fetch(buildPath('api/reset-password'), {
                                         // get information from database
-                                        method: 'POST',
+                                        method: 'PUT',
                                         headers: {
                                             'Content-Type': 'application/json',
                                         },

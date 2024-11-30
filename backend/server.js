@@ -974,11 +974,18 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
+        const baseUrl =
+            process.env.NODE_ENV === 'development'
+                ? 'http://localhost:5000'
+                : 'https://xplora.fun';
+
+        const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
+        // const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
         const subject = 'Password Reset Request';
         const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
         const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
 
+        console.log('Generated reset link:', resetLink);
         const emailResult = await sendEmail(user.email, subject, text, html);
 
         if(emailResult.success) {
@@ -991,16 +998,18 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 });
 
-app.post('/api/reset-password', async (req, res) => {
+app.put('/api/reset-password', async (req, res) => {
     const { token, id, newPassword } = req.body;
 
     try {
         const db = client.db('xplora');
+        console.log('Connecting to database...');
         const user = await db.collection('users').findOne({
-            _id: MongoClient.ObjectId(id),
+            _id: ObjectId(id),
             resetToken: token,
             resetTokenExpiration: { $gt: Date.now() }
         });
+        console.log('User found:', user);
 
         if (!user) {
             return res.status(400).json({ error: 'Invalid or expired token' });
@@ -1018,6 +1027,7 @@ app.post('/api/reset-password', async (req, res) => {
 
         res.status(200).json({ message: 'Password reset successful' });
     } catch (error) {
+        console.error('Error during password reset:', error);
         res.status(500).json({ error: 'An error occurred while resetting the password' });
     }
 });
