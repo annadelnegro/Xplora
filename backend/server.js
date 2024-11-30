@@ -953,6 +953,7 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
+require('dotenv').config();
 //------------------
 //PASSWORD RESET APIs
 app.post('/api/forgot-password', async (req, res) => {
@@ -976,8 +977,8 @@ app.post('/api/forgot-password', async (req, res) => {
 
         const baseUrl =
             process.env.NODE_ENV === 'development'
-                ? 'http://localhost:5000'
-                : 'https://xplora.fun';
+                ? process.env.BASE_URL
+                : process.env.PROD_URL;
 
         const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
         // const resetLink = `http://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
@@ -986,6 +987,8 @@ app.post('/api/forgot-password', async (req, res) => {
         const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
 
         console.log('Generated reset link:', resetLink);
+        console.log('Current NODE_ENV:', process.env.NODE_ENV);
+
         const emailResult = await sendEmail(user.email, subject, text, html);
 
         if(emailResult.success) {
