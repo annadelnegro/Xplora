@@ -282,7 +282,7 @@
 
 #dashboard-logo{
     max-width: 100px;
-    width: 2.5vw;
+    width: 60px;
     height: auto;
 }
 
@@ -527,6 +527,10 @@
 
 }
 
+.R-welcome-text{
+    display: none;
+}
+
 @media (max-width: 788px){
 
     .trip-list-item{
@@ -635,14 +639,29 @@
     #trip-item-trash-icon {
         font-size: 20px !important;
     }
+
+    .R-welcome-text{
+        display: block;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 30px 0px;
+    }
+
+    #welcome-text{
+        display: none;
+    }
     
+    .dashboard-header{
+        background-color: #e9dcf2;
+    }
 }
 
 @media (max-width: 480px){
 
     .dashboard-header{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         text-align: center;
         color: #000000CC;

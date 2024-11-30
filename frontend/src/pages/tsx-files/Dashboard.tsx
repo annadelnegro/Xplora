@@ -285,7 +285,12 @@ const Dashboard: React.FC = () => {
                     <button id="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
+
+            <div className="R-welcome-text">
+                <span id='r-welcome-text'>Welcome, {firstName} {lastName}!</span>
+            </div>
             <div className='dashboard-main'>
+                
                 <div className='trip-list-container'>
                     <div className='trip-list-header'>
                         Your upcoming itineraries

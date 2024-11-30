@@ -630,5 +630,12 @@ TripDetails.css .tripdetails-logo {
 
         margin-left: 0px;
     }
-    
+
+}
+
+
+@media (max-width: 480px){
+    .modal-content{
+        width: 350px;
+    }
 }

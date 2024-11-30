@@ -16,11 +16,19 @@ const HowItWorksPage: React.FC = () => {
           <Link to="/">
             <img src={logo} alt="Xplora Logo" id="homepage-logo" />
           </Link>
+
+
+        <div className="r-buttons">
+          <button id="r-login-btn"><Link to="/login">Sign In</Link></button>
+          <button id="r-register-btn"><Link to="/sign-up">Sign Up</Link></button>
         </div>
+        </div>
+        
         <div className="user-section">
           <button id="login-btn"><Link to="/login">Sign In</Link></button>
           <button id="register-btn"><Link to="/sign-up">Sign Up</Link></button>
         </div>
+        
       </header>
 
       <main className='how-it-works-main'>

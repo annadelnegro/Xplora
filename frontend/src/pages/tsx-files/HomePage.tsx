@@ -22,7 +22,16 @@ const HomePage: React.FC = () => {
           <Link to="/">
             <img src={logo} alt="Xplora Logo" id="homepage-logo" />
           </Link>
+
+        <div className="r-buttons">
+          <button id="r-login-btn"><Link to="/login">Sign In</Link></button>
+          <button id="r-register-btn"><Link to="/sign-up">Sign Up</Link></button>
         </div>
+
+        </div>
+
+  
+        
         <div className="links-section">
           <div><Link to="/how-it-works">How it works</Link></div>
         </div>
@@ -38,6 +47,9 @@ const HomePage: React.FC = () => {
           <button className="get-started-button" onClick={handleGetStartedClick}>
             Xplore NOW!
           </button>
+            <div className="r-links-section">
+             <div><Link to="/how-it-works">How it works</Link></div>
+            </div>
         </div>
         <div className='map-section'>
           <img id="map" src={mapimg} />

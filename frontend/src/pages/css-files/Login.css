@@ -139,3 +139,9 @@
         color: #002a5c;
     }
 }
+
+@media (max-width: 480px){
+    .login-container {
+        width: 330px;
+    }
+}

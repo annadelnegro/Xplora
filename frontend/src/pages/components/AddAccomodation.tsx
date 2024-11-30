@@ -65,6 +65,7 @@ const AddAccommodation: React.FC<AddAccommodationProps> = ({ onClose, onSave, ap
             });
 
             if (response.ok) {
+                //setIsSuccessModalOpen(true); 
                 onSave();
                 location.reload();
             } else {
