@@ -25,16 +25,23 @@ const NewPasswordSchema = Yup.object().shape({
         .required('Required')
 });
 
-const app_name = 'xplora.fun'; 
+// const app_name = 'xplora.fun'; 
+
+// function buildPath(route: string): string {
+//     if (process.env.NODE_ENV !== 'development') {
+//         return `https://${app_name}/${route}`;
+//     } else {
+//         return `http://localhost:5000/${route}`;
+//     }
+// }
 
 function buildPath(route: string): string {
-    if (process.env.NODE_ENV !== 'development') {
-        return `https://${app_name}/${route}`;
+    if (import.meta.env.VITE_NODE_ENV !== 'development') {
+        return `https://${import.meta.env.VITE_PROD_URL}/${route}`;
     } else {
-        return `http://localhost:5000/${route}`;
+        return `${import.meta.env.VITE_BASE_URL}/${route}`;
     }
 }
-
 
 const NewPasswordForm: React.FC = () => {
 
@@ -76,6 +83,8 @@ const NewPasswordForm: React.FC = () => {
                                         id,
                                         newPassword: values.newPassword,
                                     };
+
+                                    console.log('Current VITE_NODE_ENV:', import.meta.env.VITE_PROD_URL);
 
                                     console.log('Payload being sent', payload);
                                     console.log('API URL:', buildPath('api/reset-password'));
