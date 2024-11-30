@@ -312,7 +312,7 @@ app.put('/api/users/:id', async (req, res, next) => {
         );
 
         if (result.modifiedCount > 0) {
-            res.status(200).json({ message: 'User information updated successfully' });
+            res.status(200).json({ message: 'Information updated successfully' });
         } else {
             res.status(200).json({ message: 'No changes made' });
         }
