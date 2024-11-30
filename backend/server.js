@@ -133,8 +133,10 @@ app.post('/api/login', async (req, res, next) => {
     try {
         const db = client.db('xplora');
 
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
         const results = await db.collection('users').findOne(
-            { email: email, password: password }
+            { email: email, password: hashedPassword }
         );
 
         console.log('Login attempt with:', { email, password });
@@ -171,11 +173,12 @@ app.post('/api/register', async (req, res) => {
         }
 
         const verification_token = crypto.randomBytes(32).toString('hex').trim();
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
         const newUser = {
             first_name,
             last_name,
             email,
-            password,
+            hashedPassword,
             email_verified: false,
             verification_token,
         };
@@ -340,6 +343,41 @@ app.get('/api/users/:id/password', async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
+
+// app.post('/api/users/:id/password', async (req, res) => {
+//     const { id } = req.params; 
+//     const { password } = req.body;
+
+//     // Validate inputs
+//     if (!ObjectId.isValid(id)) {
+//         return res.status(400).json({ message: 'Invalid user ID' });
+//     }
+
+//     if (!password) {
+//         return res.status(400).json({ message: 'Password is required' });
+//     }
+
+//     try {
+//         const db = client.db('xplora');
+//         const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+//         if (hashedPassword === user.password) {
+//             return res.status(200).json({ message: 'Password match' });
+//         } else {
+//             return res.status(401).json({ message: 'Password does not match' });
+//         }
+
+//     } catch (error) {
+//         console.error('Error checking password:', error);
+//         res.status(500).json({ message: 'Internal server error', error: error.message });
+//     }
+// });
 
 //--------------------------------
 // TRIPS -- POST to add a new trip
