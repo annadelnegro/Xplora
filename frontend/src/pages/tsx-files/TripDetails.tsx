@@ -592,7 +592,6 @@ const FlightDetailsModal: React.FC<{ flight: any, onClose: () => void }> = ({ fl
         } catch (error) {
             console.error("Error fetching flights:", error);
         }
-        
 
     }
 

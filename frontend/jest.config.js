@@ -10,4 +10,8 @@ export default {
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },
+  moduleNameMapper: {
+    // Mock CSS files
+    "\\.(css|scss)$": "identity-obj-proxy",
+  },
 };
