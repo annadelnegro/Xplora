@@ -66,7 +66,7 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
                         <label>Activity Name:</label>
                         <input
                             type="text"
-                            placeholder="Activity Name"
+                            placeholder="Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -84,6 +84,7 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
                         <label>Date:</label>
                         <input
                             type="date"
+                            placeholder="Date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                         />
@@ -92,6 +93,7 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
                         <label>Time:</label>
                         <input
                             type="time"
+                            placeholder="Time"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                         />
