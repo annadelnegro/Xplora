@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
@@ -10,28 +12,21 @@ const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
-app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
+// const dotenv = require('dotenv');
 
-// const storageUsers = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, path.join('/var/www/html/uploads/users/')));
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, `${Date.now()}-${file.originalname}`);
-//     }
+// if (process.env.NODE_ENV === 'production') {
+//     dotenv.config({ path: './.env.production' });
+// } else {
+//     dotenv.config();
+// }
+app.use('/uploads', express.static(path.join('/var/www/html/uploads/trips/')));
+// app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 // });
 
-// const uploadUserPic = multer({ storageUsers });
-
-const storageTrips = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('/var/www/html/uploads/trips/'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-
+// file filter for photo upload (user and trip photo)
 const fileFilter = (req, file, cb) => {
     console.log('File Name:', file.originalname);
     console.log('MIME Type:', file.mimetype);
@@ -43,6 +38,34 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+// user pic multer 
+const storageUsers = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('/var/www/html/uploads/users/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const uploadUserPic = multer({
+    storage: storageUsers,
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    },
+    fileFilter
+});
+
+// trip pic multer 
+const storageTrips = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('/var/www/html/uploads/trips/'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
 const uploadTripPic = multer({
     storage: storageTrips,
     limits: {
@@ -50,6 +73,36 @@ const uploadTripPic = multer({
     },
     fileFilter
 });
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    // port: 465,
+    // secure: true,
+    auth: 
+    {
+        user: 'xploratravelteam@gmail.com', // Gmail address
+        pass: 'odveslwtjhhgphax', // App password
+    },
+});
+
+// Send Email Function
+const sendEmail = async (to, subject, text, html) => {
+    try {
+        const info = await transporter.sendMail({
+            from: '"Xplora Team" <xploratravelteam@gmail.com>', // Sender address
+            to, // Recipient email address
+            subject, // Subject line
+            text, // Plain text body
+            html, // HTML body
+        });
+
+        console.log("Email sent successfully:", info);
+        return { success: true };
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return { success: false, error: error.message };
+    }
+};
 
 client.connect();
 
@@ -80,83 +133,177 @@ app.post('/api/login', async (req, res, next) => {
     try {
         const db = client.db('xplora');
 
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
         const results = await db.collection('users').findOne(
-            { email: email, password: password }
+            { email: email, password: hashedPassword }
         );
 
+        console.log('Login attempt with:', { email, password });
+
+        if (results && !results.email_verified){
+            error = "Please verify your e-mail to log in.";
+            return res.status(403).json({ error });
+        }
+
         if (results) {
-            const { _id: id, first_name: firstName, last_name: lastName, email: email } = results;
-            res.status(200).json({ id, firstName, lastName, email, error: '' });
+            const { _id: id, first_name: firstName, last_name: lastName, email: userEmail } = results;
+            res.status(200).json({ id, firstName, lastName, email: userEmail, error: '' });
         } else {
             error = 'Invalid login or password';
             res.status(401).json({ error });
         }
     } catch (err) {
+        console.error('Error during login:', err.message);
         error = 'An error occurred while accessing the database';
         res.status(500).json({ error });
     }
 });
 
 // Register API
-app.post('/api/register', async (req, res, next) => {
-    let error = '';
+app.post('/api/register', async (req, res) => {
     const { first_name, last_name, email, password } = req.body;
-    console.log(`${first_name} ${last_name} ${email} ${password}`);
 
     try {
         const db = client.db('xplora');
+        const existingUser = await db.collection('users').findOne({ email });
 
-        const results = await db.collection('users').findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
 
-        if (!results) {
-            const newUser = {
-                first_name,
-                last_name,
-                email,
-                password,
-            };
+        const verification_token = crypto.randomBytes(32).toString('hex').trim();
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        const newUser = {
+            first_name,
+            last_name,
+            email,
+            password: hashedPassword,
+            email_verified: false,
+            verification_token,
+        };
 
-            const result = await db.collection('users').insertOne(newUser);
-            const message = 'User added successfully';
+        await db.collection('users').insertOne(newUser);
 
-            // Send the user's data along with the success message
-            res.status(201).json({
-                message: message,
-                first_name: newUser.first_name,
-                last_name: newUser.last_name,
-                email: newUser.email,
+        // Send verification email
+        const verificationLink = `https://xplora.fun/api/verify-email?user_id=${newUser._id}&token=${verification_token}`;
+        
+        const subject = "Verify Your Email";
+        const text = `Hi ${first_name},\n\nPlease verify your email by clicking the link below:\n\n${verificationLink}\n\nThank you!`;
+        const html = `<p>Hi ${first_name},</p><p>Please verify your email by clicking the link below:</p><p><a href="${verificationLink}">Verify Email</a></p><p>Thank you!</p>`;
+
+        const emailResult = await sendEmail(email, subject, text, html);
+
+        if (emailResult.success) {
+            return res.status(201).json({
+                message: 'User registered successfully. Verification email sent.',
             });
         } else {
-            error = 'Email already exists';
-            res.status(401).json({ error });
+            return res.status(500).json({
+                message: 'User registered, but verification email failed to send.',
+                error: emailResult.error,
+            });
         }
-    } catch (err) {
-        error = 'An error occurred while accessing the database';
-        res.status(500).json({ error });
+    } catch (error) {
+        console.error('Error during registration:', error.message);
+        res.status(500).json({ error: 'An error occurred during registration.' });
+    }
+});
+
+// Verify email API 
+app.get('/api/verify-email', async (req, res) => {
+    const { user_id, token } = req.query;
+
+    try {
+        console.log("Received user_id:", user_id);
+        console.log("Received token:", token);
+
+        const sanitizedToken = token.trim();
+        console.log("Sanitized token:", sanitizedToken);
+
+        const db = client.db('xplora');
+
+        const user = await db.collection('users').findOne({
+            _id: new ObjectId(user_id),
+            verification_token: sanitizedToken,
+        });
+
+        console.log("Database query result:", user);
+
+        if (!user) {
+            console.error("Invalid user_id or expired token:", { user_id, token });
+            return res.status(400).send('<h1>Invalid or expired token. Please register again.</h1>');
+        }
+
+        // Mark the user as verified and remove the token
+        await db.collection('users').updateOne(
+            { _id: new ObjectId(user_id) },
+            { $set: { email_verified: true }, $unset: { verification_token: '' } }
+        );
+
+        console.log("User verified successfully:", user.email);
+        res.send(`
+            <html>
+            <head>
+                <title>Verification Successful</title>
+                <meta http-equiv="refresh" content="5;url=https://xplora.fun/login" />
+            </head>
+            <body>
+                <h1>Email successfully verified! You can now log in.</h1>
+                <p>You will be redirected to the login page in 5 seconds.</p>
+                <p>If you are not redirected, <a href="https://xplora.fun/login">click here</a>.</p>
+            </body>
+            </html>
+        `);
+    } catch (error) {
+        console.error('Error verifying email:', error.message);
+        res.status(500).send('<h1>An error occurred while verifying your email. Please try again later.</h1>');
     }
 });
 
 // Update User API
 app.put('/api/users/:id', async (req, res, next) => {
-    let error = '';
-    const { id } = req.params;
-    const { first_name, last_name, email, password } = req.body;
-    const objectId = new ObjectId(String(id));
-
-    console.log(`${first_name} ${last_name} ${email} ${password}`);
-
     try {
+        await new Promise((resolve, reject) => {
+            uploadUserPic.single('photo')(req, res, (err) => {
+                if (err) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return reject({
+                            status: 413,
+                            message: 'File size exceeds the 5 MB limit',
+                        });
+                    } else if (err.message === 'Invalid file type. Only JPEG, JPG and PNG allowed.') {
+                        return reject({
+                            status: 400,
+                            message: err.message,
+                        });
+                    }
+                    return reject({
+                        status: 500,
+                        message: 'An error occurred during file upload',
+                    });
+                }
+                resolve();
+            });
+        });
+
+        const { id } = req.params;
+        const { first_name, last_name, email, password } = req.body;
+        const objectId = new ObjectId(String(id));
+    
         const db = client.db('xplora');
 
         if (!ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
 
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
         const updateFields = {};
         if (first_name) updateFields.first_name = first_name;
         if (last_name) updateFields.last_name = last_name;
         if (email) updateFields.email = email;
-        if (password) updateFields.password = password;
+        if (password) updateFields.password = hashedPassword;
 
         // Update the user document in the database
         const result = await db.collection('users').updateOne(
@@ -165,42 +312,51 @@ app.put('/api/users/:id', async (req, res, next) => {
         );
 
         if (result.modifiedCount > 0) {
-            res.status(200).json({ message: 'User information updated successfully' });
+            res.status(200).json({ message: 'Information updated successfully' });
         } else {
             res.status(200).json({ message: 'No changes made' });
         }
 
     } catch (err) {
-        error = 'An error occurred while updating the user information';
-        res.status(500).json({ error });
-    } finally {
-        console.log(`${first_name} ${last_name} ${email} ${password}`);
+        errormsg = 'An error occurred while updating the user information';
+        res.status(500).json({ "error": errormsg });
     }
 });
 
-// // Upload user pictures
-// app.post('/api/:userId/upload', uploadUserPic.single('photo'), (req, res) => {
-//     const { userId } = req.params;
+// Get Password API
+// app.get('/api/users/:id/password', async (req, res) => {
+//     const { id } = req.params;
 
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded');
+//     if (!ObjectId.isValid(id)) {
+//         return res.status(400).json({ message: 'Invalid user ID' });
 //     }
 
-//     // Construct the file path
-//     const filePath = `/uploads/${req.file.filename}`;
+//     try {
+//         const db = client.db('xplora');
+//         const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
 
-//     // TODO: Save the filePath and userId in your database if needed
-//     console.log(`UserId: ${userId}, File: ${filePath}`);
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
 
-//     res.status(200).send({ userId, filePath });
+//         res.status(200).json({ message: 'Password received' });
+
+//     } catch (error) {
+//         console.error('Error fetching password:', error);
+//         res.status(500).json({ message: 'Internal server error', error: error.message });
+//     }
 // });
 
-// Get Password API
-app.get('/api/users/:id/password', async (req, res) => {
-    const { id } = req.params;
+app.post('/api/users/:id/password', async (req, res) => {
+    const { id } = req.params; 
+    const { password } = req.body;
 
     if (!ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required' });
     }
 
     try {
@@ -211,10 +367,16 @@ app.get('/api/users/:id/password', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ message: 'Password received' });
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+        if (hashedPassword === user.password) {
+            return res.status(200).json({ message: 'Correct password' });
+        } else {
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
 
     } catch (error) {
-        console.error('Error fetching password:', error);
+        console.error('Error checking password:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
@@ -300,7 +462,6 @@ app.post('/api/users/:userId/trips', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while adding the trip' });
     }
 });
-
 
 //TRIPS -- GET trips from user_id
 app.get('/api/users/:userId/trips', async (req, res) => {
@@ -843,10 +1004,13 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
+// const baseUrl =
+//     process.env.NODE_ENV === 'development'
+//         ? process.env.BASE_URL
+//         : process.env.production.BASE_URL;
+
 //------------------
 //PASSWORD RESET APIs
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -857,6 +1021,7 @@ app.post('/api/forgot-password', async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiration = Date.now() + 3600000; // one hour
 
@@ -865,44 +1030,49 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        const transporter = nodemailer.createTransport({
-            service: 'Proton',
-            auth: {
-                user: 'team10poosd@proton.me',
-                pass: 'FriendersTeam10!',
-            },
-        });
+        // const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
+        const resetLink = `https://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
+        const subject = 'Password Reset Request';
+        const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
+        const html = `<p>You requested a password reset. Click the link below to reset your password:</p> <a href="${resetLink}">Reset Password</a>`;
 
-        const mailOptions = {
-            from: 'team10poosd@proton.me',
-            to: user.email,
-            subject: 'Password Reset Request',
-            text: `You requested a password reset. Click the link below to reset your password:
-            http://your-domain.com/reset-password?token=${resetToken}&id=${user._id}`
-        };
+        console.log('Generated reset link:', resetLink);
+        console.log('Current NODE_ENV:', process.env.NODE_ENV);
 
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: 'Password reset email sent' });
+        const emailResult = await sendEmail(user.email, subject, text, html);
+
+        if(emailResult.success) {
+            res.status(200).json({ message: 'Password reset link sent to your email' });
+        } else {
+            res.status(500).json({ error: 'Failed to send password reset link' });
+        }
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while requesting password reset' });
+        res.status(500).json({ error: 'An error occurred while sending password reset link'});
     }
 });
-app.post('/api/reset-password', async (req, res) => {
+
+app.put('/api/reset-password', async (req, res) => {
     const { token, id, newPassword } = req.body;
 
     try {
         const db = client.db('xplora');
+        console.log('Connecting to database...');
         const user = await db.collection('users').findOne({
-            _id: MongoClient.ObjectId(id),
+            _id: new ObjectId(String(id)),
             resetToken: token,
             resetTokenExpiration: { $gt: Date.now() }
         });
+        console.log('User found:', user);
 
         if (!user) {
             return res.status(400).json({ error: 'Invalid or expired token' });
         }
 
+        console.log("before hash", newPassword);
+
         const hashedPassword = crypto.createHash('sha256').update(newPassword).digest('hex');
+
+        console.log("after hash", hashedPassword);
 
         await db.collection('users').updateOne(
             { _id: user._id },
@@ -914,6 +1084,7 @@ app.post('/api/reset-password', async (req, res) => {
 
         res.status(200).json({ message: 'Password reset successful' });
     } catch (error) {
+        console.error('Error during password reset:', error);
         res.status(500).json({ error: 'An error occurred while resetting the password' });
     }
 });

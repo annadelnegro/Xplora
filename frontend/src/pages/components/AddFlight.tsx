@@ -23,19 +23,6 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     console.log('Flight details', flightDetails);
 
     const [isSaving] = useState(false); // Loading indicator
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
-    const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-        return (
-            <div className="modal-overlay-alert" onClick={onClose}>
-                <div className="modal-content-alert" onClick={(e) => e.stopPropagation()}>
-                    <h2>Success</h2>
-                    <p>Your flight has been added successfully!</p>
-                    <button onClick={onClose}>OK</button>
-                </div>
-            </div>
-        );
-    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -78,10 +65,8 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
     
             if (response.ok) {
                 console.log('Flight added successfully');
-                setIsSuccessModalOpen(true); // Open the success modal
-                onSave(); // Refresh the parent list
-               //onClose();
-               location.reload();
+                onSave();
+                location.reload();
             } else {
                 const errorData = await response.json();
                 console.error('Error adding flight:', errorData.error);
@@ -177,14 +162,7 @@ const AddFlight: React.FC<AddFlightProps> = ({ onClose,onSave, apiEndpoint }) =>
                     </button>
                 </form>
             </div>
-
-                {isSuccessModalOpen && <SuccessModal onClose={() => {
-                    setIsSuccessModalOpen(false); 
-                    onClose(); // Close the main modal
-                }} />}
         </div>
-
-        
     );
 };
 

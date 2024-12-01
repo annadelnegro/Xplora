@@ -46,8 +46,7 @@ const LoginForm: React.FC = () => {
                             }}
                             validationSchema={LoginSchema}
                             onSubmit={async (values: LoginFormValues, { setSubmitting, setErrors }) => {
-                                //debugger
-                                console.log("Form submitted");
+                                
                                 try {
                                     // calls the login api 
                                     const response = await fetch(buildPath('api/login'), {
@@ -61,6 +60,7 @@ const LoginForm: React.FC = () => {
                                     });
 
                                     const data = await response.json();
+                                    console.log("data", data);
 
                                     if (response.ok) {
                                         console.log('Login successful:', data);
@@ -75,6 +75,9 @@ const LoginForm: React.FC = () => {
 
                                         navigate('/dashboard');
                                         // Handle successful login here
+                                    } else if (response.status === 403){
+                                        setErrors({ email: 'Your email has not been verified.'})
+
                                     } else {
                                         setErrors({ email: data.error });
                                     }

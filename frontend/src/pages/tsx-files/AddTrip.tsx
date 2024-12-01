@@ -121,7 +121,7 @@ const AddTrip: React.FC = () => {
         <div className="addtrip-page">
             <header className="homepage-header">
                 <div className="logo-section">
-                    <Link to="/">
+                    <Link to="">
                         <img src={logo} alt="Xplora Logo" id="homepage-logo" />
                     </Link>
                 </div>

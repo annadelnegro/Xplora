@@ -281,26 +281,16 @@ const Dashboard: React.FC = () => {
                     <div ref={menuRef}>
                         <button id="profile-btn" onClick={toggleMenu}>Profile</button>
                         {isMenuOpen && renderProfile()}
-                        {/* // (
-                        //     <ProfileDropdown
-                        //     firstName={firstName}
-                        //     lastName={lastName}
-                        //     email={email}
-                        //     password={'*************'}
-                        //     onEditProfile={handleEditProfile}
-                        //     onSaveProfile={handleSaveProfile}
-                        //     onCancelProfile={handleCancelProfile}
-                        //     isEditing={isEditing}
-                        //     isMenuOpen={isMenuOpen}
-                        //     />  
-                        // )} */}
-                                                                                                    
-                        
                     </div>
                     <button id="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
+
+            <div className="R-welcome-text">
+                <span id='r-welcome-text'>Welcome, {firstName} {lastName}!</span>
+            </div>
             <div className='dashboard-main'>
+                
                 <div className='trip-list-container'>
                     <div className='trip-list-header'>
                         Your upcoming itineraries

@@ -65,10 +65,13 @@ const AddAccommodation: React.FC<AddAccommodationProps> = ({ onClose, onSave, ap
             });
 
             if (response.ok) {
-                setIsSuccessModalOpen(true); // Open the success modal
-                onSave(); // Refresh the parent list
+                //setIsSuccessModalOpen(true); 
+                onSave();
+                location.reload();
             } else {
-                setError("Failed to save accommodation, please try again!");
+                const responseData = await response.json();
+                setError(responseData.error || "Failed to save activity, please try again!");
+                console.log("Server response:", responseData);
             }
         } catch (err) {
             console.error("Error adding accommodation", err);

@@ -14,22 +14,6 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
 
-
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
-    const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-        return (
-            <div className="modal-overlay-alert" onClick={onClose}>
-                <div className="modal-content-alert" onClick={(e) => e.stopPropagation()}>
-                    <h2>Success</h2>
-                    <p>Your Activity has been added successfully!</p>
-                    <button onClick={onClose}>OK</button>
-                </div>
-            </div>
-        );
-    };
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -59,9 +43,8 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
             });
 
             if (response.ok) {
-                //alert("Activity successfully added!");
-                setIsSuccessModalOpen(true); // Open the success modal
-                onSave(); // Refresh the parent list
+                onSave();
+                window.location.reload();
             } else {
                 const responseData = await response.json();
                 setError(responseData.error || "Failed to save activity, please try again!");
@@ -125,11 +108,6 @@ const AddActivity: React.FC<AddActivityProps> = ({ onClose, onSave, apiEndpoint 
                     <button className='submit-activity' type="submit">Save Activity</button>
                 </form>
             </div>
-            {isSuccessModalOpen && <SuccessModal onClose={() => {
-                    setIsSuccessModalOpen(false); 
-                    onClose(); // Close the main modal
-                }} />}
-
         </div>
     );
 };

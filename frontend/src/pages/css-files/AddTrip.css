@@ -265,3 +265,35 @@ input:-webkit-autofill:active {
 .location-format {
     font-size: 10px;
 }
+
+@media (max-width: 1208px){
+    .trip-form-container{
+        width: 90% !important;
+    }
+
+    .addtrip-dashboard-i-container{
+        margin: 0px !important;
+        width: 70%;
+    }
+
+}
+
+@media (max-width: 768px){
+    .trip-form-container{
+        width: 90% !important;
+    }
+
+    .addtrip-dashboard-i-container{
+        margin: 0px !important;
+        width: 90%;
+    }
+
+    .dashboard-header{
+        display: flex;
+        flex-direction: row;}
+
+        .homepage-header {
+            flex-direction: row; /* Stack items vertically */
+        
+          }
+}

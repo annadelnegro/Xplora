@@ -5,7 +5,7 @@ import logo from '../../images/logo.png';
 
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 
 
 interface ForgotPasswordFormValues {
@@ -15,7 +15,6 @@ interface ForgotPasswordFormValues {
 
 const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().required('Required')
 });
 
 const app_name = 'xplora.fun'; // Replace with your actual production server domain, e.g., 'example.com'
@@ -30,7 +29,8 @@ function buildPath(route: string): string {
 
 const ForgotPasswordPage: React.FC = () => {
     
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
+    const [statusMessage, setStatusMessage] = React.useState<string | null>(null);
 
     return (
         <div className="forgot-password-page">
@@ -43,15 +43,14 @@ const ForgotPasswordPage: React.FC = () => {
                         <Formik
                             initialValues={{
                                 email: '',
-                                // password: '',
                             }}
                             validationSchema={ForgotPasswordSchema}
-                            onSubmit={async (values: ForgotPasswordFormValues, { setSubmitting, setErrors }) => {
+                            
+                            onSubmit={async (values: ForgotPasswordFormValues, { setSubmitting }) => {
                                 //debugger
-                                console.log("Form submitted");
+                                console.log("Form submitted", setSubmitting);
                                 try {
-                                    // calls the login api 
-                                    const response = await fetch(buildPath('api/login'), {
+                                    const response = await fetch(buildPath('api/forgot-password'), {
                                         // get information from database
                                         method: 'POST',
                                         headers: {
@@ -64,24 +63,14 @@ const ForgotPasswordPage: React.FC = () => {
                                     const data = await response.json();
 
                                     if (response.ok) {
-                                        console.log('Login successful:', data);
-
-
-                                        // Store user data in localStorage
-                                        localStorage.setItem('ID', data.id);
-                                        console.log(data.id);
-                                        localStorage.setItem('firstName', data.firstName);
-                                        localStorage.setItem('lastName', data.lastName);
-                                        localStorage.setItem('email', data.email);
-
-                                        navigate('/dashboard');
-                                        // Handle successful login here
+                                        setStatusMessage("A password reset link has been sent to your email");
+                                        console.log('JSON object:', data);
                                     } else {
-                                        setErrors({ email: data.error });
+                                        setStatusMessage(data.error || 'Failed to send password reset link');
                                     }
                                 } catch (error) {
                                     console.error('Error:', error);
-                                    setErrors({ email: 'An error occurred. Please try again.' });
+                                    setStatusMessage("An error ocurred, try again");
                                 } finally {
                                     setSubmitting(false);
                                 }
@@ -97,19 +86,14 @@ const ForgotPasswordPage: React.FC = () => {
                                         <ErrorMessage name="email" component="div" className="forgot-password-error-message" />
                                     </div>
 
-                                    {/* <div className="forgot-password-form-field">
-                                        <Field type="password" name="password" placeholder="Password" className="forgot-password-input-field" />
-                                    </div>
-                                    <div className="forgot-password-error-container">
-                                        <ErrorMessage name="password" component="div" className="forgot-password-error-message" />
-                                    </div> */}
+                                    {statusMessage && <p className="forgot-password-status-message">{statusMessage}</p>}
 
                                     <div className="return-login-forgot-password-container">
                                         <Link to="/login" className="return-login-link">Return to Login Page</Link>
                                     </div>
 
                                     <button type="submit" disabled={isSubmitting} className="forgot-password-submit-button">
-                                        Reset My Password
+                                       {isSubmitting ? 'Sending...' : 'Reset My Password'}
                                     </button>
                                 </Form>
                             )}

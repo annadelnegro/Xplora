@@ -32,8 +32,10 @@ jobs:
           cd ../frontend/
           npm install
           npm run build
-          sudo find /var/www/html/ -mindepth 1 -not -path "/var/www/html/uploads" -delete
-          sudo mv dist/* /var/www/html/
+          sudo find /var/www/html/ -mindepth 1 -not -path "/var/www/html/uploads*" -delete
+          sudo rsync -av --remove-source-files --exclude='uploads/' dist/ /var/www/html/
+          sudo rm -rf dist/*  
+          # sudo mv dist/* /var/www/html/
           sudo mkdir -p /var/www/html/uploads
           sudo chown -R www-data:www-data /var/www/html/uploads
           sudo pm2 restart xplora-server        # Restart the PM2 process
