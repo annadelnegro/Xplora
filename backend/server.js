@@ -777,7 +777,7 @@ app.get('/api/users/:userId/trips/:tripId/flights', async (req, res) => {
             return res.status(404).json({ error: 'No flights found for this trip' });
         }
 
-        res.json(flights);
+        res.status(200).json(flights);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching flights' });
     }
