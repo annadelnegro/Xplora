@@ -217,9 +217,19 @@
 }
 
 
-#profile-menu h2{
+#profile-menu-fn, #profile-menu-ln {
     font-weight: 500;
     font-size: clamp(23px, 2vw, 24px);
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    max-width: 100px;
+    font-family: 'Poppins', sans-serif;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    background-color:#e9dcf25e;
+    border-radius: 10px;
+    padding: 3px;
 }
 
 .edit-info{
@@ -233,6 +243,11 @@
     padding: 6px;
     width: 100%;
     box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    display: block;
 }
 
 .non-editable-email {
@@ -242,7 +257,10 @@
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     cursor: not-allowed;
-    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 .edit-info input, .profile-info input{

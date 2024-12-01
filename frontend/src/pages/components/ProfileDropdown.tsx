@@ -228,7 +228,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                     <>
                         {/* <div className="profile-img-container"> */}
                             <img className="img-name" src={defaultprofile} alt="Profile Icon"/>
-                            <div className="img-name" id="name"><h2 id="profile-menu">{firstName} {lastName}</h2></div>
+                            <div className="img-name" id="name"><h2 id="profile-menu-fn">{firstName}</h2><h2 id="profile-menu-ln">{lastName}</h2></div>
                         {/* </div> */}
                     </> 
                 )}
