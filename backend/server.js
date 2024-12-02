@@ -247,6 +247,7 @@ app.get('/api/verify-email', async (req, res) => {
             <head>
                 <title>Verification Successful</title>
                 <meta http-equiv="refresh" content="5;url=https://xplora.fun/login" />
+                <link rel="stylesheet" href="/public/css/Verification.css" />
             </head>
             <body>
                 <h1>Email successfully verified! You can now log in.</h1>
