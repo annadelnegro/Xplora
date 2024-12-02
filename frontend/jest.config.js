@@ -13,5 +13,6 @@ export default {
   moduleNameMapper: {
     // Mock CSS files
     "\\.(css|scss)$": "identity-obj-proxy",
+    '\\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mock image files
   },
 };
