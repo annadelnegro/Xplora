@@ -928,7 +928,7 @@ app.get('/api/users/:userId/trips/:tripId/accommodations', async (req, res) => {
             return res.status(404).json({ error: 'No accommodations found for this trip' });
         }
 
-        res.json(accommodations);
+        res.status(200).json(accommodations);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching accommodations' });
     }
