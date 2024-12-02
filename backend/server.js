@@ -634,7 +634,7 @@ app.get('/api/users/:userId/trips/:tripId/activities', async (req, res) => {
             return res.status(404).json({ error: 'No activities found for this trip' });
         }
 
-        res.json(activities);
+        res.status(200).json(activities);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching activities' });
     }
@@ -1005,11 +1005,6 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
-// const baseUrl =
-//     process.env.NODE_ENV === 'development'
-//         ? process.env.BASE_URL
-//         : process.env.production.BASE_URL;
-
 //------------------
 //PASSWORD RESET APIs
 app.post('/api/forgot-password', async (req, res) => {
@@ -1031,7 +1026,6 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        // const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
         const resetLink = `https://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
         const subject = 'Password Reset Request';
         const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
