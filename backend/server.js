@@ -1,17 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const app = express();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
+require('dotenv').config();
 
 const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
+const app = express();
 // const dotenv = require('dotenv');
 
 // if (process.env.NODE_ENV === 'production') {
@@ -106,9 +107,9 @@ const sendEmail = async (to, subject, text, html) => {
 
 client.connect();
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -124,6 +125,27 @@ app.use((req, res, next) => {
     );
     next();
 });
+
+// MongoDB Connection
+const connectToDb = async () => {
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+    }
+};
+
+let server;
+
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5000;
+    server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+} else {
+    console.log('Test environment detected');
+}
 
 //Log In API
 app.post('/api/login', async (req, res, next) => {
@@ -538,7 +560,8 @@ app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async
         );
 
         if (result.matchedCount > 0) {
-            res.status(200).json({ message: 'Trip updated successfully' });
+            const updatedTripDoc = await db.collection('trips').findOne({ _id: tripObjId });
+            res.status(200).json({ message: 'Trip updated successfully', picture_url: updatedTripDoc.picture_url});
         } else {
             res.status(404).json({ error: 'Trip not found' });
         }
@@ -634,7 +657,7 @@ app.get('/api/users/:userId/trips/:tripId/activities', async (req, res) => {
             return res.status(404).json({ error: 'No activities found for this trip' });
         }
 
-        res.json(activities);
+        res.status(200).json(activities);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching activities' });
     }
@@ -777,7 +800,7 @@ app.get('/api/users/:userId/trips/:tripId/flights', async (req, res) => {
             return res.status(404).json({ error: 'No flights found for this trip' });
         }
 
-        res.json(flights);
+        res.status(200).json(flights);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching flights' });
     }
@@ -928,7 +951,7 @@ app.get('/api/users/:userId/trips/:tripId/accommodations', async (req, res) => {
             return res.status(404).json({ error: 'No accommodations found for this trip' });
         }
 
-        res.json(accommodations);
+        res.status(200).json(accommodations);
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while fetching accommodations' });
     }
@@ -1005,11 +1028,6 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
     }
 });
 
-// const baseUrl =
-//     process.env.NODE_ENV === 'development'
-//         ? process.env.BASE_URL
-//         : process.env.production.BASE_URL;
-
 //------------------
 //PASSWORD RESET APIs
 app.post('/api/forgot-password', async (req, res) => {
@@ -1031,7 +1049,6 @@ app.post('/api/forgot-password', async (req, res) => {
             { $set: { resetToken, resetTokenExpiration } }
         );
 
-        // const resetLink = `${baseUrl}/newpassword?token=${resetToken}&id=${user._id}`;
         const resetLink = `https://xplora.fun/newpassword?token=${resetToken}&id=${user._id}`; 
         const subject = 'Password Reset Request';
         const text = `You requested a password reset. Click the link below to reset your password:\n${resetLink}`;
@@ -1089,3 +1106,6 @@ app.put('/api/reset-password', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while resetting the password' });
     }
 });
+
+module.exports = { app, server, client };
+
