@@ -1,17 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const app = express();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
+require('dotenv').config();
 
 const PORT = 5000;
 const url = 'mongodb+srv://xplora-user:FriendersTeam10!@xplora.u95ur.mongodb.net/?retryWrites=true&w=majority&appName=Xplora';
 const client = new MongoClient(url);
 
+const app = express();
 // const dotenv = require('dotenv');
 
 // if (process.env.NODE_ENV === 'production') {
@@ -106,9 +107,9 @@ const sendEmail = async (to, subject, text, html) => {
 
 client.connect();
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -124,6 +125,27 @@ app.use((req, res, next) => {
     );
     next();
 });
+
+// MongoDB Connection
+const connectToDb = async () => {
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+    }
+};
+
+let server;
+
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5000;
+    server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+} else {
+    console.log('Test environment detected');
+}
 
 //Log In API
 app.post('/api/login', async (req, res, next) => {
@@ -1083,3 +1105,6 @@ app.put('/api/reset-password', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while resetting the password' });
     }
 });
+
+module.exports = { app, server, client };
+
