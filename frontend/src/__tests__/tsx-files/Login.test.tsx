@@ -9,7 +9,6 @@ jest.mock('react-router-dom', () => ({
 
 describe('LoginForm Component', () => {
 
-
   test('renders the LoginForm component with essential elements', () => {
     render(<LoginForm />);
 
