@@ -321,7 +321,14 @@ app.put('/api/users/:id', async (req, res, next) => {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
 
-        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        if (password !== undefined && password !== '') {
+            const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+            updateFields.password = hashedPassword;
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(200).json({ message: 'No changes made' });
+        }
 
         const updateFields = {};
         if (first_name) updateFields.first_name = first_name;
