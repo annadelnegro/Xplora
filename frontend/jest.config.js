@@ -16,4 +16,5 @@ export default {
     '\\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mock image files
   },
   setupFiles: ['./__mocks__/setupEnv.js'],
+  setupFilesAfterEnv: ['./__mocks__/setupEnv.js'],
 };

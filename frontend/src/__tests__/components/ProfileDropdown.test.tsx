@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import ProfileDropdown from '../../pages/components/ProfileDropdown';
 import '@testing-library/jest-dom';
 
@@ -37,44 +37,58 @@ describe('ProfileDropdown', () => {
     expect(emailElement).toBeInTheDocument();
 
     // Ensure the "Edit Profile" button exists (text-based query)
-    const editButton = getByText(/Edit Profile/);
+    const editButton = document.getElementById('profile-edit-button');
     expect(editButton).toBeInTheDocument();
   });
-
   it('calls onEditProfile when edit icon is clicked', () => {
-    const { getByRole } = render(<ProfileDropdown {...defaultProps} />);
-
-    // Use getByRole for icon buttons
-    const editIcon = getByRole('button', { name: /edit profile/i });
-    fireEvent.click(editIcon);
-
-    expect(mockOnEditProfile).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onSaveProfile when save button is clicked', () => {
     const props = {
       ...defaultProps,
-      isEditing: true, // Change to simulate editing mode
+      isEditing: false,
     };
-    const { getByRole } = render(<ProfileDropdown {...props} />);
-
-    // Check for the save button (button role)
-    const saveButton = getByRole('button', { name: /save profile/i });
+    render(<ProfileDropdown {...props} />);
+    
+    const editButton = screen.getByTestId('profile-edit-button');
+    expect(editButton).toBeInTheDocument();
+  
+    fireEvent.click(editButton);
+    expect(mockOnEditProfile).toHaveBeenCalledTimes(1);
+  });
+  
+  it('calls onSaveProfile when the save button is clicked', async () => {
+    const props = {
+      ...defaultProps,
+      isEditing: true, // Enable editing mode
+    };
+    
+    const { getByPlaceholderText } = render(<ProfileDropdown {...props} />);
+  
+    const firstNameInput = getByPlaceholderText('First Name');
+    const lastNameInput = getByPlaceholderText('Last Name');
+    
+    fireEvent.change(firstNameInput, { target: { value: 'Jane' } });
+    fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
+    
+    const saveButton = screen.getByTestId('profile-edit-button');
     fireEvent.click(saveButton);
-
+    
+    await expect(mockOnSaveProfile).toHaveBeenCalledWith('Jane', 'Doe', 'john.doe@example.com', '');
     expect(mockOnSaveProfile).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onCancelProfile when cancel icon is clicked', () => {
+  it('calls onCancelProfile when the cancel button is clicked', () => {
     const props = {
       ...defaultProps,
-      isEditing: true, // Change to simulate editing mode
+      isEditing: true, // Simulate editing mode
     };
-    const { getByRole } = render(<ProfileDropdown {...props} />);
+    render(<ProfileDropdown {...props} />);
 
-    // Use getByRole for cancel icon button
-    const cancelIcon = getByRole('button', { name: /cancel/i });
-    fireEvent.click(cancelIcon);
+    // Get the cancel button by its ID
+    const cancelButton = screen.getByTestId('profile-cancel-button');
+    expect(cancelButton).toBeInTheDocument();
+
+    if (cancelButton) {
+      fireEvent.click(cancelButton);
+    }
 
     expect(mockOnCancelProfile).toHaveBeenCalledTimes(1);
   });

@@ -152,9 +152,9 @@
     transition: color 0.3s ease-in-out;
 }
 
-#profile-save-icon, #profile-save-icon button {
+/* #profile-save-button, #profile-edit-icon, #profile-save-icon button {
     background-color:rgba(0, 0, 0, 0);
-}
+} */
 
 #profile-save-icon{
     font-size: 30px;

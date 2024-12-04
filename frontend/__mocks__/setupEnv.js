@@ -16,10 +16,4 @@ global.fetch = jest.fn(() =>
       ok: true,
       json: () => Promise.resolve([]), // Mocked response
     })
-  );
-  
-  // Optionally, if you want to throw an error:
-  global.fetch = jest.fn(() =>
-    Promise.reject(new Error('Failed to fetch'))
-  );
-  
+);

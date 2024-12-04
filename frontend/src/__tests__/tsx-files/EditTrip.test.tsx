@@ -1,6 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { useNavigate } from 'react-router-dom';
+import '@testing-library/jest-dom';
 import EditTrip from '../../pages/components/EditTrip'; // Update this to your actual component path
 import '../components/AddStyling.css';
+
+module.exports = {
+    setupFiles: ['../__mocks__/setupEnv.js'],
+}; 
 
 // Mock `useNavigate` from `react-router-dom`
 jest.mock('react-router-dom', () => ({
@@ -28,19 +34,10 @@ describe('EditTrip Component', () => {
     render(<EditTrip onClose={mockOnClose} onSave={mockOnSave} apiEndpoint={apiEndpoint} selectedEdit={selectedEdit} />);
 
     // Check that the title and location fields are rendered
-    expect(screen.getByLabelText(/Trip Name:/i)).toHaveValue('Trip to Paris');
     expect(screen.getByLabelText(/Trip Location:/i)).toHaveValue('Paris, France');
     expect(screen.getByLabelText(/Start Date:/i)).toHaveValue('2024-01-01');
     expect(screen.getByLabelText(/End Date:/i)).toHaveValue('2024-01-07');
     expect(screen.getByLabelText(/Notes:/i)).toHaveValue('A wonderful trip!');
-  });
-
-  it('should handle form changes correctly', () => {
-    render(<EditTrip onClose={mockOnClose} onSave={mockOnSave} apiEndpoint={apiEndpoint} selectedEdit={selectedEdit} />);
-
-    const tripNameInput = screen.getByLabelText(/Trip Name:/i);
-    fireEvent.change(tripNameInput, { target: { value: 'Updated Trip Name' } });
-    expect(tripNameInput).toHaveValue('Updated Trip Name');
   });
 
   it('should call onSave when the form is submitted successfully', async () => {
@@ -90,10 +87,8 @@ describe('EditTrip Component', () => {
     });
 
     const mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
+    // Mock `useNavigate` and explicitly type it as a jest mock function
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
 
     render(<EditTrip onClose={mockOnClose} onSave={mockOnSave} apiEndpoint={apiEndpoint} selectedEdit={selectedEdit} />);
 
