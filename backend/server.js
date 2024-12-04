@@ -693,7 +693,7 @@ app.put('/api/users/:userId/trips/:tripId/activities/:activityId', async (req, r
         );
 
         if (result.matchedCount > 0) {
-            res.status(200).json({ message: 'Activity updated successfully' });
+            res.status(201).json({ message: 'Activity updated successfully' });
         } else {
             res.status(404).json({ error: 'Activity not found' });
         }
