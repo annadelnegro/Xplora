@@ -286,28 +286,30 @@ app.get('/api/verify-email', async (req, res) => {
 // Update User API
 app.put('/api/users/:id', async (req, res, next) => {
     try {
-        await new Promise((resolve, reject) => {
-            uploadUserPic.single('photo')(req, res, (err) => {
-                if (err) {
-                    if (err.code === 'LIMIT_FILE_SIZE') {
+        if(req.file){
+            await new Promise((resolve, reject) => {
+                uploadUserPic.single('photo')(req, res, (err) => {
+                    if (err) {
+                        if (err.code === 'LIMIT_FILE_SIZE') {
+                            return reject({
+                                status: 413,
+                                message: 'File size exceeds the 5 MB limit',
+                            });
+                        } else if (err.message === 'Invalid file type. Only JPEG, JPG and PNG allowed.') {
+                            return reject({
+                                status: 400,
+                                message: err.message,
+                            });
+                        }
                         return reject({
-                            status: 413,
-                            message: 'File size exceeds the 5 MB limit',
-                        });
-                    } else if (err.message === 'Invalid file type. Only JPEG, JPG and PNG allowed.') {
-                        return reject({
-                            status: 400,
-                            message: err.message,
+                            status: 500,
+                            message: 'An error occurred during file upload',
                         });
                     }
-                    return reject({
-                        status: 500,
-                        message: 'An error occurred during file upload',
-                    });
-                }
-                resolve();
+                    resolve();
+                });
             });
-        });
+        }
 
         const { id } = req.params;
         const { first_name, last_name, email, password } = req.body;
