@@ -103,7 +103,7 @@ const AddTrip: React.FC = () => {
                 console.log('Trip added successfully:', data);
     
                 // Navigate to the dashboard after successful submission
-                alert('Trip added successfully!');
+              //  alert('Trip added successfully!');
                 navigate('/dashboard');
             } else {
                 console.error('Error adding trip:', data);
