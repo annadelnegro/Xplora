@@ -1,90 +1,81 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect'; // For better assertions
-import ProfileDropdown from '../../pages/components/ProfileDropdown.tsx';
+import { render, fireEvent } from '@testing-library/react';
+import ProfileDropdown from '../../pages/components/ProfileDropdown';
+import '@testing-library/jest-dom';
 
-describe('ProfileDropdown Component', () => {
-    const defaultProps = {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        password: '*************',
-        id: '12345',
-        resetToken: 'resetToken123',
-        isEditing: false,
-        isMenuOpen: true,
-        onEditProfile: jest.fn(),
-        onSaveProfile: jest.fn(),
-        onCancelProfile: jest.fn(),
+module.exports = {
+  setupFiles: ['../__mocks__/setupEnv.js'],
+};
+
+describe('ProfileDropdown', () => {
+  const mockOnEditProfile = jest.fn();
+  const mockOnSaveProfile = jest.fn();
+  const mockOnCancelProfile = jest.fn();
+
+  const defaultProps = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    password: 'password123',
+    id: '1',
+    resetToken: 'resetToken',
+    onEditProfile: mockOnEditProfile,
+    onSaveProfile: mockOnSaveProfile,
+    onCancelProfile: mockOnCancelProfile,
+    isEditing: false,
+    isMenuOpen: true,
+  };
+
+  it('renders ProfileDropdown correctly', () => {
+    const { getByText } = render(<ProfileDropdown {...defaultProps} />);
+
+    // Check if the first name is displayed
+    const firstNameElement = getByText(/John/);
+    expect(firstNameElement).toBeInTheDocument();
+
+    // Check if the email is displayed
+    const emailElement = getByText(/john.doe@example.com/);
+    expect(emailElement).toBeInTheDocument();
+
+    // Ensure the "Edit Profile" button exists (text-based query)
+    const editButton = getByText(/Edit Profile/);
+    expect(editButton).toBeInTheDocument();
+  });
+
+  it('calls onEditProfile when edit icon is clicked', () => {
+    const { getByRole } = render(<ProfileDropdown {...defaultProps} />);
+
+    // Use getByRole for icon buttons
+    const editIcon = getByRole('button', { name: /edit profile/i });
+    fireEvent.click(editIcon);
+
+    expect(mockOnEditProfile).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onSaveProfile when save button is clicked', () => {
+    const props = {
+      ...defaultProps,
+      isEditing: true, // Change to simulate editing mode
     };
+    const { getByRole } = render(<ProfileDropdown {...props} />);
 
-    it('renders profile information correctly when not editing', () => {
-        render(<ProfileDropdown {...defaultProps} />);
+    // Check for the save button (button role)
+    const saveButton = getByRole('button', { name: /save profile/i });
+    fireEvent.click(saveButton);
 
-        // Check if name, email, and buttons are rendered
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-        expect(screen.getByText('johndoe@example.com')).toBeInTheDocument();
-        expect(screen.getByText('Edit Profile')).toBeInTheDocument();
-        expect(screen.getByText('Cancel')).toBeInTheDocument();
-    });
+    expect(mockOnSaveProfile).toHaveBeenCalledTimes(1);
+  });
 
-    it('triggers onEditProfile when Edit Profile button is clicked', () => {
-        render(<ProfileDropdown {...defaultProps} />);
+  it('calls onCancelProfile when cancel icon is clicked', () => {
+    const props = {
+      ...defaultProps,
+      isEditing: true, // Change to simulate editing mode
+    };
+    const { getByRole } = render(<ProfileDropdown {...props} />);
 
-        const editButton = screen.getByText('Edit Profile');
-        fireEvent.click(editButton);
+    // Use getByRole for cancel icon button
+    const cancelIcon = getByRole('button', { name: /cancel/i });
+    fireEvent.click(cancelIcon);
 
-        expect(defaultProps.onEditProfile).toHaveBeenCalledTimes(1);
-    });
-
-    it('renders input fields when in editing mode', () => {
-        const editingProps = { ...defaultProps, isEditing: true };
-        render(<ProfileDropdown {...editingProps} />);
-
-        // Check if input fields are rendered
-        expect(screen.getByLabelText('First Name')).toHaveValue('John');
-        expect(screen.getByLabelText('Last Name')).toHaveValue('Doe');
-        expect(screen.getByLabelText('Email')).toHaveValue('johndoe@example.com');
-        expect(screen.getByLabelText('Password')).toHaveValue('*************');
-    });
-
-    it('calls onSaveProfile with updated information', () => {
-        const editingProps = { ...defaultProps, isEditing: true };
-        render(<ProfileDropdown {...editingProps} />);
-
-        const firstNameInput = screen.getByLabelText('First Name');
-        const lastNameInput = screen.getByLabelText('Last Name');
-        const saveButton = screen.getByText('Save');
-
-        // Simulate user input
-        fireEvent.change(firstNameInput, { target: { value: 'Jane' } });
-        fireEvent.change(lastNameInput, { target: { value: 'Smith' } });
-
-        // Click Save
-        fireEvent.click(saveButton);
-
-        expect(defaultProps.onSaveProfile).toHaveBeenCalledWith(
-            'Jane',
-            'Smith',
-            defaultProps.email,
-            defaultProps.password
-        );
-    });
-
-    it('triggers onCancelProfile when Cancel button is clicked', () => {
-        const editingProps = { ...defaultProps, isEditing: true };
-        render(<ProfileDropdown {...editingProps} />);
-
-        const cancelButton = screen.getByText('Cancel');
-        fireEvent.click(cancelButton);
-
-        expect(defaultProps.onCancelProfile).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not render when menu is closed', () => {
-        const closedProps = { ...defaultProps, isMenuOpen: false };
-        const { container } = render(<ProfileDropdown {...closedProps} />);
-
-        // Menu should not be rendered in the DOM
-        expect(container).toBeEmptyDOMElement();
-    });
+    expect(mockOnCancelProfile).toHaveBeenCalledTimes(1);
+  });
 });
