@@ -326,15 +326,15 @@ app.put('/api/users/:id', async (req, res, next) => {
             updateFields.password = hashedPassword;
         }
 
-        if (Object.keys(updateFields).length === 0) {
-            return res.status(200).json({ message: 'No changes made' });
-        }
-
         const updateFields = {};
         if (first_name) updateFields.first_name = first_name;
         if (last_name) updateFields.last_name = last_name;
         if (email) updateFields.email = email;
         if (password) updateFields.password = hashedPassword;
+
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(200).json({ message: 'No changes made' });
+        }
 
         // Update the user document in the database
         const result = await db.collection('users').updateOne(
