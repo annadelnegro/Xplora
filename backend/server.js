@@ -560,7 +560,7 @@ app.put('/api/users/:userId/trips/:tripId', uploadTripPic.single('photo'), async
 
         if (result.matchedCount > 0) {
             const updatedTripDoc = await db.collection('trips').findOne({ _id: tripObjId });
-            res.status(200).json({ message: 'Trip updated successfully', picture_url: updatedTripDoc.picture_url});
+            res.status(201).json({ message: 'Trip updated successfully', picture_url: updatedTripDoc.picture_url});
         } else {
             res.status(404).json({ error: 'Trip not found' });
         }
