@@ -847,7 +847,7 @@ app.put('/api/users/:userId/trips/:tripId/flights/:flightId', async (req, res) =
         );
 
         if (result.matchedCount > 0) {
-            res.status(200).json({ message: 'Flight updated successfully' });
+            res.status(201).json({ message: 'Flight updated successfully' });
         } else {
             res.status(404).json({ error: 'Flight not found' });
         }
