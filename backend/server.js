@@ -996,7 +996,7 @@ app.put('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', asyn
         );
 
         if (result.matchedCount > 0) {
-            res.status(200).json({ message: 'Accommodation updated successfully' });
+            res.status(201).json({ message: 'Accommodation updated successfully' });
         } else {
             res.status(404).json({ error: 'Accommodation not found' });
         }
