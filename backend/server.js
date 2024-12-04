@@ -343,7 +343,7 @@ app.put('/api/users/:id', async (req, res, next) => {
 
     } catch (err) {
         errormsg = 'An error occurred while updating the user information';
-        res.status(500).json({ "error": errormsg });
+        res.status(500).json({ "error": `${errormsg} ${err}` });
     }
 });
 
