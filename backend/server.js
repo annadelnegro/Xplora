@@ -868,7 +868,7 @@ app.delete('/api/users/:userId/trips/:tripId/flights/:flightId', async (req, res
         const db = client.db('xplora');
         const result = await db.collection('flights').deleteOne({ _id: flightObjId, trip_id: tripObjId, user_id: userObjId });
         if (result.deletedCount > 0) {
-            res.status(200).json({ message: 'Flight deleted successfully' });
+            res.status(201).json({ message: 'Flight deleted successfully' });
         } else {
             res.status(404).json({ error: 'Flight not found' });
         }
