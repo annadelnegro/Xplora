@@ -699,7 +699,7 @@
 
     .trip-list-container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
     }
 
     .trip-list-header {

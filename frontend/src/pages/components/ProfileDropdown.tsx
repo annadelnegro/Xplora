@@ -195,11 +195,16 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                             <img src={profilePic || defaultprofile} alt="Profile Icon" />
                         </div>
                         <div>
-                                <i 
+                            {/**
+                             * 
+                             *     <i 
                                     id="trip-item-edit-icon-2" 
                                     className='fa fa-pen-alt' 
                                     onClick={() => document.getElementById('file-input')?.click()} 
                                 ></i>
+                             * 
+                             */}
+                            
                         </div>
                             <input
                                 type="file"
