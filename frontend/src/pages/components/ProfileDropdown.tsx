@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import * as yup from 'yup';
 import '../css-files/Dashboard.css'
 import defaultprofile from '../../images/default_profile.png';
+import { act } from 'react-dom/test-utils';
+
 
 interface ProfileDropdownProps {
     firstName: string;
@@ -109,36 +111,38 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             }
 
             // If a reset is being performed (through the token and id)
-            if (resetToken && id && newPassword.trim()) {
-                // Make API call to reset password
-                const response = await fetch('/api/reset-password', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        token: resetToken,
-                        id,
-                        newPassword,
-                    }),
-                });
+            await act(async () => {
+                if (resetToken && id && newPassword.trim()) {
+                    // Make API call to reset password
+                    const response = await fetch('/api/reset-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            token: resetToken,
+                            id,
+                            newPassword,
+                        }),
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (response.ok) {
-                    // Password reset successful
-                    setErrorMessages({});
-                    alert(data.message);
+                    if (response.ok) {
+                        // Password reset successful
+                        setErrorMessages({});
+                        alert(data.message);
+                    } else {
+                        // Handle error from API
+                        setErrorMessages({ resetPassword: data.error });
+                    }
                 } else {
-                    // Handle error from API
-                    setErrorMessages({ resetPassword: data.error });
+                    // Save profile data if validation passes
+                    onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
+                    setErrorMessages({}); // Clear errors on success
                 }
-            } else {
-                // Save profile data if validation passes
-                onSaveProfile(newFirstName, newLastName, newEmail, newPassword);
-                setErrorMessages({}); // Clear errors on success
-            }
-        } catch (error) {
+        });
+     } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors: Record<string, string> = {};
                 error.inner.forEach((err) => {
@@ -274,9 +278,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="New Password"
                                     />
 
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
                                     {errorMessages.newPassword && (
                                         <div className="error-flag show">
                                             <span>{errorMessages.newPassword}</span>
@@ -292,9 +293,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
                                         placeholder="Confirm New Password"
                                     />
 
-                                    {/* <div className={`error-flag ${errorMessage ? 'show' : ''}`}>
-                                        <span>{errorMessage}</span>
-                                    </div> */}
                                     {errorMessages.confirmPassword && (
                                         <div className="error-flag show">
                                             <span>{errorMessages.confirmPassword}</span>
@@ -314,13 +312,43 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
             <div className={`profile-info ${isEditing ? "editing" : ""}`}>
                 {isEditing ? (
                     <>
-                        <i id="profile-cancel-icon" className='far fa-times-circle' onClick={onCancelProfile}></i>
-                        <i id="profile-save-icon" className='far fa-check-circle' onClick={handleSaveChange}></i>
+                        <button
+                            data-testid="profile-cancel-button"
+                            id="profile-cancel-button"
+                            className="profile-action-button"
+                            onClick={onCancelProfile}
+                            >
+                            <i className="far fa-times-circle" id="profile-cancel-icon" />
+                        </button>
+
+                        <button
+                            data-testid="profile-save-button"
+                            id="profile-save-button"
+                            className="profile-action-button"
+                            onClick={handleSaveChange}
+                            >
+                            <i className="far fa-check-circle" id="profile-save-icon" />
+                        </button>
                     </>
                 ) : (
                     <>
-                        <i id="profile-cancel-icon" className='far fa-times-circle' onClick={onCancelProfile}></i>
-                        <i id="profile-edit-icon" className='fa fa-edit' onClick={onEditProfile}></i>
+                        <button
+                            data-testid="profile-cancel-button"
+                            id="profile-cancel-button"
+                            className="profile-action-button"
+                            onClick={onCancelProfile}
+                            >
+                            <i className="far fa-times-circle" id="profile-cancel-icon" />
+                        </button>
+
+                        <button
+                            ata-testid="profile-edit-button"
+                            id="profile-edit-button"
+                            className="profile-action-button"
+                            onClick={onEditProfile}
+                            >
+                            <i className='fa fa-edit' id="profile-edit-icon"/>
+                        </button>
                     </>
                 )}
             </div>
