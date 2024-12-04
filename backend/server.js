@@ -1017,7 +1017,7 @@ app.delete('/api/users/:userId/trips/:tripId/accommodations/:accommodationId', a
         const db = client.db('xplora');
         const result = await db.collection('accommodations').deleteOne({ _id: accommodationObjId, trip_id: tripObjId, user_id: userObjId });
         if (result.deletedCount > 0) {
-            res.status(200).json({ message: 'Accommodation deleted successfully' });
+            res.status(201).json({ message: 'Accommodation deleted successfully' });
         } else {
             res.status(404).json({ error: 'Accommodation not found' });
         }
