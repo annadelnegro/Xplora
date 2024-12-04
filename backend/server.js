@@ -714,7 +714,7 @@ app.delete('/api/users/:userId/trips/:tripId/activities/:activityId', async (req
         const db = client.db('xplora');
         const result = await db.collection('activities').deleteOne({ _id: activityObjId, trip_id: tripObjId, user_id: userObjId });
         if (result.deletedCount > 0) {
-            res.status(200).json({ message: 'Activity deleted successfully' });
+            res.status(201).json({ message: 'Activity deleted successfully' });
         } else {
             res.status(404).json({ error: 'Activity not found' });
         }
