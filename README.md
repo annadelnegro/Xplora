@@ -61,8 +61,8 @@ The application is deployed on **AWS EC2** for optimal scalability and reliabili
 To run the application locally, follow these steps:
 
 1. Clone the repository:
-   ```bash
+```bash
    git clone https://github.com/annadelnegro/Xplora.git
 2.	Navigate to the project directory:
-   ```
-   cd Xplora
+```bash
+   cd xplora
