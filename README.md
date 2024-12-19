@@ -2,8 +2,6 @@
 
 **Xplora** is a travel planning web application designed to streamline the process of organizing trips. With user-friendly features for managing trips, flights, accommodations, and activities, Xplora makes travel planning effortless. The platform also offers robust user profile management and secure authentication features.
 
-This project was developed as part of the **Processes of Object-Oriented Software** course, showcasing collaborative development and object-oriented principles in a real-world application.
-
 ## Features
 
 ### Trip Management
@@ -56,13 +54,5 @@ This project was developed as part of the **Processes of Object-Oriented Softwar
 
 The application is deployed on **AWS EC2** for optimal scalability and reliability. MongoDB is used as the database for storing user and trip data.
 
-## Getting Started
+This project was developed as part of the **Processes of Object-Oriented Software** course, showcasing collaborative development and object-oriented principles in a real-world application.
 
-To run the application locally, follow these steps:
-
-1. Clone the repository:
-```bash
-   git clone https://github.com/annadelnegro/Xplora.git
-2.	Navigate to the project directory:
-```bash
-   cd xplora
