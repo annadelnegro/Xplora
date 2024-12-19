@@ -54,7 +54,8 @@
 
 The application is deployed on **AWS EC2** for optimal scalability and reliability. MongoDB is used as the database for storing user and trip data.
 
-## Development
+## Acknowledgments
 
-This project was developed as part of the **Processes of Object-Oriented Software** course, showcasing collaborative development and object-oriented principles in a real-world application.
+Xplora.fun was developed as a collaborative group project for POOSD Fall 2024 class (Processes of Object Oriented Software Development). A big thanks to the team members for their contributions!
 
+This project highlights the value of teamwork in building full-stack applications.
