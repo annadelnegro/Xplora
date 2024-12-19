@@ -54,5 +54,7 @@
 
 The application is deployed on **AWS EC2** for optimal scalability and reliability. MongoDB is used as the database for storing user and trip data.
 
+## Development
+
 This project was developed as part of the **Processes of Object-Oriented Software** course, showcasing collaborative development and object-oriented principles in a real-world application.
 
